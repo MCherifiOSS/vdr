@@ -3,6 +3,7 @@ vdr (1.7.29-0yavdr0~precise) precise; urgency=medium
   * New upstream release
   * Removed gcc fix
   * Removed vdr-1.7.28-epghandledexternally.patch
+  * Removed fix-no-hddvbdevice-segfault.patch
 
  -- Holger Schvestka <hotzenplotz5@gmx.de>  Tue, 17 Jul 2012 08:01:25 +0200
 
