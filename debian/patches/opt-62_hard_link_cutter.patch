@@ -2,10 +2,10 @@ Description: The hard link cutter patch changes the recording editing algorithms
 Author: Udo Richter <udo_richter@gmx.de>      
 Origin: http://www.udo-richter.de/vdr/patches.html#hlcutter
 
-Index: vdr-1.7.27/config.c
+Index: vdr-1.7.28/config.c
 ===================================================================
---- vdr-1.7.27.orig/config.c	2012-03-25 14:39:29.214975081 +0200
-+++ vdr-1.7.27/config.c	2012-03-25 14:51:11.694975107 +0200
+--- vdr-1.7.28.orig/config.c	2012-06-15 10:26:25.147001752 +0200
++++ vdr-1.7.28/config.c	2012-06-15 10:31:08.287013490 +0200
 @@ -447,8 +447,10 @@
    FontSmlSize = 18;
    FontFixSize = 20;
@@ -39,11 +39,11 @@ Index: vdr-1.7.27/config.c
    Store("MinEventTimeout",    MinEventTimeout);
    Store("MinUserInactivity",  MinUserInactivity);
    Store("NextWakeupTime",     NextWakeupTime);
-Index: vdr-1.7.27/config.h
+Index: vdr-1.7.28/config.h
 ===================================================================
---- vdr-1.7.27.orig/config.h	2012-03-25 14:39:29.284975081 +0200
-+++ vdr-1.7.27/config.h	2012-03-25 14:51:11.694975107 +0200
-@@ -311,8 +311,10 @@
+--- vdr-1.7.28.orig/config.h	2012-06-15 10:29:07.807008495 +0200
++++ vdr-1.7.28/config.h	2012-06-15 10:31:08.287013490 +0200
+@@ -320,8 +320,10 @@
    int FontSmlSize;
    int FontFixSize;
    int MaxVideoFileSize;
@@ -54,10 +54,10 @@ Index: vdr-1.7.27/config.h
    int MinEventTimeout, MinUserInactivity;
    time_t NextWakeupTime;
    int MultiSpeedMode;
-Index: vdr-1.7.27/cutter.c
+Index: vdr-1.7.28/cutter.c
 ===================================================================
---- vdr-1.7.27.orig/cutter.c	2012-03-25 14:39:28.674975081 +0200
-+++ vdr-1.7.27/cutter.c	2012-03-25 14:51:11.694975107 +0200
+--- vdr-1.7.28.orig/cutter.c	2012-06-15 10:26:24.683001732 +0200
++++ vdr-1.7.28/cutter.c	2012-06-15 10:31:08.287013490 +0200
 @@ -81,6 +81,7 @@
       Mark = fromMarks.Next(Mark);
       off_t FileSize = 0;
@@ -214,11 +214,11 @@ Index: vdr-1.7.27/cutter.c
                }
             }
       Recordings.TouchUpdate();
-Index: vdr-1.7.27/menu.c
+Index: vdr-1.7.28/menu.c
 ===================================================================
---- vdr-1.7.27.orig/menu.c	2012-03-25 14:39:29.284975081 +0200
-+++ vdr-1.7.27/menu.c	2012-03-25 14:51:11.694975107 +0200
-@@ -3491,8 +3491,10 @@
+--- vdr-1.7.28.orig/menu.c	2012-06-15 10:30:17.275011374 +0200
++++ vdr-1.7.28/menu.c	2012-06-15 10:31:08.291013490 +0200
+@@ -3442,8 +3442,10 @@
    Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),     data.NameInstantRecord, sizeof(data.NameInstantRecord)));
    Add(new cMenuEditIntItem( tr("Setup.Recording$Instant rec. time (min)"),   &data.InstantRecordTime, 1, MAXINSTANTRECTIME));
    Add(new cMenuEditIntItem( tr("Setup.Recording$Max. video file size (MB)"), &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZETS));
@@ -229,10 +229,10 @@ Index: vdr-1.7.27/menu.c
  }
  
  // --- cMenuSetupReplay ------------------------------------------------------
-Index: vdr-1.7.27/README-HLCUTTER
+Index: vdr-1.7.28/README-HLCUTTER
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr-1.7.27/README-HLCUTTER	2012-03-25 14:51:11.694975107 +0200
++++ vdr-1.7.28/README-HLCUTTER	2012-06-15 10:31:08.291013490 +0200
 @@ -0,0 +1,117 @@
 +
 +                    VDR-HLCUTTER README
@@ -275,7 +275,7 @@ Index: vdr-1.7.27/README-HLCUTTER
 +10 minutes, in other words: This setting is insane!
 +
 +To make sure that the 255 file limit will not be reached, the patch also
-+introduces "Max. recording size (GB)" with a default of 100Gb (66 hours), and 
++introduces "Max. recording size (GB)" with a default of 100Gb (66 hours), and
 +increases the file size to 2000Mb early enough, so that 100Gb-recordings will
 +fit into the 255 files.
 +
@@ -351,10 +351,10 @@ Index: vdr-1.7.27/README-HLCUTTER
 +
 +
 +SetBrokenLink may get lost on rare cases, this needs some more thoughts.
-Index: vdr-1.7.27/recorder.c
+Index: vdr-1.7.28/recorder.c
 ===================================================================
---- vdr-1.7.27.orig/recorder.c	2011-09-04 11:26:44.000000000 +0200
-+++ vdr-1.7.27/recorder.c	2012-03-25 14:51:11.694975107 +0200
+--- vdr-1.7.28.orig/recorder.c	2011-09-04 11:26:44.000000000 +0200
++++ vdr-1.7.28/recorder.c	2012-06-15 10:31:08.291013490 +0200
 @@ -89,7 +89,7 @@
  bool cRecorder::NextFile(void)
  {
@@ -364,11 +364,11 @@ Index: vdr-1.7.27/recorder.c
          recordFile = fileName->NextFile();
          fileSize = 0;
          }
-Index: vdr-1.7.27/recording.c
+Index: vdr-1.7.28/recording.c
 ===================================================================
---- vdr-1.7.27.orig/recording.c	2012-03-25 14:39:29.224975081 +0200
-+++ vdr-1.7.27/recording.c	2012-03-25 14:51:11.704975107 +0200
-@@ -2075,6 +2075,20 @@
+--- vdr-1.7.28.orig/recording.c	2012-06-15 10:26:25.151001752 +0200
++++ vdr-1.7.28/recording.c	2012-06-15 10:31:08.291013490 +0200
+@@ -2090,6 +2090,20 @@
    return NULL;
  }
  
@@ -389,11 +389,11 @@ Index: vdr-1.7.27/recording.c
  cUnbufferedFile *cFileName::NextFile(void)
  {
    return SetOffset(fileNumber + 1);
-Index: vdr-1.7.27/recording.h
+Index: vdr-1.7.28/recording.h
 ===================================================================
---- vdr-1.7.27.orig/recording.h	2012-03-25 14:39:29.144975081 +0200
-+++ vdr-1.7.27/recording.h	2012-03-25 14:51:11.704975107 +0200
-@@ -266,9 +266,17 @@
+--- vdr-1.7.28.orig/recording.h	2012-06-15 10:26:25.091001749 +0200
++++ vdr-1.7.28/recording.h	2012-06-15 10:31:08.291013490 +0200
+@@ -260,9 +260,17 @@
  // before the next independent frame, to have a complete Group Of Pictures):
  #define MAXVIDEOFILESIZETS  1048570 // MB
  #define MAXVIDEOFILESIZEPES    2000 // MB
@@ -412,7 +412,7 @@ Index: vdr-1.7.27/recording.h
  struct tIndexTs;
  class cIndexFileGenerator;
  
-@@ -321,6 +329,8 @@
+@@ -315,6 +323,8 @@
    cUnbufferedFile *Open(void);
    void Close(void);
    cUnbufferedFile *SetOffset(int Number, off_t Offset = 0); // yes, Number is int for easier internal calculating
@@ -421,10 +421,10 @@ Index: vdr-1.7.27/recording.h
    cUnbufferedFile *NextFile(void);
    };
  
-Index: vdr-1.7.27/videodir.c
+Index: vdr-1.7.28/videodir.c
 ===================================================================
---- vdr-1.7.27.orig/videodir.c	2012-03-25 14:39:28.704975081 +0200
-+++ vdr-1.7.27/videodir.c	2012-03-25 14:51:11.704975107 +0200
+--- vdr-1.7.28.orig/videodir.c	2012-06-15 10:26:24.695001733 +0200
++++ vdr-1.7.28/videodir.c	2012-06-15 10:31:08.291013490 +0200
 @@ -19,6 +19,9 @@
  #include "recording.h"
  #include "tools.h"
@@ -556,10 +556,10 @@ Index: vdr-1.7.27/videodir.c
  bool VideoFileSpaceAvailable(int SizeMB)
  {
    cVideoDirectory Dir;
-Index: vdr-1.7.27/videodir.h
+Index: vdr-1.7.28/videodir.h
 ===================================================================
---- vdr-1.7.27.orig/videodir.h	2012-03-25 14:39:28.704975081 +0200
-+++ vdr-1.7.27/videodir.h	2012-03-25 14:51:11.704975107 +0200
+--- vdr-1.7.28.orig/videodir.h	2012-06-15 10:26:24.695001733 +0200
++++ vdr-1.7.28/videodir.h	2012-06-15 10:31:08.291013490 +0200
 @@ -19,6 +19,7 @@
  int CloseVideoFile(cUnbufferedFile *File);
  bool RenameVideoFile(const char *OldName, const char *NewName);

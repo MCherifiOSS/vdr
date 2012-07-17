@@ -2,11 +2,11 @@ Description: Fixes problems with text2skin skin enigma.
 Author: Andreas Brugger <brougs78@gmx.net>
 Origin: http://vdrportal.de/board/thread.php?postid=343665#post343665
 
-Index: vdr/osdbase.c
+Index: vdr-1.7.28/osdbase.c
 ===================================================================
---- vdr.orig/osdbase.c	2012-03-11 18:35:36.082012638 +0100
-+++ vdr/osdbase.c	2012-03-11 18:36:56.002012641 +0100
-@@ -312,6 +312,7 @@
+--- vdr-1.7.28.orig/osdbase.c	2012-04-23 11:41:22.000000000 +0200
++++ vdr-1.7.28/osdbase.c	2012-06-03 17:10:38.419576566 +0200
+@@ -320,6 +320,7 @@
  
  void cOsdMenu::CursorUp(void)
  {
@@ -14,7 +14,7 @@ Index: vdr/osdbase.c
    int tmpCurrent = current;
    int lastOnScreen = first + displayMenuItems - 1;
    int last = Count() - 1;
-@@ -350,6 +351,7 @@
+@@ -358,6 +359,7 @@
  
  void cOsdMenu::CursorDown(void)
  {
@@ -22,7 +22,7 @@ Index: vdr/osdbase.c
    int tmpCurrent = current;
    int lastOnScreen = first + displayMenuItems - 1;
    int last = Count() - 1;
-@@ -390,6 +392,7 @@
+@@ -398,6 +400,7 @@
  
  void cOsdMenu::PageUp(void)
  {
@@ -30,7 +30,7 @@ Index: vdr/osdbase.c
    int oldCurrent = current;
    int oldFirst = first;
    current -= displayMenuItems;
-@@ -424,6 +427,7 @@
+@@ -432,6 +435,7 @@
  
  void cOsdMenu::PageDown(void)
  {

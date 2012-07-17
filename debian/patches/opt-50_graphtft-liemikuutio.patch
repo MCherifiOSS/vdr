@@ -2,11 +2,11 @@ Description: Patch required for the GraphTFT plugin with liemikuutio patch.
 Author: Jörg Wendel (Horchi)
 Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
 
-Index: vdr-1.7.27/menu.c
+Index: vdr-1.7.28/menu.c
 ===================================================================
---- vdr-1.7.27.orig/menu.c	2012-03-25 14:18:05.844975038 +0200
-+++ vdr-1.7.27/menu.c	2012-03-25 14:18:05.874975038 +0200
-@@ -2384,6 +2384,7 @@
+--- vdr-1.7.28.orig/menu.c	2012-06-04 22:59:01.795899254 +0200
++++ vdr-1.7.28/menu.c	2012-06-04 23:00:26.723902774 +0200
+@@ -2357,6 +2357,7 @@
  public:
    cMenuEditRecording(cRecording *Recording);
    virtual eOSState ProcessKey(eKeys Key);

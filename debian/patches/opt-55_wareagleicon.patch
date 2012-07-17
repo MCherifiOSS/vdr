@@ -3,8 +3,10 @@ Origin: http://toms-cafe.de/vdr/download/vdr-wareagle-icons+setup-1.3.22.diff
 Forwarded: no
 Author: Torsten Kunkel <vdr@tkunkel.de>
 Author: Thomas Günther <tom@toms-cafe.de>
---- a/config.c
-+++ b/config.c
+Index: vdr-1.7.28/config.c
+===================================================================
+--- vdr-1.7.28.orig/config.c	2012-06-04 22:51:49.611881337 +0200
++++ vdr-1.7.28/config.c	2012-06-04 23:00:26.747902775 +0200
 @@ -375,6 +375,7 @@
    strcpy(OSDLanguage, ""); // default is taken from environment
    strcpy(OSDSkin, "sttng");
@@ -29,9 +31,11 @@ Author: Thomas Günther <tom@toms-cafe.de>
    Store("PrimaryDVB",         PrimaryDVB);
    Store("ShowInfoOnChSwitch", ShowInfoOnChSwitch);
    Store("TimeoutRequChInfo",  TimeoutRequChInfo);
---- a/config.h
-+++ b/config.h
-@@ -247,6 +247,7 @@
+Index: vdr-1.7.28/config.h
+===================================================================
+--- vdr-1.7.28.orig/config.h	2012-06-04 22:51:49.707881341 +0200
++++ vdr-1.7.28/config.h	2012-06-04 23:00:26.747902775 +0200
+@@ -256,6 +256,7 @@
    char OSDLanguage[I18N_MAX_LOCALE_LEN];
    char OSDSkin[MaxSkinName];
    char OSDTheme[MaxThemeName];
@@ -39,8 +43,10 @@ Author: Thomas Günther <tom@toms-cafe.de>
    int PrimaryDVB;
    int ShowInfoOnChSwitch;
    int TimeoutRequChInfo;
---- /dev/null
-+++ b/iconpatch.c
+Index: vdr-1.7.28/iconpatch.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-1.7.28/iconpatch.c	2012-06-04 23:00:26.751902775 +0200
 @@ -0,0 +1,28 @@
 +
 +#include "iconpatch.h"
@@ -70,8 +76,10 @@ Author: Thomas Günther <tom@toms-cafe.de>
 +
 +  return false;
 +}
---- /dev/null
-+++ b/iconpatch.h
+Index: vdr-1.7.28/iconpatch.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-1.7.28/iconpatch.h	2012-06-04 23:00:26.751902775 +0200
 @@ -0,0 +1,72 @@
 +/*
 + * iconpatch.h: Information of iconpatch
@@ -145,19 +153,23 @@ Author: Thomas Günther <tom@toms-cafe.de>
 +bool IsLangUtf8(void);
 +
 +
---- a/Makefile
-+++ b/Makefile
-@@ -49,6 +49,8 @@
- 
- OBJS += vdrttxtsubshooks.o
+Index: vdr-1.7.28/Makefile
+===================================================================
+--- vdr-1.7.28.orig/Makefile	2012-06-04 22:51:49.359881325 +0200
++++ vdr-1.7.28/Makefile	2012-06-04 23:00:26.751902775 +0200
+@@ -47,6 +47,8 @@
+        skinclassic.o skinlcars.o skins.o skinsttng.o sourceparams.o sources.o spu.o status.o svdrp.o themes.o thread.o\
+        timers.o tools.o transfer.o vdr.o videodir.o
  
 +OBJS += iconpatch.o
 +
  ifndef NO_KBD
  DEFINES += -DREMOTE_KBD
  endif
---- a/menu.c
-+++ b/menu.c
+Index: vdr-1.7.28/menu.c
+===================================================================
+--- vdr-1.7.28.orig/menu.c	2012-06-04 23:00:26.723902774 +0200
++++ vdr-1.7.28/menu.c	2012-06-04 23:00:26.755902775 +0200
 @@ -8,6 +8,7 @@
   */
  
@@ -166,7 +178,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
  #include <ctype.h>
  #include <limits.h>
  #include <math.h>
-@@ -358,6 +359,15 @@
+@@ -318,6 +319,15 @@
    if (!channel->GroupSep()) {
       if (sortMode == csmProvider)
          buffer = cString::sprintf("%d\t%s - %s", channel->Number(), channel->Provider(), channel->Name());
@@ -182,7 +194,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
       else
          buffer = cString::sprintf("%d\t%s", channel->Number(), channel->Name());
       }
-@@ -1079,9 +1089,9 @@
+@@ -1045,9 +1055,9 @@
       File = timer->File();
    cCharSetConv csc("ISO-8859-1", cCharSetConv::SystemCharacterTable());
    char diskStatusString[2] = { diskStatus, 0 };
@@ -195,7 +207,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
                      timer->Channel()->Number(),
                      *name,
                      *name && **name ? " " : "",
-@@ -1468,7 +1478,12 @@
+@@ -1436,7 +1446,12 @@
    return r;
  }
  
@@ -209,7 +221,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
  
  bool cMenuScheduleItem::Update(bool Force)
  {
-@@ -1477,17 +1492,17 @@
+@@ -1445,17 +1460,17 @@
    Timers.GetMatch(event, &timerMatch);
    if (Force || timerMatch != OldTimerMatch) {
       cString buffer;
@@ -233,7 +245,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
       SetText(buffer);
       result = true;
       }
-@@ -2928,6 +2943,7 @@
+@@ -2875,6 +2890,7 @@
    Add(new cMenuEditStraItem(tr("Setup.OSD$Skin"),                   &skinIndex, numSkins, skinDescriptions));
    if (themes.NumThemes())
    Add(new cMenuEditStraItem(tr("Setup.OSD$Theme"),                  &themeIndex, themes.NumThemes(), themes.Descriptions()));
@@ -241,8 +253,10 @@ Author: Thomas Günther <tom@toms-cafe.de>
    Add(new cMenuEditPrcItem( tr("Setup.OSD$Left (%)"),               &data.OSDLeftP, 0.0, 0.5));
    Add(new cMenuEditPrcItem( tr("Setup.OSD$Top (%)"),                &data.OSDTopP, 0.0, 0.5));
    Add(new cMenuEditPrcItem( tr("Setup.OSD$Width (%)"),              &data.OSDWidthP, 0.5, 1.0));
---- a/recording.c
-+++ b/recording.c
+Index: vdr-1.7.28/recording.c
+===================================================================
+--- vdr-1.7.28.orig/recording.c	2012-06-04 22:51:49.367881326 +0200
++++ vdr-1.7.28/recording.c	2012-06-04 23:00:26.755902775 +0200
 @@ -8,6 +8,7 @@
   */
  
@@ -251,7 +265,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
  #include <ctype.h>
  #include <dirent.h>
  #include <errno.h>
-@@ -862,7 +863,7 @@
+@@ -866,7 +867,7 @@
  
  const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) const
  {
@@ -260,7 +274,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    free(titleBuffer);
    titleBuffer = NULL;
    if (Level < 0 || Level == HierarchyLevels()) {
-@@ -882,7 +883,7 @@
+@@ -886,7 +887,7 @@
                     Minutes % 60
                     );
          }

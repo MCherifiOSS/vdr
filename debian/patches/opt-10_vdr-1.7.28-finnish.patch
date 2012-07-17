@@ -1,0 +1,32 @@
+diff -Nru vdr-1.7.28-vanilla/po/fi_FI.po vdr-1.7.28-finnish/po/fi_FI.po
+--- vdr-1.7.28-vanilla/po/fi_FI.po	2012-06-03 15:36:12.000000000 +0300
++++ vdr-1.7.28-finnish/po/fi_FI.po	2012-06-03 19:28:42.000000000 +0300
+@@ -1277,22 +1277,22 @@
+ msgstr "Klassinen VDR"
+ 
+ msgid "DISK"
+-msgstr ""
++msgstr "LEVY"
+ 
+ msgid "LOAD"
+-msgstr ""
++msgstr "KUORMA"
+ 
+ msgid "TIMERS"
+-msgstr ""
++msgstr "AJASTIMET"
+ 
+ msgid "DEVICES"
+-msgstr ""
++msgstr "LAITTEET"
+ 
+ msgid "LIVE"
+-msgstr ""
++msgstr "LIVE"
+ 
+ msgid "PLAY"
+-msgstr ""
++msgstr "TOISTO"
+ 
+ msgid "ST:TNG Panels"
+ msgstr "ST:TNG konsoli"

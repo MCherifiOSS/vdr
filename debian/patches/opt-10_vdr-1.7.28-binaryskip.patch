@@ -1,0 +1,98 @@
+Index: vdr-1.7.28/MANUAL
+===================================================================
+--- vdr-1.7.28.orig/MANUAL	2012-04-15 11:52:14.000000000 +0200
++++ vdr-1.7.28/MANUAL	2012-06-03 23:13:52.537011473 +0200
+@@ -47,7 +47,7 @@
+   FastRew     fast rewind
+ 
+   Next        Next/previous channel group (in live tv mode)
+-  Prev        or next/previous editing mark (in replay mode)
++  Prev        or binary skipping (in replay mode)
+ 
+   Channel+    channel up
+   Channel-    channel down
+Index: vdr-1.7.28/menu.c
+===================================================================
+--- vdr-1.7.28.orig/menu.c	2012-06-03 23:13:52.501011471 +0200
++++ vdr-1.7.28/menu.c	2012-06-03 23:15:54.353016524 +0200
+@@ -4597,6 +4597,10 @@
+ 
+ // --- cReplayControl --------------------------------------------------------
+ 
++#define REPLAYCONTROLSKIPLIMIT   9    // s
++#define REPLAYCONTROLSKIPSECONDS 90   // s
++#define REPLAYCONTROLSKIPTIMEOUT 5000 // ms
++
+ cReplayControl *cReplayControl::currentReplayControl = NULL;
+ cString cReplayControl::fileName;
+ 
+@@ -4609,6 +4613,9 @@
+   lastCurrent = lastTotal = -1;
+   lastPlay = lastForward = false;
+   lastSpeed = -2; // an invalid value
++  lastSkipKey = kNone;
++  lastSkipSeconds = REPLAYCONTROLSKIPSECONDS;
++  lastSkipTimeout.Set(0);
+   timeoutShow = 0;
+   timeSearchActive = false;
+   cRecording Recording(fileName);
+@@ -5017,6 +5024,32 @@
+     case kGreen:   SkipSeconds(-60); break;
+     case kYellow|k_Repeat:
+     case kYellow:  SkipSeconds( 60); break;
++    case k1|k_Repeat:
++    case k1:       SkipSeconds(-20); break;
++    case k3|k_Repeat:
++    case k3:       SkipSeconds( 20); break;
++    case kPrev|k_Repeat:
++    case kPrev:    if (lastSkipTimeout.TimedOut()) {
++                      lastSkipSeconds = REPLAYCONTROLSKIPSECONDS;
++                      lastSkipKey = kPrev;
++                   }
++                   else if (RAWKEY(lastSkipKey) != kPrev && lastSkipSeconds > (2 * REPLAYCONTROLSKIPLIMIT)) {
++                      lastSkipSeconds /= 2;
++                      lastSkipKey = kNone;
++                   }
++                   lastSkipTimeout.Set(REPLAYCONTROLSKIPTIMEOUT);
++                   SkipSeconds(-lastSkipSeconds); break;
++    case kNext|k_Repeat:
++    case kNext:    if (lastSkipTimeout.TimedOut()) {
++                      lastSkipSeconds = REPLAYCONTROLSKIPSECONDS;
++                      lastSkipKey = kNext;
++                   }
++                   else if (RAWKEY(lastSkipKey) != kNext && lastSkipSeconds > (2 * REPLAYCONTROLSKIPLIMIT)) {
++                      lastSkipSeconds /= 2;
++                      lastSkipKey = kNone;
++                   }
++                   lastSkipTimeout.Set(REPLAYCONTROLSKIPTIMEOUT);
++                   SkipSeconds(lastSkipSeconds); break;
+     case kStop:
+     case kBlue:    Hide();
+                    Stop();
+@@ -5026,12 +5059,8 @@
+       switch (int(Key)) {
+         // Editing:
+         case kMarkToggle:      MarkToggle(); break;
+-        case kPrev|k_Repeat:
+-        case kPrev:
+         case kMarkJumpBack|k_Repeat:
+         case kMarkJumpBack:    MarkJump(false); break;
+-        case kNext|k_Repeat:
+-        case kNext:
+         case kMarkJumpForward|k_Repeat:
+         case kMarkJumpForward: MarkJump(true); break;
+         case kMarkMoveBack|k_Repeat:
+Index: vdr-1.7.28/menu.h
+===================================================================
+--- vdr-1.7.28.orig/menu.h	2012-06-03 23:13:52.505011471 +0200
++++ vdr-1.7.28/menu.h	2012-06-03 23:13:52.537011473 +0200
+@@ -263,6 +263,9 @@
+   int lastCurrent, lastTotal;
+   bool lastPlay, lastForward;
+   int lastSpeed;
++  int lastSkipSeconds;
++  eKeys lastSkipKey;
++  cTimeMs lastSkipTimeout;
+   time_t timeoutShow;
+   bool timeSearchActive, timeSearchHide;
+   int timeSearchTime, timeSearchPos;

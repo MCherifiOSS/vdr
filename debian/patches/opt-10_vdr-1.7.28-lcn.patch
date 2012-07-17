@@ -1,0 +1,272 @@
+Index: vdr-1.7.28/channels.h
+===================================================================
+--- vdr-1.7.28.orig/channels.h	2012-03-11 12:46:39.000000000 +0100
++++ vdr-1.7.28/channels.h	2012-06-03 23:13:52.469011470 +0200
+@@ -121,6 +121,7 @@
+   int sid;
+   int rid;
+   int number;    // Sequence number assigned on load
++  int lcn;       // Logical channel number assigned by data stream
+   bool groupSep;
+   int __EndData__;
+   cString parameters;
+@@ -172,6 +173,8 @@
+   int Rid(void) const { return rid; }
+   int Number(void) const { return number; }
+   void SetNumber(int Number) { number = Number; }
++  int Lcn(void) const { return lcn; }
++  void SetLCN(int Lcn) { lcn = Lcn; }
+   bool GroupSep(void) const { return groupSep; }
+   const char *Parameters(void) const { return parameters; }
+   const cLinkChannels* LinkChannels(void) const { return linkChannels; }
+Index: vdr-1.7.28/libsi/descriptor.c
+===================================================================
+--- vdr-1.7.28.orig/libsi/descriptor.c	2012-01-11 12:35:17.000000000 +0100
++++ vdr-1.7.28/libsi/descriptor.c	2012-06-03 23:13:52.469011470 +0200
+@@ -922,6 +922,48 @@
+    return extended_data_flag ? s->tfs_flag : -1;
+ }
+ 
++void LogicalChannelDescriptor::Parse() {
++   //this descriptor is only a header and a loop
++   logicalChannelLoop.setData(data+sizeof(descr_logical_channel), getLength()-sizeof(descr_logical_channel));
++}
++
++int LogicalChannelDescriptor::LogicalChannel::getServiceId() const {
++   return HILO(s->service_id);
++}
++
++int LogicalChannelDescriptor::LogicalChannel::getVisibleServiceFlag() const {
++   return s->visible_service_flag;
++}
++
++int LogicalChannelDescriptor::LogicalChannel::getLogicalChannelNumber() const {
++   return HILO(s->logical_channel_number);
++}
++
++void LogicalChannelDescriptor::LogicalChannel::Parse() {
++   s=data.getData<const item_logical_channel>();
++}
++
++void HdSimulcastLogicalChannelDescriptor::Parse() {
++   //this descriptor is only a header and a loop
++   hdSimulcastLogicalChannelLoop.setData(data+sizeof(descr_hd_simulcast_logical_channel), getLength()-sizeof(descr_hd_simulcast_logical_channel));
++}
++
++int HdSimulcastLogicalChannelDescriptor::HdSimulcastLogicalChannel::getServiceId() const {
++   return HILO(s->service_id);
++}
++
++int HdSimulcastLogicalChannelDescriptor::HdSimulcastLogicalChannel::getVisibleServiceFlag() const {
++   return s->visible_service_flag;
++}
++
++int HdSimulcastLogicalChannelDescriptor::HdSimulcastLogicalChannel::getLogicalChannelNumber() const {
++   return HILO(s->logical_channel_number);
++}
++
++void HdSimulcastLogicalChannelDescriptor::HdSimulcastLogicalChannel::Parse() {
++   s=data.getData<const item_hd_simulcast_logical_channel>();
++}
++
+ int PremiereContentTransmissionDescriptor::getOriginalNetworkId() const {
+    return HILO(s->original_network_id);
+ }
+Index: vdr-1.7.28/libsi/descriptor.h
+===================================================================
+--- vdr-1.7.28.orig/libsi/descriptor.h	2012-01-11 12:35:17.000000000 +0100
++++ vdr-1.7.28/libsi/descriptor.h	2012-06-03 23:13:52.469011470 +0200
+@@ -557,6 +557,42 @@
+    int extended_data_flag;
+ };
+ 
++class LogicalChannelDescriptor : public Descriptor {
++public:
++   class LogicalChannel : public LoopElement {
++   public:
++      int getServiceId() const;
++      int getVisibleServiceFlag() const;
++      int getLogicalChannelNumber() const;
++      virtual int getLength() { return sizeof(item_logical_channel); }
++   protected:
++      virtual void Parse();
++   private:
++      const item_logical_channel *s;
++   };
++   StructureLoop<LogicalChannel> logicalChannelLoop;
++protected:
++   virtual void Parse();
++};
++
++class HdSimulcastLogicalChannelDescriptor : public Descriptor {
++public:
++   class HdSimulcastLogicalChannel : public LoopElement {
++   public:
++      int getServiceId() const;
++      int getVisibleServiceFlag() const;
++      int getLogicalChannelNumber() const;
++      virtual int getLength() { return sizeof(item_hd_simulcast_logical_channel); }
++   protected:
++      virtual void Parse();
++   private:
++      const item_hd_simulcast_logical_channel *s;
++   };
++   StructureLoop<HdSimulcastLogicalChannel> hdSimulcastLogicalChannelLoop;
++protected:
++   virtual void Parse();
++};
++
+ // Private DVB Descriptor  Premiere.de
+ // 0xF2  Content Transmission Descriptor
+ // http://dvbsnoop.sourceforge.net/examples/example-private-section.html
+Index: vdr-1.7.28/libsi/headers.h
+===================================================================
+--- vdr-1.7.28.orig/libsi/headers.h	2012-01-11 12:35:17.000000000 +0100
++++ vdr-1.7.28/libsi/headers.h	2012-06-03 23:13:52.473011471 +0200
+@@ -1870,6 +1870,54 @@
+    fields looping to the end */
+ };
+ 
++/* 0x83 logical_channel_descriptor */
++
++#define DESCR_LOGICAL_CHANNEL_LEN 2
++struct descr_logical_channel {
++   u_char descriptor_tag                         :8;
++   u_char descriptor_length                      :8;
++};
++
++#define ITEM_LOGICAL_CHANNEL_LEN 4
++struct item_logical_channel {
++   u_char service_id_hi                          :8;
++   u_char service_id_lo                          :8;
++#if BYTE_ORDER == BIG_ENDIAN
++   u_char visible_service_flag                   :1;
++   u_char reserved                               :5;
++   u_char logical_channel_number_hi              :2;
++#else
++   u_char logical_channel_number_hi              :2;
++   u_char reserved                               :5;
++   u_char visible_service_flag                   :1;
++#endif
++   u_char logical_channel_number_lo              :8;
++};
++
++/* 0x88 hd_simulcast_logical_channel_descriptor */
++
++#define DESCR_HD_SIMULCAST_LOGICAL_CHANNEL_LEN 2
++struct descr_hd_simulcast_logical_channel {
++   u_char descriptor_tag                         :8;
++   u_char descriptor_length                      :8;
++};
++
++#define ITEM_HD_SIMULCAST_LOGICAL_CHANNEL_LEN 4
++struct item_hd_simulcast_logical_channel {
++   u_char service_id_hi                          :8;
++   u_char service_id_lo                          :8;
++#if BYTE_ORDER == BIG_ENDIAN
++   u_char visible_service_flag                   :1;
++   u_char reserved                               :5;
++   u_char logical_channel_number_hi              :2;
++#else
++   u_char logical_channel_number_hi              :2;
++   u_char reserved                               :5;
++   u_char visible_service_flag                   :1;
++#endif
++   u_char logical_channel_number_lo              :8;
++};
++
+ /* MHP 0x00 application_descriptor */
+ 
+ #define DESCR_APPLICATION_LEN 3
+Index: vdr-1.7.28/libsi/si.c
+===================================================================
+--- vdr-1.7.28.orig/libsi/si.c	2011-12-10 16:47:15.000000000 +0100
++++ vdr-1.7.28/libsi/si.c	2012-06-03 23:13:52.473011471 +0200
+@@ -608,6 +608,12 @@
+          case ExtensionDescriptorTag:
+             d=new ExtensionDescriptor();
+             break;
++         case LogicalChannelDescriptorTag:
++            d=new LogicalChannelDescriptor();
++            break;
++         case HdSimulcastLogicalChannelDescriptorTag:
++            d=new HdSimulcastLogicalChannelDescriptor();
++            break;
+          case RegistrationDescriptorTag:
+             d=new RegistrationDescriptor();
+             break;
+Index: vdr-1.7.28/libsi/si.h
+===================================================================
+--- vdr-1.7.28.orig/libsi/si.h	2012-01-11 12:35:17.000000000 +0100
++++ vdr-1.7.28/libsi/si.h	2012-06-03 23:13:52.473011471 +0200
+@@ -134,6 +134,12 @@
+                DTSDescriptorTag = 0x7B,
+                AACDescriptorTag = 0x7C,
+                ExtensionDescriptorTag = 0x7F,
++ // defined by EICTA/EACEM/DIGITALEUROPE
++               LogicalChannelDescriptorTag = 0x83,
++               PreferredNameListDescriptorTag = 0x84,
++               PreferredNameIdentifierDescriptorTag = 0x85,
++               EacemStreamIdentifierDescriptorTag = 0x86,
++               HdSimulcastLogicalChannelDescriptorTag = 0x88,
+  // Extension descriptors
+                ImageIconDescriptorTag = 0x00,
+                CpcmDeliverySignallingDescriptor = 0x01,
+@@ -147,6 +153,12 @@
+                TargetRegionDescriptorTag = 0x09,
+                TargetRegionNameDescriptorTag = 0x0A,
+                ServiceRelocatedDescriptorTag = 0x0B,
++ // defined by ETSI (EN 300 468) v 1.12.1
++               XAITPidDescriptorTag = 0x0C,
++               C2DeliverySystemDescriptorTag = 0x0D,
++               // 0x0E - 0x0F Reserved
++               VideoDepthRangeDescriptorTag = 0x10,
++               T2MIDescriptorTag = 0x11,
+ 
+  // Defined by ETSI TS 102 812 (MHP)
+                // They once again start with 0x00 (see page 234, MHP specification)
+Index: vdr-1.7.28/nit.c
+===================================================================
+--- vdr-1.7.28.orig/nit.c	2012-01-12 09:43:52.000000000 +0100
++++ vdr-1.7.28/nit.c	2012-06-03 23:13:52.473011471 +0200
+@@ -337,6 +337,40 @@
+                    }
+                  }
+                  break;
++            case SI::LogicalChannelDescriptorTag: {
++                 SI::LogicalChannelDescriptor *lcd = (SI::LogicalChannelDescriptor *)d;
++                 SI::LogicalChannelDescriptor::LogicalChannel LogicalChannel;
++                 for (SI::Loop::Iterator it4; lcd->logicalChannelLoop.getNext(LogicalChannel, it4); ) {
++                     int lcn = LogicalChannel.getLogicalChannelNumber();
++                     int sid = LogicalChannel.getServiceId();
++                     bool visible = LogicalChannel.getVisibleServiceFlag();
++                     for (cChannel *Channel = Channels.First(); visible && Channel; Channel = Channels.Next(Channel)) {
++                         if (!Channel->GroupSep() && Channel->Sid() == sid && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
++                            //printf("channel %s (%d) has lcn %d\n", *Channel->GetChannelID().ToString(), Channel->Number(), lcn);
++                            Channel->SetLCN(lcn);
++                            break;
++                            }
++                         }
++                     }
++                 }
++                 break;
++            case SI::HdSimulcastLogicalChannelDescriptorTag: {
++                 SI::HdSimulcastLogicalChannelDescriptor *lcd = (SI::HdSimulcastLogicalChannelDescriptor *)d;
++                 SI::HdSimulcastLogicalChannelDescriptor::HdSimulcastLogicalChannel HdSimulcastLogicalChannel;
++                 for (SI::Loop::Iterator it4; lcd->hdSimulcastLogicalChannelLoop.getNext(HdSimulcastLogicalChannel, it4); ) {
++                     int lcn = HdSimulcastLogicalChannel.getLogicalChannelNumber();
++                     int sid = HdSimulcastLogicalChannel.getServiceId();
++                     bool visible = HdSimulcastLogicalChannel.getVisibleServiceFlag();
++                     for (cChannel *Channel = Channels.First(); visible && Channel; Channel = Channels.Next(Channel)) {
++                         if (!Channel->GroupSep() && Channel->Sid() == sid && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
++                            //printf("channel %s (%d) has lcn %d\n", *Channel->GetChannelID().ToString(), Channel->Number(), lcn);
++                            Channel->SetLCN(lcn);
++                            break;
++                            }
++                         }
++                     }
++                 }
++                 break;
+             default: ;
+             }
+           delete d;

@@ -1,0 +1,225 @@
+Index: vdr-1.7.28/channels.c
+===================================================================
+--- vdr-1.7.28.orig/channels.c	2012-04-01 11:27:08.000000000 +0200
++++ vdr-1.7.28/channels.c	2012-06-03 23:13:52.617011476 +0200
+@@ -61,6 +61,7 @@
+   shortName = strdup("");
+   provider = strdup("");
+   portalName = strdup("");
++  networkName = strdup("");
+   memset(&__BeginData__, 0, (char *)&__EndData__ - (char *)&__BeginData__);
+   parameters = "";
+   modification = CHANNELMOD_NONE;
+@@ -75,6 +76,7 @@
+   shortName = NULL;
+   provider = NULL;
+   portalName = NULL;
++  networkName = NULL;
+   schedule     = NULL;
+   linkChannels = NULL;
+   refChannel   = NULL;
+@@ -103,6 +105,7 @@
+   free(shortName);
+   free(provider);
+   free(portalName);
++  free(networkName);
+ }
+ 
+ cChannel& cChannel::operator= (const cChannel &Channel)
+@@ -111,6 +114,7 @@
+   shortName = strcpyrealloc(shortName, Channel.shortName);
+   provider = strcpyrealloc(provider, Channel.provider);
+   portalName = strcpyrealloc(portalName, Channel.portalName);
++  networkName = strcpyrealloc(networkName, Channel.networkName);
+   memcpy(&__BeginData__, &Channel.__BeginData__, (char *)&Channel.__EndData__ - (char *)&Channel.__BeginData__);
+   parameters = Channel.parameters;
+   return *this;
+@@ -255,6 +259,18 @@
+      }
+ }
+ 
++void cChannel::SetNetworkName(const char *NetworkName)
++{
++  if (!isempty(NetworkName) && strcmp(networkName, NetworkName) != 0) {
++     if (Number()) {
++        dsyslog("changing network name of channel %d from '%s' to '%s'", Number(), networkName, NetworkName);
++        modification |= CHANNELMOD_NAME;
++        Channels.SetModified();
++        }
++     networkName = strcpyrealloc(networkName, NetworkName);
++     }
++}
++
+ #define STRDIFF 0x01
+ #define VALDIFF 0x02
+ 
+@@ -470,7 +486,7 @@
+ 
+ cString cChannel::ToText(const cChannel *Channel)
+ {
+-  char FullName[strlen(Channel->name) + 1 + strlen(Channel->shortName) + 1 + strlen(Channel->provider) + 1 + 10]; // +10: paranoia
++  char FullName[strlen(Channel->name) + 1 + strlen(Channel->shortName) + 1 + strlen(Channel->provider) + 1 + strlen(Channel->networkName) + 1 + 10]; // +10: paranoia
+   char *q = FullName;
+   q += sprintf(q, "%s", Channel->name);
+   if (!isempty(Channel->shortName))
+@@ -479,6 +495,8 @@
+      q += sprintf(q, ",");
+   if (!isempty(Channel->provider))
+      q += sprintf(q, ";%s", Channel->provider);
++  if (!isempty(Channel->networkName))
++     q += sprintf(q, "=%s", Channel->networkName);
+   *q = 0;
+   strreplace(FullName, ':', '|');
+   cString buffer;
+@@ -702,7 +720,12 @@
+            }
+         strreplace(namebuf, '|', ':');
+ 
+-        char *p = strchr(namebuf, ';');
++        char *p = strrchr(namebuf, '=');
++        if (p) {
++           *p++ = 0;
++           networkName = strcpyrealloc(networkName, p);
++           }
++        p = strchr(namebuf, ';');
+         if (p) {
+            *p++ = 0;
+            provider = strcpyrealloc(provider, p);
+Index: vdr-1.7.28/channels.h
+===================================================================
+--- vdr-1.7.28.orig/channels.h	2012-06-03 23:13:52.469011470 +0200
++++ vdr-1.7.28/channels.h	2012-06-03 23:13:52.617011476 +0200
+@@ -96,6 +96,7 @@
+   char *shortName;
+   char *provider;
+   char *portalName;
++  char *networkName;
+   int __BeginData__;
+   int frequency; // MHz
+   int source;
+@@ -142,6 +143,7 @@
+   const char *ShortName(bool OrName = false) const { return (OrName && isempty(shortName)) ? name : shortName; }
+   const char *Provider(void) const { return provider; }
+   const char *PortalName(void) const { return portalName; }
++  const char *NetworkName(void) const { return networkName; }
+   int Frequency(void) const { return frequency; } ///< Returns the actual frequency, as given in 'channels.conf'
+   int Transponder(void) const;                    ///< Returns the transponder frequency in MHz, plus the polarization in case of sat
+   static int Transponder(int Frequency, char Polarization); ///< builds the transponder from the given Frequency and Polarization
+@@ -192,6 +194,7 @@
+   void SetId(int Nid, int Tid, int Sid, int Rid = 0);
+   void SetName(const char *Name, const char *ShortName, const char *Provider);
+   void SetPortalName(const char *PortalName);
++  void SetNetworkName(const char *NetworkName);
+   void SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, char ALangs[][MAXLANGCODE2], int *Dpids, int *Dtypes, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid);
+   void SetCaIds(const int *CaIds); // list must be zero-terminated
+   void SetCaDescriptors(int Level);
+Index: vdr-1.7.28/nit.c
+===================================================================
+--- vdr-1.7.28.orig/nit.c	2012-06-03 23:13:52.473011471 +0200
++++ vdr-1.7.28/nit.c	2012-06-03 23:13:52.617011476 +0200
+@@ -94,6 +94,13 @@
+      return; // ignore all other NITs
+   else if (!sectionSyncer.Sync(nit.getVersionNumber(), nit.getSectionNumber(), nit.getLastSectionNumber()))
+      return;
++  char *networkName = NULL;
++  for (int i = 0; i < numNits; i++) {
++      if (nits[i].networkId == networkId) {
++         networkName = nits[i].name;
++         break;
++         }
++      }
+   if (!Channels.Lock(true, 10))
+      return;
+   SI::NIT::TransportStream ts;
+@@ -166,8 +173,11 @@
+                                      }
+                                   }
+                               }
+-                           if (ISTRANSPONDER(cChannel::Transponder(Frequency, dtp.Polarization()), Transponder())) // only modify channels if we're actually receiving this transponder
++                           if (ISTRANSPONDER(cChannel::Transponder(Frequency, dtp.Polarization()), Transponder())) { // only modify channels if we're actually receiving this transponder
+                               Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('S'));
++                              if (networkName)
++                                 Channel->SetNetworkName(networkName);
++                              }
+                            else if (Channel->Srate() != SymbolRate || strcmp(Channel->Parameters(), dtp.ToString('S')))
+                               forceTransponderUpdate = true; // get us receiving this transponder
+                            }
+@@ -176,6 +186,8 @@
+                        for (int n = 0; n < NumFrequencies; n++) {
+                            cChannel *Channel = new cChannel;
+                            Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
++                           if (networkName)
++                              Channel->SetNetworkName(networkName);
+                            if (Channel->SetTransponderData(Source, Frequencies[n], SymbolRate, dtp.ToString('S')))
+                               EITScanner.AddTransponder(Channel);
+                            else
+@@ -221,8 +233,11 @@
+                                      }
+                                   }
+                               }
+-                           if (ISTRANSPONDER(Frequency / 1000, Transponder())) // only modify channels if we're actually receiving this transponder
++                           if (ISTRANSPONDER(Frequency / 1000, Transponder())) { // only modify channels if we're actually receiving this transponder
+                               Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('C'));
++                              if (networkName)
++                                 Channel->SetNetworkName(networkName);
++                              }
+                            else if (Channel->Srate() != SymbolRate || strcmp(Channel->Parameters(), dtp.ToString('C')))
+                               forceTransponderUpdate = true; // get us receiving this transponder
+                            }
+@@ -231,6 +246,8 @@
+                         for (int n = 0; n < NumFrequencies; n++) {
+                            cChannel *Channel = new cChannel;
+                            Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
++                           if (networkName)
++                              Channel->SetNetworkName(networkName);
+                            if (Channel->SetTransponderData(Source, Frequencies[n], SymbolRate, dtp.ToString('C')))
+                               EITScanner.AddTransponder(Channel);
+                            else
+@@ -284,8 +301,11 @@
+                                      }
+                                   }
+                               }
+-                           if (ISTRANSPONDER(Frequency / 1000000, Transponder())) // only modify channels if we're actually receiving this transponder
++                           if (ISTRANSPONDER(Frequency / 1000000, Transponder())) { // only modify channels if we're actually receiving this transponder
+                               Channel->SetTransponderData(Source, Frequency, 0, dtp.ToString('T'));
++                              if (networkName)
++                                 Channel->SetNetworkName(networkName);
++                              }
+                            else if (strcmp(Channel->Parameters(), dtp.ToString('T')))
+                               forceTransponderUpdate = true; // get us receiving this transponder
+                            }
+@@ -294,6 +314,8 @@
+                        for (int n = 0; n < NumFrequencies; n++) {
+                            cChannel *Channel = new cChannel;
+                            Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
++                           if (networkName)
++                              Channel->SetNetworkName(networkName);
+                            if (Channel->SetTransponderData(Source, Frequencies[n], 0, dtp.ToString('T')))
+                               EITScanner.AddTransponder(Channel);
+                            else
+Index: vdr-1.7.28/vdr.5
+===================================================================
+--- vdr-1.7.28.orig/vdr.5	2012-03-10 15:56:01.000000000 +0100
++++ vdr-1.7.28/vdr.5	2012-06-03 23:13:52.617011476 +0200
+@@ -45,7 +45,7 @@
+ A \fBchannel definition\fR is a line with channel data, where the fields
+ are separated by ':' characters. Example:
+ 
+-\fBRTL Television,RTL;RTL World:12187:hC34M2O0S0:S19.2E:27500:163=2:104=deu;106=deu:105:0:12003:1:1089:0\fR
++\fBRTL Television,RTL;RTL World=Premiere:12187:hC34M2O0S0:S19.2E:27500:163=2:104=deu;106=deu:105:0:12003:1:1089:0\fR
+ 
+ The line number of a channel definition (not counting group separators,
+ and based on a possible previous '@...' parameter)
+@@ -73,6 +73,12 @@
+ to the channel name, separated by a semicolon, as in
+ 
+ \fBRTL Television,RTL;RTL World:...\fR
++
++If present, the name of the network is appended to the channel name, separated by
++a '=' character, as in
++
++\fBRTL Television,RTL;RTL World=Premiere:...\fR
++
+ .TP
+ .B Frequency
+ The transponder frequency (as an integer). For DVB-S this value is in MHz. For DVB-C
