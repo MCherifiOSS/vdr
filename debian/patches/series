@@ -9,8 +9,6 @@
 
 99_ncursesw-include.patch
 
-fix-gcc-issue.patch
-
 # rofafor Patch collection
 # http://www.saunalahti.fi/~rahrenbe/vdr/patches/index.php
 
