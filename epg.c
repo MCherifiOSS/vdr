@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 2.12 2012/03/10 13:14:27 kls Exp $
+ * $Id: epg.c 2.17 2012/06/04 10:26:10 kls Exp $
  */
 
 #include "epg.h"
@@ -1125,7 +1125,7 @@ cSchedulesLock::~cSchedulesLock()
 // --- cSchedules ------------------------------------------------------------
 
 cSchedules cSchedules::schedules;
-const char *cSchedules::epgDataFileName = NULL;
+char *cSchedules::epgDataFileName = NULL;
 time_t cSchedules::lastCleanup = time(NULL);
 time_t cSchedules::lastDump = time(NULL);
 time_t cSchedules::modified = 0;
@@ -1137,7 +1137,7 @@ const cSchedules *cSchedules::Schedules(cSchedulesLock &SchedulesLock)
 
 void cSchedules::SetEpgDataFileName(const char *FileName)
 {
-  delete epgDataFileName;
+  free(epgDataFileName);
   epgDataFileName = FileName ? strdup(FileName) : NULL;
 }
 
@@ -1331,6 +1331,15 @@ bool cEpgHandlers::HandleEitEvent(cSchedule *Schedule, const SI::EIT::Event *Eit
   return false;
 }
 
+bool cEpgHandlers::HandledExternally(const cChannel *Channel)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->HandledExternally(Channel))
+         return true;
+      }
+  return false;
+}
+
 void cEpgHandlers::SetEventID(cEvent *Event, tEventID EventID)
 {
   for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
@@ -1410,6 +1419,15 @@ void cEpgHandlers::SetVps(cEvent *Event, time_t Vps)
          return;
       }
   Event->SetVps(Vps);
+}
+
+void cEpgHandlers::SetComponents(cEvent *Event, cComponents *Components)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SetComponents(Event, Components))
+         return;
+      }
+  Event->SetComponents(Components);
 }
 
 void cEpgHandlers::FixEpgBugs(cEvent *Event)

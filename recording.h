@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 2.30 2012/03/13 12:41:05 kls Exp $
+ * $Id: recording.h 2.34 2012/06/09 13:55:22 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -21,8 +21,6 @@
 #define FOLDERDELIMCHAR '~'
 #define TIMERMACRO_TITLE    "TITLE"
 #define TIMERMACRO_EPISODE  "EPISODE"
-
-//#define __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS // Code enclosed with this macro is deprecated and may be removed in a future version
 
 extern bool VfatFileSystem;
 extern int InstanceId;
@@ -85,7 +83,8 @@ class cRecording : public cListObject {
 private:
   mutable int resume;
   mutable char *titleBuffer;
-  mutable char *sortBuffer;
+  mutable char *sortBufferName;
+  mutable char *sortBufferTime;
   mutable char *fileName;
   mutable char *name;
   mutable int fileSizeMB;
@@ -93,6 +92,7 @@ private:
   int channel;
   int instanceId;
   bool isPesRecording;
+  mutable int isOnVideoDirectoryFileSystem; // -1 = unknown, 0 = no, 1 = yes
   double framesPerSecond;
   cRecordingInfo *info;
   cRecording(const cRecording&); // can't copy cRecording
@@ -100,9 +100,6 @@ private:
   static char *StripEpisodeName(char *s);
   char *SortName(void) const;
   int GetResume(void) const;
-#ifdef __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
-public:
-#endif
   time_t start;
   int priority;
   int lifetime;
@@ -135,6 +132,7 @@ public:
   bool IsNew(void) const { return GetResume() <= 0; }
   bool IsEdited(void) const;
   bool IsPesRecording(void) const { return isPesRecording; }
+  bool IsOnVideoDirectoryFileSystem(void) const;
   void ReadInfo(void);
   bool WriteInfo(void);
   void SetStartTime(time_t Start);
@@ -208,9 +206,6 @@ class cMark : public cListObject {
   friend class cMarks; // for sorting
 private:
   double framesPerSecond;
-#ifdef __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
-public:
-#endif
   int position;
   cString comment;
 public:
@@ -251,7 +246,7 @@ private:
   static const char *command;
 public:
   static void SetCommand(const char *Command) { command = Command; }
-  static void InvokeCommand(const char *State, const char *RecordingFileName);
+  static void InvokeCommand(const char *State, const char *RecordingFileName, const char *SourceFileName = NULL);
   };
 
 // The maximum size of a single frame (up to HDTV 1920x1080):
@@ -338,5 +333,12 @@ char *ExchangeChars(char *s, bool ToFileSystem);
       // value points to the resulting string, which may be different from s.
 
 bool GenerateIndex(const char *FileName);
+
+enum eRecordingsSortMode { rsmName, rsmTime };
+extern eRecordingsSortMode RecordingsSortMode;
+bool HasRecordingsSortMode(const char *Directory);
+void GetRecordingsSortMode(const char *Directory);
+void SetRecordingsSortMode(const char *Directory, eRecordingsSortMode SortMode);
+void IncRecordingsSortMode(const char *Directory);
 
 #endif //__RECORDING_H

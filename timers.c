@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 2.8 2012/02/27 09:38:41 kls Exp $
+ * $Id: timers.c 2.11 2012/06/09 14:37:24 kls Exp $
  */
 
 #include "timers.h"
@@ -142,7 +142,7 @@ cTimer& cTimer::operator= (const cTimer &Timer)
 
 int cTimer::Compare(const cListObject &ListObject) const
 {
-  cTimer *ti = (cTimer *)&ListObject;
+  const cTimer *ti = (const cTimer *)&ListObject;
   time_t t1 = StartTime();
   time_t t2 = ti->StartTime();
   int r = t1 - t2;
@@ -280,7 +280,7 @@ bool cTimer::Parse(const char *s)
   free(aux);
   aux = NULL;
   //XXX Apparently sscanf() doesn't work correctly if the last %a argument
-  //XXX results in an empty string (this first occured when the EIT gathering
+  //XXX results in an empty string (this first occurred when the EIT gathering
   //XXX was put into a separate thread - don't know why this happens...
   //XXX As a cure we copy the original string and add a blank.
   //XXX If anybody can shed some light on why sscanf() failes here, I'd love
@@ -819,4 +819,19 @@ void cTimers::DeleteExpired(void)
         ti = next;
         }
   lastDeleteExpired = time(NULL);
+}
+
+// --- cSortedTimers ---------------------------------------------------------
+
+static int CompareTimers(const void *a, const void *b)
+{
+  return (*(const cTimer **)a)->Compare(**(const cTimer **)b);
+}
+
+cSortedTimers::cSortedTimers(void)
+:cVector<const cTimer *>(Timers.Count())
+{
+  for (const cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer))
+      Append(Timer);
+  Sort(CompareTimers);
 }

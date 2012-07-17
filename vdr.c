@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 2.35 2012/03/14 09:09:19 kls Exp $
+ * $Id: vdr.c 2.37 2012/06/13 11:28:41 kls Exp $
  */
 
 #include <getopt.h>
@@ -56,6 +56,7 @@
 #include "recording.h"
 #include "shutdown.h"
 #include "skinclassic.h"
+#include "skinlcars.h"
 #include "skinsttng.h"
 #include "sourceparams.h"
 #include "sources.h"
@@ -569,7 +570,6 @@ int main(int argc, char *argv[])
   int MaxLatencyTime = 0;
   bool InhibitEpgScan = false;
   bool IsInfoMenu = false;
-  bool CheckHasProgramme = false;
   cSkin *CurrentSkin = NULL;
 
   // Load plugins:
@@ -677,6 +677,7 @@ int main(int argc, char *argv[])
 
   // Default skins:
 
+  new cSkinLCARS;
   new cSkinSTTNG;
   new cSkinClassic;
   Skins.SetCurrent(Setup.OSDSkin);
@@ -759,7 +760,7 @@ int main(int argc, char *argv[])
         // Make sure we have a visible programme in case device usage has changed:
         if (!EITScanner.Active() && cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
            static time_t lastTime = 0;
-           if ((!Menu || CheckHasProgramme) && Now - lastTime > MINCHANNELWAIT) { // !Menu to avoid interfering with the CAM if a CAM menu is open
+           if (!CamMenuActive() && Now - lastTime > MINCHANNELWAIT) { // !CamMenuActive() to avoid interfering with the CAM if a CAM menu is open
               cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
               if (Channel && (Channel->Vpid() || Channel->Apid(0) || Channel->Dpid(0))) {
                  if (cDevice::GetDeviceForTransponder(Channel, LIVEPRIORITY) && Channels.SwitchTo(Channel->Number())) // try to switch to the original channel...
@@ -772,7 +773,6 @@ int main(int argc, char *argv[])
                  }
               lastTime = Now; // don't do this too often
               LastTimerChannel = -1;
-              CheckHasProgramme = false;
               }
            }
         // Update the OSD size:
@@ -1138,7 +1138,6 @@ int main(int argc, char *argv[])
                             DELETE_MENU;
                             cControl::Shutdown();
                             Menu = new cMenuMain(osRecordings);
-                            CheckHasProgramme = true; // to have live tv after stopping replay with 'Back'
                             break;
              case osReplay: DELETE_MENU;
                             cControl::Shutdown();

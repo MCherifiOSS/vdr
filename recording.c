@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.53 2012/03/13 13:17:57 kls Exp $
+ * $Id: recording.c 2.57 2012/06/09 13:57:30 kls Exp $
  */
 
 #include "recording.h"
@@ -52,6 +52,8 @@
 #endif
 #define INFOFILESUFFIX    "/info"
 #define MARKSFILESUFFIX   "/marks"
+
+#define SORTMODEFILE      ".sort"
 
 #define MINDISKSPACE 1024 // MB
 
@@ -153,7 +155,7 @@ void AssertFreeDiskSpace(int Priority, bool Force)
            cRecording *r = DeletedRecordings.First();
            cRecording *r0 = NULL;
            while (r) {
-                 if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only remove recordings that will actually increase the free video disk space
+                 if (r->IsOnVideoDirectoryFileSystem()) { // only remove recordings that will actually increase the free video disk space
                     if (!r0 || r->Start() < r0->Start())
                        r0 = r;
                     }
@@ -180,7 +182,7 @@ void AssertFreeDiskSpace(int Priority, bool Force)
            cRecording *r = Recordings.First();
            cRecording *r0 = NULL;
            while (r) {
-                 if (IsOnVideoDirectoryFileSystem(r->FileName())) { // only delete recordings that will actually increase the free video disk space
+                 if (r->IsOnVideoDirectoryFileSystem()) { // only delete recordings that will actually increase the free video disk space
                     if (!r->IsEdited() && r->Lifetime() < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
                        if ((r->Lifetime() == 0 && Priority > r->Priority()) || // the recording has no guaranteed lifetime and the new recording has higher priority
                            (r->Lifetime() > 0 && (time(NULL) - r->Start()) / SECSINDAY >= r->Lifetime())) { // the recording's guaranteed lifetime has expired
@@ -610,13 +612,14 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
 {
   resume = RESUME_NOT_INITIALIZED;
   titleBuffer = NULL;
-  sortBuffer = NULL;
+  sortBufferName = sortBufferTime = NULL;
   fileName = NULL;
   name = NULL;
   fileSizeMB = -1; // unknown
   channel = Timer->Channel()->Number();
   instanceId = InstanceId;
   isPesRecording = false;
+  isOnVideoDirectoryFileSystem = -1; // unknown
   framesPerSecond = DEFAULTFRAMESPERSECOND;
   numFrames = -1;
   deleted = 0;
@@ -677,11 +680,12 @@ cRecording::cRecording(const char *FileName)
   priority = MAXPRIORITY; // assume maximum in case there is no info file
   lifetime = MAXLIFETIME;
   isPesRecording = false;
+  isOnVideoDirectoryFileSystem = -1; // unknown
   framesPerSecond = DEFAULTFRAMESPERSECOND;
   numFrames = -1;
   deleted = 0;
   titleBuffer = NULL;
-  sortBuffer = NULL;
+  sortBufferName = sortBufferTime = NULL;
   FileName = fileName = strdup(FileName);
   if (*(fileName + strlen(fileName) - 1) == '/')
      *(fileName + strlen(fileName) - 1) = 0;
@@ -723,7 +727,9 @@ cRecording::cRecording(const char *FileName)
            }
         fclose(f);
         }
-     else if (errno != ENOENT)
+     else if (errno == ENOENT)
+        info->ownEvent->SetTitle(name);
+     else
         LOG_ERROR_STR(*InfoFileName);
 #ifdef SUMMARYFALLBACK
      // fall back to the old 'summary.vdr' if there was no 'info.vdr':
@@ -791,7 +797,8 @@ cRecording::cRecording(const char *FileName)
 cRecording::~cRecording()
 {
   free(titleBuffer);
-  free(sortBuffer);
+  free(sortBufferName);
+  free(sortBufferTime);
   free(fileName);
   free(name);
   delete info;
@@ -812,22 +819,27 @@ char *cRecording::StripEpisodeName(char *s)
            }
         t++;
         }
-  if (s1 && s2)
-     memmove(s1 + 1, s2, t - s2 + 1);
+  if (s1 && s2) {
+     s1++;
+     memmove(s1, s2, t - s2 + 1);
+     *s1 = 0xFF; // sorts folders before plain recordings
+     }
   return s;
 }
 
 char *cRecording::SortName(void) const
 {
-  if (!sortBuffer) {
-     char *s = StripEpisodeName(strdup(FileName() + strlen(VideoDirectory) + 1));
+  char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
+  if (!*sb) {
+     char *s = (RecordingsSortMode == rsmName) ? strdup(FileName() + strlen(VideoDirectory) + 1)
+                                              : StripEpisodeName(strdup(FileName() + strlen(VideoDirectory) + 1));
      strreplace(s, '/', 'a'); // some locales ignore '/' when sorting
      int l = strxfrm(NULL, s, 0) + 1;
-     sortBuffer = MALLOC(char, l);
-     strxfrm(sortBuffer, s, l);
+     *sb = MALLOC(char, l);
+     strxfrm(*sb, s, l);
      free(s);
      }
-  return sortBuffer;
+  return *sb;
 }
 
 int cRecording::GetResume(void) const
@@ -948,6 +960,13 @@ bool cRecording::IsEdited(void) const
   const char *s = strrchr(name, FOLDERDELIMCHAR);
   s = !s ? name : s + 1;
   return *s == '%';
+}
+
+bool cRecording::IsOnVideoDirectoryFileSystem(void) const
+{
+  if (isOnVideoDirectoryFileSystem < 0)
+     isOnVideoDirectoryFileSystem = ::IsOnVideoDirectoryFileSystem(FileName());
+  return isOnVideoDirectoryFileSystem;
 }
 
 void cRecording::ReadInfo(void)
@@ -1251,7 +1270,7 @@ int cRecordings::TotalFileSizeMB(void)
   LOCK_THREAD;
   for (cRecording *recording = First(); recording; recording = Next(recording)) {
       int FileSizeMB = recording->FileSizeMB();
-      if (FileSizeMB > 0 && IsOnVideoDirectoryFileSystem(recording->FileName()))
+      if (FileSizeMB > 0 && recording->IsOnVideoDirectoryFileSystem())
          size += FileSizeMB;
       }
   return size;
@@ -1263,7 +1282,7 @@ double cRecordings::MBperMinute(void)
   int length = 0;
   LOCK_THREAD;
   for (cRecording *recording = First(); recording; recording = Next(recording)) {
-      if (IsOnVideoDirectoryFileSystem(recording->FileName())) {
+      if (recording->IsOnVideoDirectoryFileSystem()) {
          int FileSizeMB = recording->FileSizeMB();
          if (FileSizeMB > 0) {
             int LengthInSeconds = recording->LengthInSeconds();
@@ -1422,13 +1441,17 @@ cMark *cMarks::GetNext(int Position)
 
 const char *cRecordingUserCommand::command = NULL;
 
-void cRecordingUserCommand::InvokeCommand(const char *State, const char *RecordingFileName)
+void cRecordingUserCommand::InvokeCommand(const char *State, const char *RecordingFileName, const char *SourceFileName)
 {
   if (command) {
-     cString cmd = cString::sprintf("%s %s \"%s\"", command, State, *strescape(RecordingFileName, "\\\"$"));
-     isyslog("executing '%s'", *cmd);
-     SystemExec(cmd);
-     }
+    cString cmd;
+    if (SourceFileName)
+       cmd = cString::sprintf("%s %s \"%s\" \"%s\"", command, State, *strescape(RecordingFileName, "\\\"$"), *strescape(SourceFileName, "\\\"$"));
+    else
+       cmd = cString::sprintf("%s %s \"%s\"", command, State, *strescape(RecordingFileName, "\\\"$"));
+    isyslog("executing '%s'", *cmd);
+    SystemExec(cmd);
+  }
 }
 
 // --- cIndexFileGenerator ---------------------------------------------------
@@ -2117,4 +2140,40 @@ int ReadFrame(cUnbufferedFile *f, uchar *b, int Length, int Max)
   if (r < 0)
      LOG_ERROR;
   return r;
+}
+
+// --- Recordings Sort Mode --------------------------------------------------
+
+eRecordingsSortMode RecordingsSortMode = rsmName;
+
+bool HasRecordingsSortMode(const char *Directory)
+{
+  return access(AddDirectory(Directory, SORTMODEFILE), R_OK) == 0;
+}
+
+void GetRecordingsSortMode(const char *Directory)
+{
+  if (FILE *f = fopen(AddDirectory(Directory, SORTMODEFILE), "r")) {
+     char buf[8];
+     if (fgets(buf, sizeof(buf), f))
+        RecordingsSortMode = eRecordingsSortMode(constrain(atoi(buf), 0, int(rsmTime)));
+     fclose(f);
+     }
+}
+
+void SetRecordingsSortMode(const char *Directory, eRecordingsSortMode SortMode)
+{
+  if (FILE *f = fopen(AddDirectory(Directory, SORTMODEFILE), "w")) {
+     fputs(cString::sprintf("%d\n", SortMode), f);
+     fclose(f);
+     }
+}
+
+void IncRecordingsSortMode(const char *Directory)
+{
+  GetRecordingsSortMode(Directory);
+  RecordingsSortMode = eRecordingsSortMode(int(RecordingsSortMode) + 1);
+  if (RecordingsSortMode > rsmTime)
+     RecordingsSortMode = eRecordingsSortMode(0);
+  SetRecordingsSortMode(Directory, RecordingsSortMode);
 }
