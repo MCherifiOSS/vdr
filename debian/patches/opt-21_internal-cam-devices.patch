@@ -4,10 +4,10 @@ Description: This patch allows tuning to encrypted channels which are
  See also: http://www.vdr-developer.org/mantisbt/view.php?id=429
 Author: Tobias Grimm <tg@e-tobi.net>
 
-Index: vdr-1.7.28/device.c
+Index: vdr-1.7.29/device.c
 ===================================================================
---- vdr-1.7.28.orig/device.c	2012-04-26 11:40:36.000000000 +0200
-+++ vdr-1.7.28/device.c	2012-06-03 23:13:52.693011479 +0200
+--- vdr-1.7.29.orig/device.c	2012-06-10 15:13:18.000000000 +0200
++++ vdr-1.7.29/device.c	2012-07-19 00:49:38.420937943 +0200
 @@ -241,6 +241,7 @@
    int NumCamSlots = CamSlots.Count();
    int SlotPriority[NumCamSlots];
@@ -35,9 +35,9 @@ Index: vdr-1.7.28/device.c
 +          if (NumUsableSlots && !device[i]->HasInternalCam() && !CamSlots.Get(j)->Assign(device[i], true))
               continue; // CAM slot can't be used with this device
            bool ndr;
-           if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basicly able to do the job
+           if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basically able to do the job
 -             if (NumUsableSlots && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
-+             if (NumUsableSlots && !device[i]->HasInternalCam() && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
+++             if (NumUsableSlots && !device[i]->HasInternalCam() && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
                  ndr = true; // using a different CAM slot requires detaching receivers
               // Put together an integer number that reflects the "impact" using
               // this device would have on the overall system. Each condition is represented
@@ -64,10 +64,10 @@ Index: vdr-1.7.28/device.c
                     s = CamSlots.Get(j);
                  }
               }
-Index: vdr-1.7.28/device.h
+Index: vdr-1.7.29/device.h
 ===================================================================
---- vdr-1.7.28.orig/device.h	2012-04-04 11:48:21.000000000 +0200
-+++ vdr-1.7.28/device.h	2012-06-03 23:13:52.693011479 +0200
+--- vdr-1.7.29.orig/device.h	2012-04-04 11:48:21.000000000 +0200
++++ vdr-1.7.29/device.h	2012-07-19 00:44:33.120925285 +0200
 @@ -411,6 +411,13 @@
  public:
    virtual bool HasCi(void);

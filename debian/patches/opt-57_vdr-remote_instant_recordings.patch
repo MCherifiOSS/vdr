@@ -2,10 +2,10 @@ Description: Patch for vdr-plugin-remotetimers
 Author: Frank Schmirler <vdrdev@schmirler.de> 
 Origin: http://vdr.schmirler.de/
 
-Index: vdr-1.7.28/config.h
+Index: vdr-1.7.29/config.h
 ===================================================================
---- vdr-1.7.28.orig/config.h	2012-06-15 10:26:25.147001752 +0200
-+++ vdr-1.7.28/config.h	2012-06-15 10:29:07.807008495 +0200
+--- vdr-1.7.29.orig/config.h	2012-07-19 00:51:15.292941956 +0200
++++ vdr-1.7.29/config.h	2012-07-19 00:51:15.352941960 +0200
 @@ -43,6 +43,8 @@
  #define MAINMENUHOOKSVERSION "1.0.1"
  #define MAINMENUHOOKSVERSNUM 10001  // Version * 10000 + Major * 100 + Minor
@@ -15,10 +15,10 @@ Index: vdr-1.7.28/config.h
  #define MAXPRIORITY       99
  #define MINPRIORITY       (-MAXPRIORITY)
  #define LIVEPRIORITY      0                  // priority used when selecting a device for live viewing
-Index: vdr-1.7.28/menu.c
+Index: vdr-1.7.29/menu.c
 ===================================================================
---- vdr-1.7.28.orig/menu.c	2012-06-15 10:26:25.151001752 +0200
-+++ vdr-1.7.28/menu.c	2012-06-15 10:30:17.275011374 +0200
+--- vdr-1.7.29.orig/menu.c	2012-07-19 00:51:15.296941957 +0200
++++ vdr-1.7.29/menu.c	2012-07-19 00:51:15.356941960 +0200
 @@ -35,6 +35,8 @@
  #include "videodir.h"
  #include "menuorgpatch.h"
@@ -28,7 +28,7 @@ Index: vdr-1.7.28/menu.c
  #define MAXWAIT4EPGINFO   3 // seconds
  #define MODETIMEOUT       3 // seconds
  #define NEWTIMERLIMIT   120 // seconds until the start time of a new timer created from the Schedule menu,
-@@ -4720,6 +4722,50 @@
+@@ -4765,6 +4767,50 @@
  
  bool cRecordControls::Start(cTimer *Timer, bool Pause)
  {
@@ -79,10 +79,10 @@ Index: vdr-1.7.28/menu.c
    static time_t LastNoDiskSpaceMessage = 0;
    int FreeMB = 0;
    if (Timer) {
-Index: vdr-1.7.28/remotetimers.h
+Index: vdr-1.7.29/remotetimers.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr-1.7.28/remotetimers.h	2012-06-15 10:29:07.811008496 +0200
++++ vdr-1.7.29/remotetimers.h	2012-07-19 00:51:15.356941960 +0200
 @@ -0,0 +1,25 @@
 +/*
 + * remotetimers.h: Public interface of the plugin's services

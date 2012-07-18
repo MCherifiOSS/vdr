@@ -5,10 +5,10 @@ Description: This patch is required by the MenuOrg plugin. It adds a service
  This is version 0.4.s of the patch
 Author: Tobias Grimm <tg@e-tobi.net>
 
-Index: vdr-1.7.28/mainmenuitemsprovider.h
+Index: vdr-1.7.29/mainmenuitemsprovider.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr-1.7.28/mainmenuitemsprovider.h	2012-06-04 22:39:11.571849909 +0200
++++ vdr-1.7.29/mainmenuitemsprovider.h	2012-07-19 00:51:15.116941949 +0200
 @@ -0,0 +1,60 @@
 +/*
 + * vdr-menuorg - A plugin for the Linux Video Disk Recorder
@@ -70,10 +70,10 @@ Index: vdr-1.7.28/mainmenuitemsprovider.h
 +};
 +
 +#endif //__MAINMENUITEMSPROVIDER_H
-Index: vdr-1.7.28/menu.c
+Index: vdr-1.7.29/menu.c
 ===================================================================
---- vdr-1.7.28.orig/menu.c	2012-06-04 22:39:11.551849908 +0200
-+++ vdr-1.7.28/menu.c	2012-06-04 22:39:11.575849909 +0200
+--- vdr-1.7.29.orig/menu.c	2012-07-19 00:51:15.088941948 +0200
++++ vdr-1.7.29/menu.c	2012-07-19 00:51:15.120941949 +0200
 @@ -32,6 +32,7 @@
  #include "timers.h"
  #include "transfer.h"
@@ -82,7 +82,7 @@ Index: vdr-1.7.28/menu.c
  
  #define MAXWAIT4EPGINFO   3 // seconds
  #define MODETIMEOUT       3 // seconds
-@@ -3482,6 +3483,9 @@
+@@ -3513,6 +3514,9 @@
    cancelFileTransferItem = NULL;
    stopRecordingItem = NULL;
    recordControlsState = 0;
@@ -92,7 +92,7 @@ Index: vdr-1.7.28/menu.c
    Set();
  
    // Initial submenus:
-@@ -3510,6 +3514,29 @@
+@@ -3541,6 +3545,29 @@
    SetTitle("VDR");
    SetHasHotkeys();
  
@@ -122,7 +122,7 @@ Index: vdr-1.7.28/menu.c
    // Basic menu items:
  
    Add(new cOsdItem(hk(tr("Schedule")),   osSchedule));
-@@ -3536,6 +3563,8 @@
+@@ -3567,6 +3594,8 @@
    if (Commands.Count())
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
@@ -131,7 +131,7 @@ Index: vdr-1.7.28/menu.c
    Update(true);
  
    Display();
-@@ -3660,6 +3689,41 @@
+@@ -3691,6 +3720,41 @@
                           state = osEnd;
                         }
                         break;
@@ -173,10 +173,10 @@ Index: vdr-1.7.28/menu.c
      default: switch (Key) {
                 case kRecord:
                 case kRed:    if (!HadSubMenu)
-Index: vdr-1.7.28/menuorgpatch.h
+Index: vdr-1.7.29/menuorgpatch.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr-1.7.28/menuorgpatch.h	2012-06-04 22:39:11.575849909 +0200
++++ vdr-1.7.29/menuorgpatch.h	2012-07-19 00:51:15.120941949 +0200
 @@ -0,0 +1,100 @@
 +/*
 + * vdr-menuorg - A plugin for the Linux Video Disk Recorder
