@@ -12,15 +12,15 @@
 # rofafor Patch collection
 # http://www.saunalahti.fi/~rahrenbe/vdr/patches/index.php
 
-opt-10_vdr-1.7.28-lcn.patch
-opt-10_vdr-1.7.28-filetransfer.patch
-opt-10_vdr-1.7.28-binaryskip.patch
-opt-10_vdr-1.7.28-resumereset.patch
-opt-10_vdr-1.7.28-menuselection.patch
-opt-10_vdr-1.7.28-networkname.patch
-opt-10_vdr-1.7.28-tpid.patch
-#opt-10_vdr-1.7.28-vasarajanauloja.patch
-opt-10_vdr-1.7.28-finnish.patch
+#opt-10_vdr-1.7.28-lcn.patch
+#opt-10_vdr-1.7.28-filetransfer.patch
+#opt-10_vdr-1.7.28-binaryskip.patch
+#opt-10_vdr-1.7.28-resumereset.patch
+#opt-10_vdr-1.7.28-menuselection.patch
+#opt-10_vdr-1.7.28-networkname.patch
+#opt-10_vdr-1.7.28-tpid.patch
+opt-10_vdr-1.7.28-vasarajanauloja.patch
+#opt-10_vdr-1.7.28-finnish.patch
 
 # Allows to tune to non-FTA channels provided by internal devices, 
 # like streamdev
