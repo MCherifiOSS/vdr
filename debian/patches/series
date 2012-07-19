@@ -10,16 +10,7 @@
 
 # rofafor Patch collection
 # http://www.saunalahti.fi/~rahrenbe/vdr/patches/index.php
-
-#opt-10_vdr-1.7.29-lcn.patch
-#opt-10_vdr-1.7.29-filetransfer.patch
-#opt-10_vdr-1.7.29-binaryskip.patch
-#opt-10_vdr-1.7.29-resumereset.patch
-#opt-10_vdr-1.7.29-menuselection.patch
-#opt-10_vdr-1.7.29-networkname.patch
-#opt-10_vdr-1.7.29-tpid.patch
 opt-10_vdr-1.7.29-vasarajanauloja.patch
-#opt-10_vdr-1.7.29-finnish.patch
 
 # Allows to tune to non-FTA channels provided by internal devices, 
 # like streamdev
@@ -35,23 +26,13 @@ opt-24_jumpplay.patch
 # Patch needed for the ttxtsubs plugin.
 #opt-27_ttxtsubs.patch
 
-# Speed up zapping channels.
-# opt-29_syncearly.patch
-
-# Patch that shows if there is a valid setup value left or right with < and >.
-# opt-35_setup-show-valid.patch
-
 # Patch needed for the menuorg plugin.
 opt-37-x_menuorg.patch
-
-# Patch that suppresses double EPG entries.
-#opt-38_disableDoubleEpgEntrys.patch
 
 # Patch to show an info, if it is possible to record an event in the timer-info.
 opt-41-x_timer-info.patch
 
 # Patch to allow plugins to replace the VDR mainmenus
-#opt-42-x_MainMenuHooks.patch
 opt-42-x_MainMenuHooks-v1.0.1.patch
 
 # Patch needed for the rotor plugin.
@@ -63,9 +44,6 @@ opt-45_yaepg.patch
 # Patch required for the GraphTFT plugin
 opt-50_graphtft.patch
 opt-50_graphtft-liemikuutio.patch
-
-# Setup for AC3 transfer, QAM_256, disable primary tuner
-# opt-53_dvbsetup.patch
 
 opt-55_wareagleicon.patch
 opt-56_eventdetails_v3.patch
