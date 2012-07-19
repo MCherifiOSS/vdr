@@ -37,7 +37,7 @@ Index: vdr-1.7.29/device.c
            bool ndr;
            if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basically able to do the job
 -             if (NumUsableSlots && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
-++             if (NumUsableSlots && !device[i]->HasInternalCam() && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
++             if (NumUsableSlots && !device[i]->HasInternalCam() && device[i]->CamSlot() && device[i]->CamSlot() != CamSlots.Get(j))
                  ndr = true; // using a different CAM slot requires detaching receivers
               // Put together an integer number that reflects the "impact" using
               // this device would have on the overall system. Each condition is represented
