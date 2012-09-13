@@ -12,10 +12,6 @@
 # http://www.saunalahti.fi/~rahrenbe/vdr/patches/index.php
 opt-10_vdr-1.7.29-vasarajanauloja.patch
 
-# Allows to tune to non-FTA channels provided by internal devices, 
-# like streamdev
-opt-21_internal-cam-devices.patch
-
 # Easy editing of cutting marks
 # (Requires opt-20_liemikuutio!)
 opt-22-x_edit_marks.patch
