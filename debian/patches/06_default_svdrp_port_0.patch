@@ -3,16 +3,16 @@ Description: This sets the default svdrp-port to 0, which means that
  another port with the --port option when starting vdr
 Author: Thomas Schmidt <tschmidt@debian.org>
 
-Index: vdr-1.7.28/vdr.c
+Index: vdr-1.7.30/vdr.c
 ===================================================================
---- vdr-1.7.28.orig/vdr.c	2012-04-26 11:23:41.000000000 +0200
-+++ vdr-1.7.28/vdr.c	2012-06-03 17:10:38.367576565 +0200
-@@ -178,7 +178,7 @@
- 
+--- vdr-1.7.30.orig/vdr.c	2012-09-01 15:30:19.000000000 +0200
++++ vdr-1.7.30/vdr.c	2012-09-22 09:46:52.259927913 +0200
+@@ -179,7 +179,7 @@
    // Command line options:
  
+ #define dd(a, b) (*a ? a : b)
 -#define DEFAULTSVDRPPORT 6419
 +#define DEFAULTSVDRPPORT 0
  #define DEFAULTWATCHDOG     0 // seconds
- #define DEFAULTCONFDIR CONFDIR
- #define DEFAULTPLUGINDIR PLUGINDIR
+ #define DEFAULTVIDEODIR VIDEODIR
+ #define DEFAULTCONFDIR dd(CONFDIR, VideoDirectory)

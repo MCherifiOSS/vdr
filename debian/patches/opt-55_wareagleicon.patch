@@ -3,10 +3,10 @@ Origin: http://toms-cafe.de/vdr/download/vdr-wareagle-icons+setup-1.3.22.diff
 Forwarded: no
 Author: Torsten Kunkel <vdr@tkunkel.de>
 Author: Thomas Günther <tom@toms-cafe.de>
-Index: vdr-1.7.29/config.c
+Index: vdr-1.7.30/config.c
 ===================================================================
---- vdr-1.7.29.orig/config.c	2012-07-19 00:51:15.084941948 +0200
-+++ vdr-1.7.29/config.c	2012-07-19 00:51:15.292941956 +0200
+--- vdr-1.7.30.orig/config.c	2012-09-22 09:48:08.199931060 +0200
++++ vdr-1.7.30/config.c	2012-09-22 09:48:08.407931069 +0200
 @@ -375,6 +375,7 @@
    strcpy(OSDLanguage, ""); // default is taken from environment
    strcpy(OSDSkin, "lcars");
@@ -15,7 +15,7 @@ Index: vdr-1.7.29/config.c
    PrimaryDVB = 1;
    ShowInfoOnChSwitch = 1;
    TimeoutRequChInfo = 1;
-@@ -574,6 +575,7 @@
+@@ -578,6 +579,7 @@
    if      (!strcasecmp(Name, "OSDLanguage"))       { strn0cpy(OSDLanguage, Value, sizeof(OSDLanguage)); I18nSetLocale(OSDLanguage); }
    else if (!strcasecmp(Name, "OSDSkin"))             Utf8Strn0Cpy(OSDSkin, Value, MaxSkinName);
    else if (!strcasecmp(Name, "OSDTheme"))            Utf8Strn0Cpy(OSDTheme, Value, MaxThemeName);
@@ -23,7 +23,7 @@ Index: vdr-1.7.29/config.c
    else if (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
    else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
    else if (!strcasecmp(Name, "TimeoutRequChInfo"))   TimeoutRequChInfo  = atoi(Value);
-@@ -676,6 +678,7 @@
+@@ -684,6 +686,7 @@
    Store("OSDLanguage",        OSDLanguage);
    Store("OSDSkin",            OSDSkin);
    Store("OSDTheme",           OSDTheme);
@@ -31,10 +31,10 @@ Index: vdr-1.7.29/config.c
    Store("PrimaryDVB",         PrimaryDVB);
    Store("ShowInfoOnChSwitch", ShowInfoOnChSwitch);
    Store("TimeoutRequChInfo",  TimeoutRequChInfo);
-Index: vdr-1.7.29/config.h
+Index: vdr-1.7.30/config.h
 ===================================================================
---- vdr-1.7.29.orig/config.h	2012-07-19 00:51:15.172941951 +0200
-+++ vdr-1.7.29/config.h	2012-07-19 00:51:15.292941956 +0200
+--- vdr-1.7.30.orig/config.h	2012-09-22 09:48:08.291931064 +0200
++++ vdr-1.7.30/config.h	2012-09-22 09:48:08.407931069 +0200
 @@ -256,6 +256,7 @@
    char OSDLanguage[I18N_MAX_LOCALE_LEN];
    char OSDSkin[MaxSkinName];
@@ -43,10 +43,10 @@ Index: vdr-1.7.29/config.h
    int PrimaryDVB;
    int ShowInfoOnChSwitch;
    int TimeoutRequChInfo;
-Index: vdr-1.7.29/iconpatch.c
+Index: vdr-1.7.30/iconpatch.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr-1.7.29/iconpatch.c	2012-07-19 00:51:15.292941956 +0200
++++ vdr-1.7.30/iconpatch.c	2012-09-22 09:48:08.407931069 +0200
 @@ -0,0 +1,28 @@
 +
 +#include "iconpatch.h"
@@ -76,10 +76,10 @@ Index: vdr-1.7.29/iconpatch.c
 +
 +  return false;
 +}
-Index: vdr-1.7.29/iconpatch.h
+Index: vdr-1.7.30/iconpatch.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr-1.7.29/iconpatch.h	2012-07-19 00:51:15.292941956 +0200
++++ vdr-1.7.30/iconpatch.h	2012-09-22 09:48:08.407931069 +0200
 @@ -0,0 +1,72 @@
 +/*
 + * iconpatch.h: Information of iconpatch
@@ -153,11 +153,11 @@ Index: vdr-1.7.29/iconpatch.h
 +bool IsLangUtf8(void);
 +
 +
-Index: vdr-1.7.29/Makefile
+Index: vdr-1.7.30/Makefile
 ===================================================================
---- vdr-1.7.29.orig/Makefile	2012-07-19 00:51:14.996941944 +0200
-+++ vdr-1.7.29/Makefile	2012-07-19 00:51:15.292941956 +0200
-@@ -47,6 +47,8 @@
+--- vdr-1.7.30.orig/Makefile	2012-09-22 09:48:08.143931059 +0200
++++ vdr-1.7.30/Makefile	2012-09-22 09:48:08.407931069 +0200
+@@ -48,6 +48,8 @@
         skinclassic.o skinlcars.o skins.o skinsttng.o sourceparams.o sources.o spu.o status.o svdrp.o themes.o thread.o\
         timers.o tools.o transfer.o vdr.o videodir.o
  
@@ -166,10 +166,10 @@ Index: vdr-1.7.29/Makefile
  ifndef NO_KBD
  DEFINES += -DREMOTE_KBD
  endif
-Index: vdr-1.7.29/menu.c
+Index: vdr-1.7.30/menu.c
 ===================================================================
---- vdr-1.7.29.orig/menu.c	2012-07-19 00:51:15.264941955 +0200
-+++ vdr-1.7.29/menu.c	2012-07-19 00:51:15.296941957 +0200
+--- vdr-1.7.30.orig/menu.c	2012-09-22 09:48:08.379931069 +0200
++++ vdr-1.7.30/menu.c	2012-09-22 09:48:08.411931069 +0200
 @@ -8,6 +8,7 @@
   */
  
@@ -245,7 +245,7 @@ Index: vdr-1.7.29/menu.c
       SetText(buffer);
       result = true;
       }
-@@ -2905,6 +2920,7 @@
+@@ -2910,6 +2925,7 @@
    Add(new cMenuEditStraItem(tr("Setup.OSD$Skin"),                   &skinIndex, numSkins, skinDescriptions));
    if (themes.NumThemes())
    Add(new cMenuEditStraItem(tr("Setup.OSD$Theme"),                  &themeIndex, themes.NumThemes(), themes.Descriptions()));
@@ -253,10 +253,10 @@ Index: vdr-1.7.29/menu.c
    Add(new cMenuEditPrcItem( tr("Setup.OSD$Left (%)"),               &data.OSDLeftP, 0.0, 0.5));
    Add(new cMenuEditPrcItem( tr("Setup.OSD$Top (%)"),                &data.OSDTopP, 0.0, 0.5));
    Add(new cMenuEditPrcItem( tr("Setup.OSD$Width (%)"),              &data.OSDWidthP, 0.5, 1.0));
-Index: vdr-1.7.29/recording.c
+Index: vdr-1.7.30/recording.c
 ===================================================================
---- vdr-1.7.29.orig/recording.c	2012-07-19 00:51:15.004941944 +0200
-+++ vdr-1.7.29/recording.c	2012-07-19 00:51:15.296941957 +0200
+--- vdr-1.7.30.orig/recording.c	2012-09-22 09:48:08.151931059 +0200
++++ vdr-1.7.30/recording.c	2012-09-22 09:48:08.411931069 +0200
 @@ -8,6 +8,7 @@
   */
  
