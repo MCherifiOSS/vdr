@@ -1,12 +1,8 @@
-Description: The hard link cutter patch changes the recording editing algorithms of VDR to use filesystem hard links to 'copy' recording files whenever possible to speed up editing recordings noticeably.
-Author: Udo Richter <udo_richter@gmx.de>      
-Origin: http://www.udo-richter.de/vdr/patches.html#hlcutter
-
-Index: vdr-1.7.28/config.c
+Index: vdr-1.7.30/config.c
 ===================================================================
---- vdr-1.7.28.orig/config.c	2012-06-15 10:26:25.147001752 +0200
-+++ vdr-1.7.28/config.c	2012-06-15 10:31:08.287013490 +0200
-@@ -447,8 +447,10 @@
+--- vdr-1.7.30.orig/config.c	2012-09-22 10:10:17.863986185 +0200
++++ vdr-1.7.30/config.c	2012-09-22 10:10:17.951986189 +0200
+@@ -451,8 +451,10 @@
    FontSmlSize = 18;
    FontFixSize = 20;
    MaxVideoFileSize = MAXVIDEOFILESIZEDEFAULT;
@@ -17,7 +13,7 @@ Index: vdr-1.7.28/config.c
    MinEventTimeout = 30;
    MinUserInactivity = 300;
    NextWakeupTime = 0;
-@@ -646,8 +648,10 @@
+@@ -655,8 +657,10 @@
    else if (!strcasecmp(Name, "FontSmlSize"))         FontSmlSize        = atoi(Value);
    else if (!strcasecmp(Name, "FontFixSize"))         FontFixSize        = atoi(Value);
    else if (!strcasecmp(Name, "MaxVideoFileSize"))    MaxVideoFileSize   = atoi(Value);
@@ -28,7 +24,7 @@ Index: vdr-1.7.28/config.c
    else if (!strcasecmp(Name, "MinEventTimeout"))     MinEventTimeout    = atoi(Value);
    else if (!strcasecmp(Name, "MinUserInactivity"))   MinUserInactivity  = atoi(Value);
    else if (!strcasecmp(Name, "NextWakeupTime"))      NextWakeupTime     = atoi(Value);
-@@ -748,8 +752,10 @@
+@@ -762,8 +766,10 @@
    Store("FontSmlSize",        FontSmlSize);
    Store("FontFixSize",        FontFixSize);
    Store("MaxVideoFileSize",   MaxVideoFileSize);
@@ -39,11 +35,11 @@ Index: vdr-1.7.28/config.c
    Store("MinEventTimeout",    MinEventTimeout);
    Store("MinUserInactivity",  MinUserInactivity);
    Store("NextWakeupTime",     NextWakeupTime);
-Index: vdr-1.7.28/config.h
+Index: vdr-1.7.30/config.h
 ===================================================================
---- vdr-1.7.28.orig/config.h	2012-06-15 10:29:07.807008495 +0200
-+++ vdr-1.7.28/config.h	2012-06-15 10:31:08.287013490 +0200
-@@ -320,8 +320,10 @@
+--- vdr-1.7.30.orig/config.h	2012-09-22 10:10:17.923986188 +0200
++++ vdr-1.7.30/config.h	2012-09-22 10:10:17.951986189 +0200
+@@ -321,8 +321,10 @@
    int FontSmlSize;
    int FontFixSize;
    int MaxVideoFileSize;
@@ -54,10 +50,10 @@ Index: vdr-1.7.28/config.h
    int MinEventTimeout, MinUserInactivity;
    time_t NextWakeupTime;
    int MultiSpeedMode;
-Index: vdr-1.7.28/cutter.c
+Index: vdr-1.7.30/cutter.c
 ===================================================================
---- vdr-1.7.28.orig/cutter.c	2012-06-15 10:26:24.683001732 +0200
-+++ vdr-1.7.28/cutter.c	2012-06-15 10:31:08.287013490 +0200
+--- vdr-1.7.30.orig/cutter.c	2012-09-22 10:10:17.599986175 +0200
++++ vdr-1.7.30/cutter.c	2012-09-22 10:12:29.367991640 +0200
 @@ -81,6 +81,7 @@
       Mark = fromMarks.Next(Mark);
       off_t FileSize = 0;
@@ -66,7 +62,7 @@ Index: vdr-1.7.28/cutter.c
       int LastIFrame = 0;
       toMarks.Add(0);
       toMarks.Save();
-@@ -99,13 +100,93 @@
+@@ -101,13 +102,93 @@
  
             // Read one frame:
  
@@ -166,7 +162,7 @@ Index: vdr-1.7.28/cutter.c
                if (fromFile) {
                   int len = ReadFrame(fromFile, buffer,  Length, sizeof(buffer));
                   if (len < 0) {
-@@ -122,19 +203,12 @@
+@@ -124,19 +205,12 @@
                   break;
                   }
                }
@@ -187,16 +183,16 @@ Index: vdr-1.7.28/cutter.c
                   toFile = toFileName->NextFile();
                   if (!toFile) {
                      error = "toFile 1";
-@@ -144,7 +218,7 @@
+@@ -160,7 +234,7 @@
+                     }
+                  CheckForSeamlessStream = false;
                   }
-               LastIFrame = 0;
- 
 -              if (cutIn) {
 +              if (!SkipThisSourceFile && cutIn) {
                   if (isPesRecording)
                      cRemux::SetBrokenLink(buffer, Length);
                   else
-@@ -152,7 +226,7 @@
+@@ -168,7 +242,7 @@
                   cutIn = false;
                   }
                }
@@ -205,7 +201,7 @@ Index: vdr-1.7.28/cutter.c
                error = "safe_write";
                break;
                }
-@@ -187,7 +261,7 @@
+@@ -213,7 +287,7 @@
                      }
                   }
                else
@@ -214,11 +210,11 @@ Index: vdr-1.7.28/cutter.c
                }
             }
       Recordings.TouchUpdate();
-Index: vdr-1.7.28/menu.c
+Index: vdr-1.7.30/menu.c
 ===================================================================
---- vdr-1.7.28.orig/menu.c	2012-06-15 10:30:17.275011374 +0200
-+++ vdr-1.7.28/menu.c	2012-06-15 10:31:08.291013490 +0200
-@@ -3442,8 +3442,10 @@
+--- vdr-1.7.30.orig/menu.c	2012-09-22 10:10:17.927986188 +0200
++++ vdr-1.7.30/menu.c	2012-09-22 10:10:17.955986190 +0200
+@@ -3481,8 +3481,10 @@
    Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),     data.NameInstantRecord, sizeof(data.NameInstantRecord)));
    Add(new cMenuEditIntItem( tr("Setup.Recording$Instant rec. time (min)"),   &data.InstantRecordTime, 1, MAXINSTANTRECTIME));
    Add(new cMenuEditIntItem( tr("Setup.Recording$Max. video file size (MB)"), &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZETS));
@@ -229,11 +225,57 @@ Index: vdr-1.7.28/menu.c
  }
  
  // --- cMenuSetupReplay ------------------------------------------------------
-Index: vdr-1.7.28/README-HLCUTTER
+Index: vdr-1.7.30/po/de_DE.po
+===================================================================
+--- vdr-1.7.30.orig/po/de_DE.po	2012-09-22 10:10:17.663986178 +0200
++++ vdr-1.7.30/po/de_DE.po	2012-09-22 10:10:17.955986190 +0200
+@@ -1080,12 +1080,18 @@
+ msgid "Setup.Recording$Max. video file size (MB)"
+ msgstr "Max. Videodateigröße (MB)"
+ 
++msgid "Setup.Recording$Max. recording size (GB)"
++msgstr "Max. Aufnahmegröße (GB)"
++
+ msgid "Setup.Recording$Split edited files"
+ msgstr "Editierte Dateien aufteilen"
+ 
+ msgid "Setup.Recording$Delete timeshift recording"
+ msgstr "Zeitversetzte Aufnahme löschen"
+ 
++msgid "Setup.Recording$Hard Link Cutter"
++msgstr "Hard Link Cutter"
++
+ msgid "Replay"
+ msgstr "Wiedergabe"
+ 
+Index: vdr-1.7.30/po/fi_FI.po
+===================================================================
+--- vdr-1.7.30.orig/po/fi_FI.po	2012-09-22 10:10:17.607986176 +0200
++++ vdr-1.7.30/po/fi_FI.po	2012-09-22 10:10:17.955986190 +0200
+@@ -1083,12 +1083,18 @@
+ msgid "Setup.Recording$Max. video file size (MB)"
+ msgstr "Suurin tiedostokoko (Mt)"
+ 
++msgid "Setup.Recording$Max. recording size (GB)"
++msgstr "Suurin tallennekoko (Gt)"
++
+ msgid "Setup.Recording$Split edited files"
+ msgstr "Jaottele muokatut tallenteet"
+ 
+ msgid "Setup.Recording$Delete timeshift recording"
+ msgstr "Poista ajansiirtotallenne"
+ 
++msgid "Setup.Recording$Hard Link Cutter"
++msgstr "KÃ¤ytÃ¤ kovia linkkejÃ¤ muokkauksessa"
++
+ msgid "Replay"
+ msgstr "Toisto"
+ 
+Index: vdr-1.7.30/README-HLCUTTER
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr-1.7.28/README-HLCUTTER	2012-06-15 10:31:08.291013490 +0200
-@@ -0,0 +1,117 @@
++++ vdr-1.7.30/README-HLCUTTER	2012-09-22 10:15:44.111999711 +0200
+@@ -0,0 +1,128 @@
 +
 +                    VDR-HLCUTTER README
 +
@@ -257,30 +299,30 @@ Index: vdr-1.7.28/README-HLCUTTER
 +The patch is EXPERIMENTAL for multiple /videoxx folders. The safety checks
 +should prevent data loss, but you should always carefully check the results.
 +
-+While editing a recording, the patch searches for any 00x.vdr files that dont
++While editing a recording, the patch searches for any 00x.vdr files that don't
 +contain editing marks and would normally be copied 1:1 unmodified to the edited
-+recording. In this case the current target 00x.vdr file will be aborted, and
-+the cutter process attempts to duplicate the source file as a hard link, so
-+that both files share the same disk space. If this succeeds, the editing
-+process fast-forwards through the duplicated file and continues normally
++recording. In this case the current target 00x.vdr file will be aborted, and 
++the cutter process attempts to duplicate the source file as a hard link, so 
++that both files share the same disk space. If this succeeds, the editing 
++process fast-forwards through the duplicated file and continues normally 
 +beginning with the next source file. If hard linking fails, the cutter process
 +continues with plain old copying. (but does not take up the aborted last file.)
 +
 +After editing, the un-edited recording can be deleted as usual, the hard linked
 +copies will continue to exist as the only remaining copy.
 +
-+To be effective, the default 'Max. video file size (MB)' should be lowered.
-+The patch lowers the smallest possible file size to 1mb. Since VDR only
++To be effective, the default 'Max. video file size (MB)' should be lowered. 
++The patch lowers the smallest possible file size to 1mb. Since VDR only 
 +supports up to 255 files, this would limit the recording size to 255Mb or
 +10 minutes, in other words: This setting is insane!
 +
-+To make sure that the 255 file limit will not be reached, the patch also
-+introduces "Max. recording size (GB)" with a default of 100Gb (66 hours), and
++To make sure that the 255 file limit will not be reached, the patch also 
++introduces "Max. recording size (GB)" with a default of 100Gb (66 hours), and 
 +increases the file size to 2000Mb early enough, so that 100Gb-recordings will
 +fit into the 255 files.
 +
-+Picking the right parameters can be tricky. The smaller the file size, the
-+faster the editing process works. However, with a small file size, long
++Picking the right parameters can be tricky. The smaller the file size, the 
++faster the editing process works. However, with a small file size, long 
 +recordings will fall back to 2000Mb files soon, that are slow on editing again.
 +
 +Here are some examples:
@@ -302,13 +344,13 @@ Index: vdr-1.7.28/README-HLCUTTER
 +
 +
 +
-+The patch must be enabled in Setup-> Recordings-> Hard Link Cutter. When
++The patch must be enabled in Setup-> Recordings-> Hard Link Cutter. When 
 +disabled, the cutter process behaves identical to VDR's default cutter.
 +
 +There's a //#define HARDLINK_TEST_ONLY in the videodir.c file that enables a
-+test-mode that hard-links 00x.vdr_ files only, and continues the classic
-+editing. The resulting 00x.vdr and 00x.vdr_ files should be identical. If you
-+delete the un-edited recording, dont forget to delete the *.vdr_ files too,
++test-mode that hard-links 00x.vdr_ files only, and continues the classic 
++editing. The resulting 00x.vdr and 00x.vdr_ files should be identical. If you 
++delete the un-edited recording, don't forget to delete the *.vdr_ files too, 
 +they will now eat real disk space.
 +
 +Note: 'du' displays the disk space of hard links only on first appearance, and
@@ -317,6 +359,17 @@ Index: vdr-1.7.28/README-HLCUTTER
 +
 +History
 +-------
++
++Version 0.2.3
++  Fix: Compatible to VDR-1.7.27+ thx to Ville SkyttÃ¤
++  New: Add German translation
++  New: Add Finnish translation, thx to Ville SkyttÃ¤
++
++Version 0.2.2
++  Fix: Adapt to GCC-4.4, thx to Ville SkyttÃ¤
++
++Version 0.2.1
++  New: Support for TS recordings with up to 65535 files and up to 1TB per file
 +
 +Version 0.2.0
 +  New: Support for multiple /videoXX recording folders, using advanced searching
@@ -329,7 +382,7 @@ Index: vdr-1.7.28/README-HLCUTTER
 +  Fix: Last edit mark is not a cut-out
 +  Fix: Write error if link-copied file is smaller than allowed file size
 +  Fix: Broken index/marks if cut-in is at the start of a new file
-+  Fix: Clear dangeling pointer to free'd cUnbufferedFile,
++  Fix: Clear dangling pointer to free'd cUnbufferedFile, 
 +       thx to Matthias Schwarzott
 +
 +Version 0.1.0
@@ -342,7 +395,7 @@ Index: vdr-1.7.28/README-HLCUTTER
 +------------
 +
 +Since original and edited copy share disk space, free space is wrong if one of
-+them is moved to *.del. Free space should only count files with hard link
++them is moved to *.del. Free space should only count files with hard link 
 +count = 1. This still goes wrong if all copies get deleted.
 +
 +
@@ -351,10 +404,10 @@ Index: vdr-1.7.28/README-HLCUTTER
 +
 +
 +SetBrokenLink may get lost on rare cases, this needs some more thoughts.
-Index: vdr-1.7.28/recorder.c
+Index: vdr-1.7.30/recorder.c
 ===================================================================
---- vdr-1.7.28.orig/recorder.c	2011-09-04 11:26:44.000000000 +0200
-+++ vdr-1.7.28/recorder.c	2012-06-15 10:31:08.291013490 +0200
+--- vdr-1.7.30.orig/recorder.c	2011-09-04 11:26:44.000000000 +0200
++++ vdr-1.7.30/recorder.c	2012-09-22 10:10:17.959986190 +0200
 @@ -89,7 +89,7 @@
  bool cRecorder::NextFile(void)
  {
@@ -364,11 +417,11 @@ Index: vdr-1.7.28/recorder.c
          recordFile = fileName->NextFile();
          fileSize = 0;
          }
-Index: vdr-1.7.28/recording.c
+Index: vdr-1.7.30/recording.c
 ===================================================================
---- vdr-1.7.28.orig/recording.c	2012-06-15 10:26:25.151001752 +0200
-+++ vdr-1.7.28/recording.c	2012-06-15 10:31:08.291013490 +0200
-@@ -2090,6 +2090,20 @@
+--- vdr-1.7.30.orig/recording.c	2012-09-22 10:10:17.871986186 +0200
++++ vdr-1.7.30/recording.c	2012-09-22 10:13:49.647994967 +0200
+@@ -2136,6 +2136,20 @@
    return NULL;
  }
  
@@ -389,11 +442,11 @@ Index: vdr-1.7.28/recording.c
  cUnbufferedFile *cFileName::NextFile(void)
  {
    return SetOffset(fileNumber + 1);
-Index: vdr-1.7.28/recording.h
+Index: vdr-1.7.30/recording.h
 ===================================================================
---- vdr-1.7.28.orig/recording.h	2012-06-15 10:26:25.091001749 +0200
-+++ vdr-1.7.28/recording.h	2012-06-15 10:31:08.291013490 +0200
-@@ -260,9 +260,17 @@
+--- vdr-1.7.30.orig/recording.h	2012-09-22 10:10:17.811986183 +0200
++++ vdr-1.7.30/recording.h	2012-09-22 10:10:17.959986190 +0200
+@@ -261,9 +261,17 @@
  // before the next independent frame, to have a complete Group Of Pictures):
  #define MAXVIDEOFILESIZETS  1048570 // MB
  #define MAXVIDEOFILESIZEPES    2000 // MB
@@ -412,7 +465,7 @@ Index: vdr-1.7.28/recording.h
  struct tIndexTs;
  class cIndexFileGenerator;
  
-@@ -315,6 +323,8 @@
+@@ -321,6 +329,8 @@
    cUnbufferedFile *Open(void);
    void Close(void);
    cUnbufferedFile *SetOffset(int Number, off_t Offset = 0); // yes, Number is int for easier internal calculating
@@ -421,10 +474,10 @@ Index: vdr-1.7.28/recording.h
    cUnbufferedFile *NextFile(void);
    };
  
-Index: vdr-1.7.28/videodir.c
+Index: vdr-1.7.30/videodir.c
 ===================================================================
---- vdr-1.7.28.orig/videodir.c	2012-06-15 10:26:24.695001733 +0200
-+++ vdr-1.7.28/videodir.c	2012-06-15 10:31:08.291013490 +0200
+--- vdr-1.7.30.orig/videodir.c	2012-09-22 10:10:17.611986175 +0200
++++ vdr-1.7.30/videodir.c	2012-09-22 10:13:20.803993770 +0200
 @@ -19,6 +19,9 @@
  #include "recording.h"
  #include "tools.h"
@@ -434,8 +487,8 @@ Index: vdr-1.7.28/videodir.c
 +
  const char *VideoDirectory = VIDEODIR;
  
- class cVideoDirectory {
-@@ -168,6 +171,120 @@
+ void SetVideoDirectory(const char *Directory)
+@@ -173,6 +176,120 @@
    return RemoveFileOrDir(FileName, true);
  }
  
@@ -556,11 +609,11 @@ Index: vdr-1.7.28/videodir.c
  bool VideoFileSpaceAvailable(int SizeMB)
  {
    cVideoDirectory Dir;
-Index: vdr-1.7.28/videodir.h
+Index: vdr-1.7.30/videodir.h
 ===================================================================
---- vdr-1.7.28.orig/videodir.h	2012-06-15 10:26:24.695001733 +0200
-+++ vdr-1.7.28/videodir.h	2012-06-15 10:31:08.291013490 +0200
-@@ -19,6 +19,7 @@
+--- vdr-1.7.30.orig/videodir.h	2012-09-22 10:10:17.611986175 +0200
++++ vdr-1.7.30/videodir.h	2012-09-22 10:10:17.959986190 +0200
+@@ -20,6 +20,7 @@
  int CloseVideoFile(cUnbufferedFile *File);
  bool RenameVideoFile(const char *OldName, const char *NewName);
  bool RemoveVideoFile(const char *FileName);

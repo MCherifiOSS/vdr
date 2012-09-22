@@ -1,8 +1,8 @@
-Index: vdr-1.7.29/config.c
+Index: vdr-1.7.30/config.c
 ===================================================================
---- vdr-1.7.29.orig/config.c	2012-07-19 00:58:14.516959336 +0200
-+++ vdr-1.7.29/config.c	2012-07-19 02:28:38.453986006 +0200
-@@ -468,6 +468,8 @@
+--- vdr-1.7.30.orig/config.c	2012-09-22 10:17:57.176005227 +0200
++++ vdr-1.7.30/config.c	2012-09-22 10:17:57.236005230 +0200
+@@ -475,6 +475,8 @@
    ChannelsWrap = 0;
    ShowChannelNamesWithSource = 0;
    EmergencyExit = 1;
@@ -11,7 +11,7 @@ Index: vdr-1.7.29/config.c
  }
  
  cSetup& cSetup::operator= (const cSetup &s)
-@@ -668,6 +670,8 @@
+@@ -682,6 +684,8 @@
    else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
    else if (!strcasecmp(Name, "ShowChannelNamesWithSource")) ShowChannelNamesWithSource = atoi(Value);
    else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
@@ -20,7 +20,7 @@ Index: vdr-1.7.29/config.c
    else
       return false;
    return true;
-@@ -771,6 +775,8 @@
+@@ -792,6 +796,8 @@
    Store("ChannelsWrap",       ChannelsWrap);
    Store("ShowChannelNamesWithSource", ShowChannelNamesWithSource);
    Store("EmergencyExit",      EmergencyExit);
@@ -29,11 +29,11 @@ Index: vdr-1.7.29/config.c
  
    Sort();
  
-Index: vdr-1.7.29/config.h
+Index: vdr-1.7.30/config.h
 ===================================================================
---- vdr-1.7.29.orig/config.h	2012-07-19 00:58:14.576959339 +0200
-+++ vdr-1.7.29/config.h	2012-07-19 02:28:38.453986006 +0200
-@@ -338,6 +338,8 @@
+--- vdr-1.7.30.orig/config.h	2012-09-22 10:17:57.176005227 +0200
++++ vdr-1.7.30/config.h	2012-09-22 10:17:57.240005230 +0200
+@@ -342,6 +342,8 @@
    int ChannelsWrap;
    int ShowChannelNamesWithSource;
    int EmergencyExit;
@@ -42,11 +42,11 @@ Index: vdr-1.7.29/config.h
    int __EndData__;
    cString InitialChannel;
    cString DeviceBondings;
-Index: vdr-1.7.29/menu.c
+Index: vdr-1.7.30/menu.c
 ===================================================================
---- vdr-1.7.29.orig/menu.c	2012-07-19 02:28:38.421986003 +0200
-+++ vdr-1.7.29/menu.c	2012-07-19 02:28:38.457986005 +0200
-@@ -3511,6 +3511,8 @@
+--- vdr-1.7.30.orig/menu.c	2012-09-22 10:17:57.208005230 +0200
++++ vdr-1.7.30/menu.c	2012-09-22 10:17:57.244005231 +0200
+@@ -3523,6 +3523,8 @@
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Jump&Play"), &data.JumpPlay));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Play&Jump"), &data.PlayJump));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause at last mark"), &data.PauseLastMark));
@@ -55,7 +55,7 @@ Index: vdr-1.7.29/menu.c
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -5451,9 +5453,9 @@
+@@ -5472,9 +5474,9 @@
      case kRight:   Forward(); break;
      case kRed:     TimeSearch(); break;
      case kGreen|k_Repeat:
@@ -67,7 +67,7 @@ Index: vdr-1.7.29/menu.c
      case kPrev|k_Repeat:
      case kPrev:    if (lastSkipTimeout.TimedOut()) {
                        lastSkipSeconds = REPLAYCONTROLSKIPSECONDS;
-@@ -5500,7 +5502,7 @@
+@@ -5521,7 +5523,7 @@
                                    marks.Save();
                                    }
                                 else
@@ -76,7 +76,7 @@ Index: vdr-1.7.29/menu.c
                                 break;
          case k3|k_Repeat:
          case k3:               if (GetReplayMode(play, forward, speed) && !play && GetIndex(Current, Total) && (m = marks.Get(Current)) != NULL) {
-@@ -5513,7 +5515,7 @@
+@@ -5534,7 +5536,7 @@
                                    marks.Save();
                                    }
                                 else
