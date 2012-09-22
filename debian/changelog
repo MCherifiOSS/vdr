@@ -3,6 +3,7 @@ vdr (1.7.30-0yavdr0~precise) precise; urgency=medium
   * New upstream release
   * Removed channelname-fix-1.7.27.patch
   * Updated vasarajanauloja.patch
+  * Updated hlcutter.patch (vdr-1.7.29-hlcutter-0.2.3.diff)
 
  -- Holger Schvestka <hotzenplotz5@gmx.de>  Thu, 13 Sep 2012 13:01:25 +0200
 

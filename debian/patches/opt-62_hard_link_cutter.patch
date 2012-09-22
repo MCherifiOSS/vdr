@@ -1,3 +1,7 @@
+Description: The hard link cutter patch changes the recording editing algorithms of VDR to use filesystem hard links to 'copy' recording files whenever possible to speed up editing recordings noticeably.
+Author: Udo Richter <udo_richter@gmx.de>
+Origin: http://www.udo-richter.de/vdr/patches.html#hlcutter
+
 Index: vdr-1.7.30/config.c
 ===================================================================
 --- vdr-1.7.30.orig/config.c	2012-09-22 10:10:17.863986185 +0200
