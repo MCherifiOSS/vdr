@@ -280,31 +280,31 @@ Origin: http://www.jwendel.de/vdr/
  #endif //__STATUS_H
 --- a/timers.c
 +++ b/timers.c
-@@ -47,6 +47,7 @@
-      stop -= 2400;
-   priority = Pause ? Setup.PausePriority : Setup.DefaultPriority;
-   lifetime = Pause ? Setup.PauseLifetime : Setup.DefaultLifetime;
+@@ -32,6 +32,7 @@
+   deferred = 0;
+   recording = pending = inVpsMargin = false;
+   flags = tfNone;
 +  fskProtection = 0;                                        // PIN PATCH
    *file = 0;
    aux = NULL;
    event = NULL;
-@@ -86,6 +87,7 @@
+@@ -117,6 +118,7 @@
       stop -= 2400;
    priority = Setup.DefaultPriority;
    lifetime = Setup.DefaultLifetime;
 +  fskProtection = 0;                                        // PIN PATCH
-   *file = 0;
    const char *Title = Event->Title();
    if (!isempty(Title))
-@@ -97,6 +99,7 @@
+      Utf8Strn0Cpy(file, Event->Title(), sizeof(file));
+@@ -126,6 +128,7 @@
+      dsyslog("timer file name truncated to '%s'", file);
       }
-   aux = NULL;
-   event = NULL; // let SetEvent() be called to get a log message
+   SetEvent(Event);
 +  cStatus::MsgTimerCreation(this, Event);
  }
  
  cTimer::cTimer(const cTimer &Timer)
-@@ -132,6 +135,7 @@
+@@ -161,6 +164,7 @@
       stop         = Timer.stop;
       priority     = Timer.priority;
       lifetime     = Timer.lifetime;
@@ -312,7 +312,7 @@ Origin: http://www.jwendel.de/vdr/
       strncpy(file, Timer.file, sizeof(file));
       free(aux);
       aux = Timer.aux ? strdup(Timer.aux) : NULL;
-@@ -326,6 +330,7 @@
+@@ -355,6 +359,7 @@
          result = false;
          }
       }
@@ -320,7 +320,7 @@ Origin: http://www.jwendel.de/vdr/
    free(channelbuffer);
    free(daybuffer);
    free(filebuffer);
-@@ -681,6 +686,33 @@
+@@ -710,6 +715,33 @@
    Matches(); // refresh start and end time
  }
  
@@ -390,7 +390,7 @@ Origin: http://www.jwendel.de/vdr/
  #include "themes.h"
  #include "timers.h"
  #include "tools.h"
-@@ -958,6 +959,7 @@
+@@ -959,6 +960,7 @@
          cOsdObject *Interact = Menu ? Menu : cControl::Control();
          eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());
          if (ISREALKEY(key)) {
@@ -398,7 +398,7 @@ Origin: http://www.jwendel.de/vdr/
             EITScanner.Activity();
             // Cancel shutdown countdown:
             if (ShutdownHandler.countdown)
-@@ -1030,10 +1032,12 @@
+@@ -1031,10 +1033,12 @@
                       cControl::Control()->Hide();
                    cPlugin *plugin = cPluginManager::GetPlugin(PluginName);
                    if (plugin) {
@@ -411,7 +411,7 @@ Origin: http://www.jwendel.de/vdr/
                    else
                       esyslog("ERROR: unknown plugin '%s'", PluginName);
                    }
-@@ -1245,9 +1249,11 @@
+@@ -1246,9 +1250,11 @@
               // Instant resume of the last viewed recording:
               case kPlay:
                    if (cReplayControl::LastReplayed()) {

@@ -5,10 +5,8 @@ Description: Play after jump to next mark. Automatically jump over commercial br
 Author: Torsten Kunkel <vdr@tkunkel.de>, Thomas GÃ¼nther <tom@toms-cafe.de>
 Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
 
-Index: vdr-1.7.30/config.c
-===================================================================
---- vdr-1.7.30.orig/config.c	2012-09-09 14:58:23.000000000 +0200
-+++ vdr-1.7.30/config.c	2012-09-22 09:48:08.199931060 +0200
+--- a/config.c
++++ b/config.c
 @@ -459,6 +459,9 @@
    ShowReplayMode = 0;
    ShowRemainingTime = 0;
@@ -39,10 +37,8 @@ Index: vdr-1.7.30/config.c
    Store("CurrentChannel",     CurrentChannel);
    Store("CurrentVolume",      CurrentVolume);
    Store("CurrentDolby",       CurrentDolby);
-Index: vdr-1.7.30/config.h
-===================================================================
---- vdr-1.7.30.orig/config.h	2012-09-09 14:57:33.000000000 +0200
-+++ vdr-1.7.30/config.h	2012-09-22 09:48:08.199931060 +0200
+--- a/config.h
++++ b/config.h
 @@ -36,6 +36,9 @@
  // plugins to work with newer versions of the core VDR as long as no
  // VDR header files have changed.
@@ -53,7 +49,7 @@ Index: vdr-1.7.30/config.h
  #define MAXPRIORITY       99
  #define MINPRIORITY       (-MAXPRIORITY)
  #define LIVEPRIORITY      0                  // priority used when selecting a device for live viewing
-@@ -319,6 +322,9 @@
+@@ -320,6 +323,9 @@
    int ShowReplayMode;
    int ShowRemainingTime;
    int ResumeID;
@@ -63,10 +59,8 @@ Index: vdr-1.7.30/config.h
    int CurrentChannel;
    int CurrentVolume;
    int CurrentDolby;
-Index: vdr-1.7.30/dvbplayer.c
-===================================================================
---- vdr-1.7.30.orig/dvbplayer.c	2012-09-22 09:48:08.143931059 +0200
-+++ vdr-1.7.30/dvbplayer.c	2012-09-22 09:48:08.203931061 +0200
+--- a/dvbplayer.c
++++ b/dvbplayer.c
 @@ -204,6 +204,7 @@
    cNonBlockingFileReader *nonBlockingFileReader;
    cRingBufferFrame *ringBuffer;
@@ -204,11 +198,9 @@ Index: vdr-1.7.30/dvbplayer.c
  
            // Handle hitting begin/end of recording:
  
-Index: vdr-1.7.30/MANUAL
-===================================================================
---- vdr-1.7.30.orig/MANUAL	2012-09-22 09:48:08.147931059 +0200
-+++ vdr-1.7.30/MANUAL	2012-09-22 09:48:08.203931061 +0200
-@@ -878,6 +878,25 @@
+--- a/MANUAL
++++ b/MANUAL
+@@ -883,6 +883,25 @@
                           0 resulting in a file named 'resume', and any other
                           value resulting in 'resume.n'.
  
@@ -234,11 +226,9 @@ Index: vdr-1.7.30/MANUAL
    Miscellaneous:
  
    Min. event timeout = 30
-Index: vdr-1.7.30/po/de_DE.po
-===================================================================
---- vdr-1.7.30.orig/po/de_DE.po	2012-09-22 09:48:08.151931059 +0200
-+++ vdr-1.7.30/po/de_DE.po	2012-09-22 09:48:08.203931061 +0200
-@@ -1089,6 +1089,15 @@
+--- a/po/de_DE.po
++++ b/po/de_DE.po
+@@ -1092,6 +1092,15 @@
  msgid "Replay"
  msgstr "Wiedergabe"
  
@@ -254,11 +244,9 @@ Index: vdr-1.7.30/po/de_DE.po
  msgid "Setup.Replay$Multi speed mode"
  msgstr "Mehrstufiger Vor-/Rücklauf"
  
-Index: vdr-1.7.30/po/fr_FR.po
-===================================================================
---- vdr-1.7.30.orig/po/fr_FR.po	2012-09-09 15:20:14.000000000 +0200
-+++ vdr-1.7.30/po/fr_FR.po	2012-09-22 09:48:08.203931061 +0200
-@@ -1095,6 +1095,15 @@
+--- a/po/fr_FR.po
++++ b/po/fr_FR.po
+@@ -1098,6 +1098,15 @@
  msgid "Replay"
  msgstr "Lecture"
  
@@ -274,10 +262,8 @@ Index: vdr-1.7.30/po/fr_FR.po
  msgid "Setup.Replay$Multi speed mode"
  msgstr "Mode multi-vitesses"
  
-Index: vdr-1.7.30/README.jumpplay
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr-1.7.30/README.jumpplay	2012-09-22 09:48:08.203931061 +0200
+--- /dev/null
++++ b/README.jumpplay
 @@ -0,0 +1,92 @@
 +JumpPlay patch for VDR
 +----------------------
@@ -371,10 +357,8 @@ Index: vdr-1.7.30/README.jumpplay
 +    Play&Jump:
 +      - set resume position to 0 if replay stops at the first mark
 +    Added French language texts (thanks to Michaël Nival)
-Index: vdr-1.7.30/menu.c
-===================================================================
---- vdr-1.7.30.orig/menu.c	2012-09-22 09:48:08.175931060 +0200
-+++ vdr-1.7.30/menu.c	2012-09-22 09:48:08.207931062 +0200
+--- a/menu.c
++++ b/menu.c
 @@ -3315,6 +3315,9 @@
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Show replay mode"), &data.ShowReplayMode));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Show remaining time"), &data.ShowRemainingTime));

@@ -214,12 +214,12 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    CloseDvr();
    fd_dvr = DvbOpen(DEV_DVB_DVR, adapter, frontend, O_RDONLY | O_NONBLOCK, true);
 -  if (fd_dvr >= 0)
--     tsBuffer = new cTSBuffer(fd_dvr, MEGABYTE(2), CardIndex() + 1);
+-     tsBuffer = new cTSBuffer(fd_dvr, MEGABYTE(5), CardIndex() + 1);
 +  if (fd_dvr >= 0) {
 +     if (ciAdapter)
 +        tsBuffer = ciAdapter->GetTSBuffer(fd_dvr);
 +     if (tsBuffer == NULL)
-+        tsBuffer = new cTSBuffer(fd_dvr, MEGABYTE(2), CardIndex() + 1);
++        tsBuffer = new cTSBuffer(fd_dvr, MEGABYTE(5), CardIndex() + 1);
 +     }
    return fd_dvr >= 0;
  }

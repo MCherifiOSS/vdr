@@ -2,10 +2,8 @@ Description: The hard link cutter patch changes the recording editing algorithms
 Author: Udo Richter <udo_richter@gmx.de>
 Origin: http://www.udo-richter.de/vdr/patches.html#hlcutter
 
-Index: vdr-1.7.30/config.c
-===================================================================
---- vdr-1.7.30.orig/config.c	2012-09-22 10:10:17.863986185 +0200
-+++ vdr-1.7.30/config.c	2012-09-22 10:10:17.951986189 +0200
+--- a/config.c
++++ b/config.c
 @@ -451,8 +451,10 @@
    FontSmlSize = 18;
    FontFixSize = 20;
@@ -39,11 +37,9 @@ Index: vdr-1.7.30/config.c
    Store("MinEventTimeout",    MinEventTimeout);
    Store("MinUserInactivity",  MinUserInactivity);
    Store("NextWakeupTime",     NextWakeupTime);
-Index: vdr-1.7.30/config.h
-===================================================================
---- vdr-1.7.30.orig/config.h	2012-09-22 10:10:17.923986188 +0200
-+++ vdr-1.7.30/config.h	2012-09-22 10:10:17.951986189 +0200
-@@ -321,8 +321,10 @@
+--- a/config.h
++++ b/config.h
+@@ -322,8 +322,10 @@
    int FontSmlSize;
    int FontFixSize;
    int MaxVideoFileSize;
@@ -54,10 +50,8 @@ Index: vdr-1.7.30/config.h
    int MinEventTimeout, MinUserInactivity;
    time_t NextWakeupTime;
    int MultiSpeedMode;
-Index: vdr-1.7.30/cutter.c
-===================================================================
---- vdr-1.7.30.orig/cutter.c	2012-09-22 10:10:17.599986175 +0200
-+++ vdr-1.7.30/cutter.c	2012-09-22 10:12:29.367991640 +0200
+--- a/cutter.c
++++ b/cutter.c
 @@ -81,6 +81,7 @@
       Mark = fromMarks.Next(Mark);
       off_t FileSize = 0;
@@ -66,7 +60,7 @@ Index: vdr-1.7.30/cutter.c
       int LastIFrame = 0;
       toMarks.Add(0);
       toMarks.Save();
-@@ -101,13 +102,93 @@
+@@ -117,13 +118,93 @@
  
             // Read one frame:
  
@@ -166,7 +160,7 @@ Index: vdr-1.7.30/cutter.c
                if (fromFile) {
                   int len = ReadFrame(fromFile, buffer,  Length, sizeof(buffer));
                   if (len < 0) {
-@@ -124,19 +205,12 @@
+@@ -140,19 +221,12 @@
                   break;
                   }
                }
@@ -187,7 +181,7 @@ Index: vdr-1.7.30/cutter.c
                   toFile = toFileName->NextFile();
                   if (!toFile) {
                      error = "toFile 1";
-@@ -160,7 +234,7 @@
+@@ -176,7 +250,7 @@
                      }
                   CheckForSeamlessStream = false;
                   }
@@ -196,7 +190,7 @@ Index: vdr-1.7.30/cutter.c
                   if (isPesRecording)
                      cRemux::SetBrokenLink(buffer, Length);
                   else
-@@ -168,7 +242,7 @@
+@@ -184,7 +258,7 @@
                   cutIn = false;
                   }
                }
@@ -205,7 +199,7 @@ Index: vdr-1.7.30/cutter.c
                error = "safe_write";
                break;
                }
-@@ -213,7 +287,7 @@
+@@ -229,7 +303,7 @@
                      }
                   }
                else
@@ -214,13 +208,11 @@ Index: vdr-1.7.30/cutter.c
                }
             }
       Recordings.TouchUpdate();
-Index: vdr-1.7.30/menu.c
-===================================================================
---- vdr-1.7.30.orig/menu.c	2012-09-22 10:10:17.927986188 +0200
-+++ vdr-1.7.30/menu.c	2012-09-22 10:10:17.955986190 +0200
+--- a/menu.c
++++ b/menu.c
 @@ -3481,8 +3481,10 @@
    Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),     data.NameInstantRecord, sizeof(data.NameInstantRecord)));
-   Add(new cMenuEditIntItem( tr("Setup.Recording$Instant rec. time (min)"),   &data.InstantRecordTime, 1, MAXINSTANTRECTIME));
+   Add(new cMenuEditIntItem( tr("Setup.Recording$Instant rec. time (min)"),   &data.InstantRecordTime, 0, MAXINSTANTRECTIME, tr("Setup.Recording$present event")));
    Add(new cMenuEditIntItem( tr("Setup.Recording$Max. video file size (MB)"), &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZETS));
 +  Add(new cMenuEditIntItem( tr("Setup.Recording$Max. recording size (GB)"),  &data.MaxRecordingSize, MINRECORDINGSIZE, MAXRECORDINGSIZE));
    Add(new cMenuEditBoolItem(tr("Setup.Recording$Split edited files"),        &data.SplitEditedFiles));
@@ -229,11 +221,9 @@ Index: vdr-1.7.30/menu.c
  }
  
  // --- cMenuSetupReplay ------------------------------------------------------
-Index: vdr-1.7.30/po/de_DE.po
-===================================================================
---- vdr-1.7.30.orig/po/de_DE.po	2012-09-22 10:10:17.663986178 +0200
-+++ vdr-1.7.30/po/de_DE.po	2012-09-22 10:10:17.955986190 +0200
-@@ -1080,12 +1080,18 @@
+--- a/po/de_DE.po
++++ b/po/de_DE.po
+@@ -1083,12 +1083,18 @@
  msgid "Setup.Recording$Max. video file size (MB)"
  msgstr "Max. Videodateigröße (MB)"
  
@@ -252,11 +242,9 @@ Index: vdr-1.7.30/po/de_DE.po
  msgid "Replay"
  msgstr "Wiedergabe"
  
-Index: vdr-1.7.30/po/fi_FI.po
-===================================================================
---- vdr-1.7.30.orig/po/fi_FI.po	2012-09-22 10:10:17.607986176 +0200
-+++ vdr-1.7.30/po/fi_FI.po	2012-09-22 10:10:17.955986190 +0200
-@@ -1083,12 +1083,18 @@
+--- a/po/fi_FI.po
++++ b/po/fi_FI.po
+@@ -1086,12 +1086,18 @@
  msgid "Setup.Recording$Max. video file size (MB)"
  msgstr "Suurin tiedostokoko (Mt)"
  
@@ -275,10 +263,8 @@ Index: vdr-1.7.30/po/fi_FI.po
  msgid "Replay"
  msgstr "Toisto"
  
-Index: vdr-1.7.30/README-HLCUTTER
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr-1.7.30/README-HLCUTTER	2012-09-22 10:15:44.111999711 +0200
+--- /dev/null
++++ b/README-HLCUTTER
 @@ -0,0 +1,128 @@
 +
 +                    VDR-HLCUTTER README
@@ -408,11 +394,9 @@ Index: vdr-1.7.30/README-HLCUTTER
 +
 +
 +SetBrokenLink may get lost on rare cases, this needs some more thoughts.
-Index: vdr-1.7.30/recorder.c
-===================================================================
---- vdr-1.7.30.orig/recorder.c	2011-09-04 11:26:44.000000000 +0200
-+++ vdr-1.7.30/recorder.c	2012-09-22 10:10:17.959986190 +0200
-@@ -89,7 +89,7 @@
+--- a/recorder.c
++++ b/recorder.c
+@@ -90,7 +90,7 @@
  bool cRecorder::NextFile(void)
  {
    if (recordFile && frameDetector->IndependentFrame()) { // every file shall start with an independent frame
@@ -421,11 +405,9 @@ Index: vdr-1.7.30/recorder.c
          recordFile = fileName->NextFile();
          fileSize = 0;
          }
-Index: vdr-1.7.30/recording.c
-===================================================================
---- vdr-1.7.30.orig/recording.c	2012-09-22 10:10:17.871986186 +0200
-+++ vdr-1.7.30/recording.c	2012-09-22 10:13:49.647994967 +0200
-@@ -2136,6 +2136,20 @@
+--- a/recording.c
++++ b/recording.c
+@@ -2151,6 +2151,20 @@
    return NULL;
  }
  
@@ -446,11 +428,9 @@ Index: vdr-1.7.30/recording.c
  cUnbufferedFile *cFileName::NextFile(void)
  {
    return SetOffset(fileNumber + 1);
-Index: vdr-1.7.30/recording.h
-===================================================================
---- vdr-1.7.30.orig/recording.h	2012-09-22 10:10:17.811986183 +0200
-+++ vdr-1.7.30/recording.h	2012-09-22 10:10:17.959986190 +0200
-@@ -261,9 +261,17 @@
+--- a/recording.h
++++ b/recording.h
+@@ -262,9 +262,17 @@
  // before the next independent frame, to have a complete Group Of Pictures):
  #define MAXVIDEOFILESIZETS  1048570 // MB
  #define MAXVIDEOFILESIZEPES    2000 // MB
@@ -469,7 +449,7 @@ Index: vdr-1.7.30/recording.h
  struct tIndexTs;
  class cIndexFileGenerator;
  
-@@ -321,6 +329,8 @@
+@@ -322,6 +330,8 @@
    cUnbufferedFile *Open(void);
    void Close(void);
    cUnbufferedFile *SetOffset(int Number, off_t Offset = 0); // yes, Number is int for easier internal calculating
@@ -478,10 +458,8 @@ Index: vdr-1.7.30/recording.h
    cUnbufferedFile *NextFile(void);
    };
  
-Index: vdr-1.7.30/videodir.c
-===================================================================
---- vdr-1.7.30.orig/videodir.c	2012-09-22 10:10:17.611986175 +0200
-+++ vdr-1.7.30/videodir.c	2012-09-22 10:13:20.803993770 +0200
+--- a/videodir.c
++++ b/videodir.c
 @@ -19,6 +19,9 @@
  #include "recording.h"
  #include "tools.h"
@@ -613,10 +591,8 @@ Index: vdr-1.7.30/videodir.c
  bool VideoFileSpaceAvailable(int SizeMB)
  {
    cVideoDirectory Dir;
-Index: vdr-1.7.30/videodir.h
-===================================================================
---- vdr-1.7.30.orig/videodir.h	2012-09-22 10:10:17.611986175 +0200
-+++ vdr-1.7.30/videodir.h	2012-09-22 10:10:17.959986190 +0200
+--- a/videodir.h
++++ b/videodir.h
 @@ -20,6 +20,7 @@
  int CloseVideoFile(cUnbufferedFile *File);
  bool RenameVideoFile(const char *OldName, const char *NewName);

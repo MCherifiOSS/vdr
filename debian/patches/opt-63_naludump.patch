@@ -2,10 +2,8 @@ Description: Naludump-Patch for VDR
 Author: Udo Richter <udo_richter@gmx.de>      
 Origin: http://www.udo-richter.de/vdr/naludump.html
 
-Index: vdr-1.7.30/config.c
-===================================================================
---- vdr-1.7.30.orig/config.c	2012-09-22 10:17:57.140005227 +0200
-+++ vdr-1.7.30/config.c	2012-09-22 10:17:57.176005227 +0200
+--- a/config.c
++++ b/config.c
 @@ -454,6 +454,7 @@
    MaxRecordingSize = DEFAULTRECORDINGSIZE;
    SplitEditedFiles = 0;
@@ -30,11 +28,9 @@ Index: vdr-1.7.30/config.c
    Store("HardLinkCutter",     HardLinkCutter);
    Store("MinEventTimeout",    MinEventTimeout);
    Store("MinUserInactivity",  MinUserInactivity);
-Index: vdr-1.7.30/config.h
-===================================================================
---- vdr-1.7.30.orig/config.h	2012-09-22 10:17:57.140005227 +0200
-+++ vdr-1.7.30/config.h	2012-09-22 10:17:57.176005227 +0200
-@@ -324,6 +324,7 @@
+--- a/config.h
++++ b/config.h
+@@ -325,6 +325,7 @@
    int MaxRecordingSize;
    int SplitEditedFiles;
    int DelTimeshiftRec;
@@ -42,10 +38,8 @@ Index: vdr-1.7.30/config.h
    int HardLinkCutter;
    int MinEventTimeout, MinUserInactivity;
    time_t NextWakeupTime;
-Index: vdr-1.7.30/menu.c
-===================================================================
---- vdr-1.7.30.orig/menu.c	2012-09-22 10:17:57.144005226 +0200
-+++ vdr-1.7.30/menu.c	2012-09-22 10:17:57.176005227 +0200
+--- a/menu.c
++++ b/menu.c
 @@ -3484,6 +3484,7 @@
    Add(new cMenuEditIntItem( tr("Setup.Recording$Max. recording size (GB)"),  &data.MaxRecordingSize, MINRECORDINGSIZE, MAXRECORDINGSIZE));
    Add(new cMenuEditBoolItem(tr("Setup.Recording$Split edited files"),        &data.SplitEditedFiles));
@@ -54,11 +48,9 @@ Index: vdr-1.7.30/menu.c
    Add(new cMenuEditBoolItem(tr("Setup.Recording$Hard Link Cutter"),          &data.HardLinkCutter));
  }
  
-Index: vdr-1.7.30/recorder.c
-===================================================================
---- vdr-1.7.30.orig/recorder.c	2012-09-22 10:17:57.144005226 +0200
-+++ vdr-1.7.30/recorder.c	2012-09-22 10:17:57.176005227 +0200
-@@ -45,6 +45,14 @@
+--- a/recorder.c
++++ b/recorder.c
+@@ -46,6 +46,14 @@
       Type = 0x06;
       }
    frameDetector = new cFrameDetector(Pid, Type);
@@ -73,7 +65,7 @@ Index: vdr-1.7.30/recorder.c
    index = NULL;
    fileSize = 0;
    lastDiskSpaceCheck = time(NULL);
-@@ -66,6 +74,12 @@
+@@ -67,6 +75,12 @@
  cRecorder::~cRecorder()
  {
    Detach();
@@ -86,7 +78,7 @@ Index: vdr-1.7.30/recorder.c
    delete index;
    delete fileName;
    delete frameDetector;
-@@ -154,11 +168,32 @@
+@@ -155,11 +169,32 @@
                               fileSize += TS_SIZE;
                               }
                         }
@@ -123,10 +115,8 @@ Index: vdr-1.7.30/recorder.c
                      t = time(NULL);
                      }
                   }
-Index: vdr-1.7.30/recorder.h
-===================================================================
---- vdr-1.7.30.orig/recorder.h	2010-12-27 12:17:04.000000000 +0100
-+++ vdr-1.7.30/recorder.h	2012-09-22 10:17:57.180005227 +0200
+--- a/recorder.h
++++ b/recorder.h
 @@ -21,6 +21,7 @@
    cRingBufferLinear *ringBuffer;
    cFrameDetector *frameDetector;
@@ -135,10 +125,8 @@ Index: vdr-1.7.30/recorder.h
    cFileName *fileName;
    cIndexFile *index;
    cUnbufferedFile *recordFile;
-Index: vdr-1.7.30/remux.c
-===================================================================
---- vdr-1.7.30.orig/remux.c	2012-03-02 11:56:49.000000000 +0100
-+++ vdr-1.7.30/remux.c	2012-09-22 10:17:57.180005227 +0200
+--- a/remux.c
++++ b/remux.c
 @@ -146,6 +146,42 @@
          }
  }
@@ -182,7 +170,7 @@ Index: vdr-1.7.30/remux.c
  // --- cPatPmtGenerator ------------------------------------------------------
  
  cPatPmtGenerator::cPatPmtGenerator(const cChannel *Channel)
-@@ -1033,3 +1069,344 @@
+@@ -1066,3 +1102,344 @@
          }
    return Processed;
  }
@@ -527,10 +515,8 @@ Index: vdr-1.7.30/remux.c
 +    OutLength = (OutEnd - Out);
 +    return OutLength > 0 ? Out : NULL;
 +}
-Index: vdr-1.7.30/remux.h
-===================================================================
---- vdr-1.7.30.orig/remux.h	2011-09-04 14:48:26.000000000 +0200
-+++ vdr-1.7.30/remux.h	2012-09-22 10:17:57.180005227 +0200
+--- a/remux.h
++++ b/remux.h
 @@ -57,6 +57,11 @@
    return p[3] & TS_PAYLOAD_EXISTS;
  }

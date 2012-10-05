@@ -286,7 +286,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    cMutexLock MutexLock(&mutexReceiver);
    for (int i = 0; i < MAXRECEIVERS; i++)
        Detach(receiver[i]);
-@@ -1777,3 +1860,25 @@
+@@ -1778,3 +1861,25 @@
       }
    return NULL;
  }

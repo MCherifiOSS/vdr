@@ -1,7 +1,5 @@
-Index: vdr-1.7.30/config.c
-===================================================================
---- vdr-1.7.30.orig/config.c	2012-09-22 10:17:57.176005227 +0200
-+++ vdr-1.7.30/config.c	2012-09-22 10:17:57.236005230 +0200
+--- a/config.c
++++ b/config.c
 @@ -475,6 +475,8 @@
    ChannelsWrap = 0;
    ShowChannelNamesWithSource = 0;
@@ -29,11 +27,9 @@ Index: vdr-1.7.30/config.c
  
    Sort();
  
-Index: vdr-1.7.30/config.h
-===================================================================
---- vdr-1.7.30.orig/config.h	2012-09-22 10:17:57.176005227 +0200
-+++ vdr-1.7.30/config.h	2012-09-22 10:17:57.240005230 +0200
-@@ -342,6 +342,8 @@
+--- a/config.h
++++ b/config.h
+@@ -343,6 +343,8 @@
    int ChannelsWrap;
    int ShowChannelNamesWithSource;
    int EmergencyExit;
@@ -42,10 +38,8 @@ Index: vdr-1.7.30/config.h
    int __EndData__;
    cString InitialChannel;
    cString DeviceBondings;
-Index: vdr-1.7.30/menu.c
-===================================================================
---- vdr-1.7.30.orig/menu.c	2012-09-22 10:17:57.208005230 +0200
-+++ vdr-1.7.30/menu.c	2012-09-22 10:17:57.244005231 +0200
+--- a/menu.c
++++ b/menu.c
 @@ -3523,6 +3523,8 @@
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Jump&Play"), &data.JumpPlay));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Play&Jump"), &data.PlayJump));
