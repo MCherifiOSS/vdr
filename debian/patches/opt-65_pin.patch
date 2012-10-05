@@ -2,11 +2,9 @@ Description: Pin-Patch for VDR-Pin-Plugin
 Author: Jörg Wendel <horchi@vdr-portal>       
 Origin: http://www.jwendel.de/vdr/
 
-Index: vdr-1.7.30/device.c
-===================================================================
---- vdr-1.7.30.orig/device.c	2012-09-22 10:17:03.732003013 +0200
-+++ vdr-1.7.30/device.c	2012-09-22 10:17:57.204005229 +0200
-@@ -691,6 +691,12 @@
+--- a/device.c
++++ b/device.c
+@@ -745,6 +745,12 @@
  
  bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
  {
@@ -19,7 +17,7 @@ Index: vdr-1.7.30/device.c
    if (LiveView) {
       isyslog("switching to channel %d", Channel->Number());
       cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
-@@ -721,6 +727,7 @@
+@@ -775,6 +781,7 @@
       cChannel *channel;
       while ((channel = Channels.GetByNumber(n, Direction)) != NULL) {
             // try only channels which are currently available
@@ -27,10 +25,8 @@ Index: vdr-1.7.30/device.c
             if (GetDevice(channel, LIVEPRIORITY, true, true))
                break;
             n = channel->Number() + Direction;
-Index: vdr-1.7.30/menu.c
-===================================================================
---- vdr-1.7.30.orig/menu.c	2012-09-22 10:17:57.176005227 +0200
-+++ vdr-1.7.30/menu.c	2012-09-22 10:17:57.208005230 +0200
+--- a/menu.c
++++ b/menu.c
 @@ -905,6 +905,16 @@
       Add(new cMenuEditBitItem( tr("VPS"),          &data.flags, tfVps));
       Add(new cMenuEditIntItem( tr("Priority"),     &data.priority, 0, MAXPRIORITY));
@@ -156,10 +152,8 @@ Index: vdr-1.7.30/menu.c
                    return RecordControls[i]->Process(time(NULL));
                    }
                 }
-Index: vdr-1.7.30/osd.c
-===================================================================
---- vdr-1.7.30.orig/osd.c	2012-09-22 10:17:56.964005218 +0200
-+++ vdr-1.7.30/osd.c	2012-09-22 10:17:57.208005230 +0200
+--- a/osd.c
++++ b/osd.c
 @@ -1623,6 +1623,7 @@
  int cOsd::osdHeight = 0;
  cVector<cOsd *> cOsd::Osds;
@@ -168,10 +162,8 @@ Index: vdr-1.7.30/osd.c
  
  cOsd::cOsd(int Left, int Top, uint Level)
  {
-Index: vdr-1.7.30/osd.h
-===================================================================
---- vdr-1.7.30.orig/osd.h	2012-09-22 10:17:56.968005219 +0200
-+++ vdr-1.7.30/osd.h	2012-09-22 10:17:57.208005230 +0200
+--- a/osd.h
++++ b/osd.h
 @@ -932,6 +932,7 @@
         ///<        delete pm;
         ///<        }
@@ -180,10 +172,8 @@ Index: vdr-1.7.30/osd.h
    };
  
  #define MAXOSDIMAGES 64
-Index: vdr-1.7.30/status.c
-===================================================================
---- vdr-1.7.30.orig/status.c	2012-09-22 10:17:56.996005221 +0200
-+++ vdr-1.7.30/status.c	2012-09-22 10:17:57.208005230 +0200
+--- a/status.c
++++ b/status.c
 @@ -153,3 +153,55 @@
    for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
       sm->OsdEventItem(Event, Text, Index, Count);
@@ -240,10 +230,8 @@ Index: vdr-1.7.30/status.c
 +         return true;
 +      return false;
 +}
-Index: vdr-1.7.30/status.h
-===================================================================
---- vdr-1.7.30.orig/status.h	2012-09-22 10:17:56.996005221 +0200
-+++ vdr-1.7.30/status.h	2012-09-22 10:17:57.208005230 +0200
+--- a/status.h
++++ b/status.h
 @@ -14,6 +14,7 @@
  #include "device.h"
  #include "player.h"
@@ -290,10 +278,8 @@ Index: vdr-1.7.30/status.h
    };
  
  #endif //__STATUS_H
-Index: vdr-1.7.30/timers.c
-===================================================================
---- vdr-1.7.30.orig/timers.c	2012-09-22 10:17:03.772003013 +0200
-+++ vdr-1.7.30/timers.c	2012-09-22 10:17:57.208005230 +0200
+--- a/timers.c
++++ b/timers.c
 @@ -47,6 +47,7 @@
       stop -= 2400;
    priority = Pause ? Setup.PausePriority : Setup.DefaultPriority;
@@ -368,10 +354,8 @@ Index: vdr-1.7.30/timers.c
  // --- cTimers ---------------------------------------------------------------
  
  cTimers Timers;
-Index: vdr-1.7.30/timers.h
-===================================================================
---- vdr-1.7.30.orig/timers.h	2012-09-22 10:17:03.756003013 +0200
-+++ vdr-1.7.30/timers.h	2012-09-22 10:17:57.212005230 +0200
+--- a/timers.h
++++ b/timers.h
 @@ -38,6 +38,7 @@
    int start;
    int stop;
@@ -396,10 +380,8 @@ Index: vdr-1.7.30/timers.h
    void ClrFlags(uint Flags);
    void InvFlags(uint Flags);
    bool HasFlags(uint Flags) const;
-Index: vdr-1.7.30/vdr.c
-===================================================================
---- vdr-1.7.30.orig/vdr.c	2012-09-22 10:17:56.800005213 +0200
-+++ vdr-1.7.30/vdr.c	2012-09-22 10:17:57.212005230 +0200
+--- a/vdr.c
++++ b/vdr.c
 @@ -61,6 +61,7 @@
  #include "skinsttng.h"
  #include "sourceparams.h"
