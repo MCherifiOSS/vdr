@@ -1,4 +1,6 @@
 *.h                             usr/include/vdr/
+PLUGINS/src/dvbhddevice/*.h     usr/include/vdr/
+PLUGINS/src/dvbsddevice/*.h     usr/include/vdr/
 
 libsi/*.h                       usr/include/vdr/libsi/
 
