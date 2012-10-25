@@ -1,3 +1,9 @@
+vdr (1.7.31-0yavdr2~precise) precise; urgency=medium
+
+  * update rotor patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Thu, 25 Oct 2012 18:11:21 +0200
+
 vdr (1.7.31-0yavdr1~precise) precise; urgency=medium
 
   * add rotor patch
