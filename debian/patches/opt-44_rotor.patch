@@ -39,13 +39,11 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
    cDvbTuner *bondedTuner;
    bool bondedMaster;
    bool SetFrontendType(const cChannel *Channel);
-@@ -326,12 +328,16 @@
+@@ -326,12 +328,14 @@
    bool Locked(int TimeoutMs = 0);
    int GetSignalStrength(void) const;
    int GetSignalQuality(void) const;
 +  bool SendDiseqcCmd(dvb_diseqc_master_cmd cmd);
-+private:
-+  int GetCurrentDeliverySystem(void);
    };
  
  cMutex cDvbTuner::bondMutex;
@@ -56,30 +54,15 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
    frontendType = SYS_UNDEFINED;
    device = Device;
    fd_frontend = Fd_Frontend;
-@@ -634,6 +640,35 @@
-   return -1;
+@@ -696,6 +700,19 @@
+   return ds;
  }
  
-+int cDvbTuner::GetCurrentDeliverySystem()
-+{
-+  dtv_property Frontend[1];
-+  memset(&Frontend, 0, sizeof(Frontend));
-+  dtv_properties CmdSeq;
-+  memset(&CmdSeq, 0, sizeof(CmdSeq));
-+  CmdSeq.props = Frontend;
-+  Frontend[0].cmd = DTV_DELIVERY_SYSTEM;
-+  Frontend[0].u.data = 0;
-+  if (ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq) < 0) {
-+     esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
-+     return SYS_UNDEFINED;
-+     }
-+  return Frontend[0].u.data;
-+}
-+
 +bool cDvbTuner::SendDiseqcCmd(dvb_diseqc_master_cmd cmd)
 +{
 +  cMutexLock MutexLock(&mutex);
-+  int frontendType = GetCurrentDeliverySystem();
++  cDvbTransponderParameters dtp(channel.Parameters());
++  int frontendType = GetRequiredDeliverySystem(&channel, &dtp);
 +  if ((frontendType != SYS_DVBS && frontendType != SYS_DVBS2) || SendDiseqc)
 +    return false;
 +  diseqc_cmd=cmd;
@@ -88,11 +71,10 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
 +  return true;
 +}
 +
-+
- static unsigned int FrequencyToHz(unsigned int f)
+ bool cDvbTuner::SetFrontend(void)
  {
-   while (f && f < 1000000)
-@@ -847,6 +882,10 @@
+ #define MAXFRONTENDCMDS 16
+@@ -847,6 +864,10 @@
          if (GetFrontendStatus(NewStatus))
             Status = NewStatus;
          cMutexLock MutexLock(&mutex);
@@ -103,7 +85,7 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
          int WaitTime = 1000;
          switch (tunerStatus) {
            case tsIdle:
-@@ -1530,6 +1569,11 @@
+@@ -1530,6 +1551,11 @@
    return dvbTuner ? dvbTuner->Locked(TimeoutMs) : false;
  }
  

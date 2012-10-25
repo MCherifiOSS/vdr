@@ -613,10 +613,10 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    bool SendDiseqcCmd(dvb_diseqc_master_cmd cmd);
 +  bool SetIdle(bool Idle);
 +  bool IsIdle(void) const { return isIdle; }
- private:
-   int GetCurrentDeliverySystem(void);
    };
-@@ -353,6 +359,7 @@
+ 
+ cMutex cDvbTuner::bondMutex;
+@@ -351,6 +357,7 @@
    tunerStatus = tsIdle;
    bondedTuner = NULL;
    bondedMaster = false;
@@ -624,7 +624,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    SetDescription("tuner on frontend %d/%d", adapter, frontend);
    Start();
  }
-@@ -370,6 +377,8 @@
+@@ -368,6 +375,8 @@
       ExecuteDiseqc(lastDiseqc, &Frequency);
       }
    */
@@ -633,7 +633,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  }
  
  bool cDvbTuner::Bond(cDvbTuner *Tuner)
-@@ -514,6 +523,8 @@
+@@ -512,6 +521,8 @@
  
  void cDvbTuner::ClearEventQueue(void) const
  {
@@ -642,7 +642,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    cPoller Poller(fd_frontend);
    if (Poller.Poll(TUNER_POLL_TIMEOUT)) {
       dvb_frontend_event Event;
-@@ -733,6 +744,8 @@
+@@ -715,6 +726,8 @@
  
  bool cDvbTuner::SetFrontend(void)
  {
@@ -651,7 +651,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  #define MAXFRONTENDCMDS 16
  #define SETCMD(c, d) { Frontend[CmdSeq.num].cmd = (c);\
                         Frontend[CmdSeq.num].u.data = (d);\
-@@ -878,9 +891,11 @@
+@@ -860,9 +873,11 @@
    bool LostLock = false;
    fe_status_t Status = (fe_status_t)0;
    while (Running()) {
@@ -666,7 +666,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
          cMutexLock MutexLock(&mutex);
          if (SendDiseqc) {
             CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &diseqc_cmd));
-@@ -937,6 +952,40 @@
+@@ -919,6 +934,40 @@
          }
  }
  
@@ -707,7 +707,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  // --- cDvbSourceParam -------------------------------------------------------
  
  class cDvbSourceParam : public cSourceParam {
-@@ -1022,7 +1071,8 @@
+@@ -1004,7 +1053,8 @@
    NULL
    };
  
@@ -717,7 +717,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  {
    adapter = Adapter;
    frontend = Frontend;
-@@ -1042,7 +1092,7 @@
+@@ -1024,7 +1074,7 @@
  
    fd_ca = DvbOpen(DEV_DVB_CA, adapter, frontend, O_RDWR);
    if (fd_ca >= 0)
@@ -726,7 +726,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  
    // The DVR device (will be opened and closed as needed):
  
-@@ -1270,7 +1320,11 @@
+@@ -1252,7 +1302,11 @@
           if (d >= 0) {
              int ErrorDevice = 0;
              if (cDevice *Device1 = cDevice::GetDevice(i)) {
@@ -738,7 +738,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
                    if (cDvbDevice *DvbDevice1 = dynamic_cast<cDvbDevice *>(Device1)) {
                       if (cDvbDevice *DvbDevice2 = dynamic_cast<cDvbDevice *>(Device2)) {
                          if (!DvbDevice1->Bond(DvbDevice2))
-@@ -1304,7 +1358,10 @@
+@@ -1286,7 +1340,10 @@
  void cDvbDevice::UnBondDevices(void)
  {
    for (int i = 0; i < cDevice::NumDevices(); i++) {
@@ -750,7 +750,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
           d->UnBond();
        }
  }
-@@ -1358,6 +1415,26 @@
+@@ -1340,6 +1397,26 @@
    return true;
  }
  
@@ -777,7 +777,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  bool cDvbDevice::HasCi(void)
  {
    return ciAdapter;
-@@ -1524,7 +1601,7 @@
+@@ -1506,7 +1583,7 @@
  
  bool cDvbDevice::ProvidesEIT(void) const
  {
