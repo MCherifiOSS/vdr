@@ -1,10 +1,7 @@
 *.h                             usr/include/vdr/
 
-PLUGINS/src/dvbhddevice/dvbhdffdevice.h     usr/include/vdr/dvbhddevice/
-PLUGINS/src/dvbhddevice/hdffcmd.h           usr/include/vdr/dvbhddevice/
-PLUGINS/src/dvbhddevice/libhdffcmd/*.h      usr/include/vdr/dvbhddevice/
-
-PLUGINS/src/dvbsddevice/dvbsdffdevice.h     usr/include/vdr/dvbsddevice/
+PLUGINS/src/dvbhddevice/*.h     usr/include/vdr/PLUGINS/dvbhddevice/
+PLUGINS/src/dvbsddevice/*.h     usr/include/vdr/PLUGINS/dvbsddevice/
 
 libsi/*.h                       usr/include/vdr/libsi/
 
