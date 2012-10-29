@@ -1,3 +1,10 @@
+vdr (1.7.31-2yavdr0~precise) precise; urgency=medium
+
+  * correct vdr includes in plugins
+  * install plugin header to /usr/include/vdr/PLUGINS/<pluginname>/
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Mon, 29 Oct 2012 20:11:43 +0100
+
 vdr (1.7.31-1yavdr0~precise) precise; urgency=medium
 
   * correct version number
