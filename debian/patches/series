@@ -54,3 +54,4 @@ opt-65_pin.patch
 opt-66_jumpingseconds.patch
 
 xprmtl-01_externalci.patch
+vdr-includes.diff

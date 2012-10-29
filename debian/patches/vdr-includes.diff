@@ -1,0 +1,37 @@
+--- a/PLUGINS/src/dvbhddevice/dvbhdffdevice.h
++++ b/PLUGINS/src/dvbhddevice/dvbhdffdevice.h
+@@ -10,8 +10,8 @@
+ #define __DVBHDFFDEVICE_H
+ 
+ #include "hdffcmd.h"
+-#include "vdr/dvbdevice.h"
+-#include "vdr/dvbspu.h"
++#include <vdr/dvbdevice.h>
++#include <vdr/dvbspu.h>
+ 
+ /// The cDvbHdFfDevice implements a DVB device which can be accessed through the Linux DVB driver API.
+ 
+--- a/PLUGINS/src/dvbsddevice/dvbsdffdevice.h
++++ b/PLUGINS/src/dvbsddevice/dvbsdffdevice.h
+@@ -9,8 +9,8 @@
+ #ifndef __DVBSDFFDEVICE_H
+ #define __DVBSDFFDEVICE_H
+ 
+-#include "vdr/dvbdevice.h"
+-#include "vdr/dvbspu.h"
++#include <vdr/dvbdevice.h>
++#include <vdr/dvbspu.h>
+ 
+ /// The cDvbSdFfDevice implements a DVB device which can be accessed through the Linux DVB driver API.
+ 
+--- a/PLUGINS/src/dvbsddevice/dvbsdffosd.h
++++ b/PLUGINS/src/dvbsddevice/dvbsdffosd.h
+@@ -9,7 +9,7 @@
+ #ifndef __DVBSDFFODF_H
+ #define __DVBSDFFODF_H
+ 
+-#include "vdr/osd.h"
++#include <vdr/osd.h>
+ 
+ class cDvbOsdProvider : public cOsdProvider {
+ private:
