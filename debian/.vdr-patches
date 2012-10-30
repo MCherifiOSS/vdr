@@ -6,7 +6,7 @@ debian/patches/opt-50_graphtft.patch:72685431f0b785b9666e8ede2c8ec1fd
 debian/patches/opt-37-x_menuorg.patch:6a62fcf12af00bd64bcac577f988680b
 debian/patches/opt-56_eventdetails_v3.patch:e2ff963982af0673b0436d3f7f6c2048
 debian/patches/opt-41-x_timer-info.patch:b619583a4bebe2579e0d585171b20969
-debian/patches/xprmtl-01_externalci.patch:698245fe8d30143d1f2607611801eb0e
+debian/patches/xprmtl-01_externalci.patch:3eb9e0e863f236f1f16db8468fb2e8cd
 debian/patches/opt-24_jumpplay.patch:4a2fa21934dfc55a1e63bbd29585ca3f
 debian/patches/vdr-includes.diff:c48b2a1db9b01bcd7ec5c2a545c2f7c7
 debian/patches/opt-66_jumpingseconds.patch:d79f5b1c84539d46b81f5fa1a086222f
@@ -14,7 +14,7 @@ debian/patches/opt-62_hard_link_cutter.patch:e604f96a5b48f5eb86318ca811a9669c
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:b9c1d39d71e28c85d2e7270b07b4c64e
 debian/patches/99_ncursesw-include.patch:49f42a61ebc948db31683abf35a79d29
 debian/patches/82_valgrind.patch:6c0d3c6eeb12904bc61c41bc5c5a3c3a
-debian/patches/opt-61_dynamite.patch:6891cb603120bd42caf0f34523d333ec
+debian/patches/opt-61_dynamite.patch:8304b14fb50b242e6bb1ce594297ce40
 debian/patches/opt-22-x_edit_marks.patch:ef265da73a54f715b9b20def5de008d8
 debian/patches/opt-44_rotor.patch:2e7d0cdded6b0c3e43e9e735367ba720
 debian/patches/opt-42-x_MainMenuHooks-v1.0.1.patch:03a98066b332bd4abf28592fba4ba296
