@@ -9,6 +9,7 @@ debian/patches/opt-41-x_timer-info.patch:b619583a4bebe2579e0d585171b20969
 debian/patches/xprmtl-01_externalci.patch:3eb9e0e863f236f1f16db8468fb2e8cd
 debian/patches/opt-24_jumpplay.patch:4a2fa21934dfc55a1e63bbd29585ca3f
 debian/patches/vdr-includes.diff:c48b2a1db9b01bcd7ec5c2a545c2f7c7
+debian/patches/rotorng-dbg-log.patch:c7982f40f89c3166ede0a677eaf4b74f
 debian/patches/opt-66_jumpingseconds.patch:d79f5b1c84539d46b81f5fa1a086222f
 debian/patches/opt-62_hard_link_cutter.patch:e604f96a5b48f5eb86318ca811a9669c
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:b9c1d39d71e28c85d2e7270b07b4c64e

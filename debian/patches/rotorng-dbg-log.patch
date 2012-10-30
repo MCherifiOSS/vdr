@@ -1,0 +1,39 @@
+--- a/dvbdevice.c
++++ b/dvbdevice.c
+@@ -713,16 +713,22 @@
+ 
+ bool cDvbTuner::SendDiseqcCmd(dvb_diseqc_master_cmd cmd)
+ {
++  dsyslog("cDvbTuner::SendDiseqcCmd: device cardindex %d: enter", device->CardIndex());
+   cMutexLock MutexLock(&mutex);
+   cDvbTransponderParameters dtp(channel.Parameters());
+   int frontendType = GetRequiredDeliverySystem(&channel, &dtp);
+-  if ((frontendType != SYS_DVBS && frontendType != SYS_DVBS2) || SendDiseqc)
+-    return false;
+-  if (!OpenFrontend())
++  if ((frontendType != SYS_DVBS && frontendType != SYS_DVBS2) || SendDiseqc) {
++     dsyslog("cDvbTuner::SendDiseqcCmd: device cardindex %d: wrong frontend type: %x", device->CardIndex(), frontendType);
++     return false;
++     }
++  if (!OpenFrontend()) {
++     dsyslog("cDvbTuner::SendDiseqcCmd: device cardindex %d: can't open frontend", device->CardIndex());
+      return false;
++     }
+   diseqc_cmd=cmd;
+   SendDiseqc=true;
+   newSet.Broadcast();
++  dsyslog("cDvbTuner::SendDiseqcCmd: device cardindex %d: queued diseqc command", device->CardIndex());
+   return true;
+ }
+ 
+@@ -882,8 +888,10 @@
+            }
+         cMutexLock MutexLock(&mutex);
+         if (SendDiseqc) {
++           dsyslog("cDvbTuner::Action: device cardindex %d: try send diseqc command", device->CardIndex());
+            CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &diseqc_cmd));
+            SendDiseqc=false;
++           dsyslog("cDvbTuner::Action: device cardindex %d: send diseqc command", device->CardIndex());
+            }
+         int WaitTime = 1000;
+         switch (tunerStatus) {
