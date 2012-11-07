@@ -13,6 +13,7 @@ debian/patches/xprmtl-01_externalci.patch:d951d85185027f0472099ae7b4f42464
 debian/patches/opt-24_jumpplay.patch:51619bf17b8ed8baf0ff6798548465d6
 debian/patches/opt-56_eventdetails_v3.patch:5d2658bed38665451751b5936863ef5d
 debian/patches/opt-62_hard_link_cutter.patch:cce8eb967ffbbc72d104028d6f750491
+debian/patches/vdr-plugin-include.patch:638d2a1c119d526edd1aa2fbf49af854
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:bc69e4bb09d5b56067955486d51d7fee
 debian/patches/99_ncursesw-include.patch:5cd58b4603885b5cb7a85caad49affef
 debian/patches/82_valgrind.patch:df6bcda3b79a84ee4f9073cb04368963
