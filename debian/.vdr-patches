@@ -16,9 +16,9 @@ debian/patches/opt-62_hard_link_cutter.patch:cce8eb967ffbbc72d104028d6f750491
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:bc69e4bb09d5b56067955486d51d7fee
 debian/patches/99_ncursesw-include.patch:5cd58b4603885b5cb7a85caad49affef
 debian/patches/82_valgrind.patch:df6bcda3b79a84ee4f9073cb04368963
-debian/patches/opt-61_dynamite.patch:9d1a37236786f7ffe8eb433d915d0c9a
+debian/patches/opt-61_dynamite.patch:7a119cde8c49c775c94b5a970d451a89
 debian/patches/opt-22-x_edit_marks.patch:3b501bb4598204918030116e1c5b0fbf
-debian/patches/opt-44_rotor.patch:7074fa64fb67ca6ff3438a6c00520977
+debian/patches/opt-44_rotor.patch:5ef651b35e5297f148b2f7c389fffc2f
 debian/patches/opt-42-x_MainMenuHooks-v1.0.1.patch:772777cb049f0a603f0c01d9c0527d45
 debian/patches/opt-65_pin.patch:ee569102b8e070bf93e16a90f99aab83
 debian/patches/12_osdbase-maxitems.patch:ae3823a4541df438df0746d0b4e551a4
