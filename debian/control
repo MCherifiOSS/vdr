@@ -6,7 +6,7 @@ Uploaders: Thomas Schmidt <tschmidt@debian.org>, Tobias Grimm <etobi@debian.org>
 Origin: ctvdr
 Build-Depends: debhelper (>= 7.0.50~), libjpeg62-dev, libcap2-dev | libcap-dev,
   libncursesw5-dev, libfreetype6-dev, libfontconfig-dev, gettext,
-  txt2man, python, linux-libc-dev (>= 3.0), libfribidi-dev
+  txt2man, python, linux-libc-dev (>= 3.0), libfribidi-dev, fakeroot
 Standards-Version: 3.9.2
 Vcs-Git: git://git.debian.org/pkg-vdr-dvb/vdr.git
 Vcs-Browser: http://git.debian.org/?p=pkg-vdr-dvb/vdr.git
@@ -67,6 +67,18 @@ Description: Plugin that adds support for full featured DVB cards to VDR
  This package contains the dvbsddevice-plugin, which implements the
  output device for the "Full Featured" DVB cards based on the
  TechnoTrend/Fujitsu-Siemens design.
+
+Package: vdr-plugin-dvbhddevice
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, vdr (= ${binary:Version})
+Description: Plugin that adds support for full featured DVB cards to VDR
+ Video Disk Recorder (VDR) is a digital sat-receiver program using
+ Linux and DVB technologies. It allows one to record MPEG2 streams,
+ as well as output the stream to TV.
+ .
+ This package contains the dvbhddevice-plugin, which implements the
+ output device for the "Full Featured" DVB cards based on the
+ TechnoTrend design.
 
 Package: vdr-plugin-epgtableid0
 Architecture: any

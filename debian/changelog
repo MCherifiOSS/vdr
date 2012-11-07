@@ -1,8 +1,27 @@
-vdr (1.7.27-0yavdr0~precise) precise; urgency=medium
+vdr (1.7.27-5yavdr1~precise) precise; urgency=medium
+
+  * rebuild
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Thu, 06 Sep 2012 00:04:02 +0200
+
+vdr (1.7.27-5yavdr0~precise) precise; urgency=medium
+
+  * Fix bug with wareagle patch and vim 1.7.27 (thx oldmanuk)
+
+ -- Marco Scholl <develop@marco-scholl.de>  Sun, 03 Jun 2012 22:11:12 +0200
+
+vdr (1.7.27-2yavdr0~precise) precise; urgency=medium
+
+  * Added channelname-fix-1.7.27.patch
+
+ -- Holger Schvestka <hotzenplotz5@gmx.de>  Sun, 01 Apr 2012 16:55:14 +0200
+
+vdr (1.7.27-1yavdr0~precise) precise; urgency=medium
 
   * New upstream release
+  * Updated dynamite.patch
 
- -- Holger Schvestka <hotzenplotz5@gmx.de>  Sun, 25 Mar 2012 14:09:25 +0200
+ -- Holger Schvestka <hotzenplotz5@gmx.de>  Wed, 28 Mar 2012 21:09:25 +0200
 
 vdr (1.7.26-1yavdr1~precise) precise; urgency=medium
   

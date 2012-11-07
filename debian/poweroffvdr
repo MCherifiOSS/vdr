@@ -7,5 +7,5 @@
 #
 
 at now <<EOF
-  /usr/bin/svdrpsend HITK Power
+  /usr/lib/vdr/svdrpsend.pl HITK Power
 EOF
