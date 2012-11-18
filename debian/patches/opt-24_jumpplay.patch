@@ -5,8 +5,10 @@ Description: Play after jump to next mark. Automatically jump over commercial br
 Author: Torsten Kunkel <vdr@tkunkel.de>, Thomas GÃ¼nther <tom@toms-cafe.de>
 Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
 
---- a/config.c
-+++ b/config.c
+Index: vdr-1.7.32/config.c
+===================================================================
+--- vdr-1.7.32.orig/config.c	2012-09-15 13:52:03.000000000 +0200
++++ vdr-1.7.32/config.c	2012-11-18 22:18:31.081147982 +0100
 @@ -459,6 +459,9 @@
    ShowReplayMode = 0;
    ShowRemainingTime = 0;
@@ -37,8 +39,10 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
    Store("CurrentChannel",     CurrentChannel);
    Store("CurrentVolume",      CurrentVolume);
    Store("CurrentDolby",       CurrentDolby);
---- a/config.h
-+++ b/config.h
+Index: vdr-1.7.32/config.h
+===================================================================
+--- vdr-1.7.32.orig/config.h	2012-10-03 11:59:34.000000000 +0200
++++ vdr-1.7.32/config.h	2012-11-18 22:18:31.085147982 +0100
 @@ -36,6 +36,9 @@
  // plugins to work with newer versions of the core VDR as long as no
  // VDR header files have changed.
@@ -59,8 +63,10 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
    int CurrentChannel;
    int CurrentVolume;
    int CurrentDolby;
---- a/dvbplayer.c
-+++ b/dvbplayer.c
+Index: vdr-1.7.32/dvbplayer.c
+===================================================================
+--- vdr-1.7.32.orig/dvbplayer.c	2012-11-18 22:18:31.001147978 +0100
++++ vdr-1.7.32/dvbplayer.c	2012-11-18 22:18:31.085147982 +0100
 @@ -204,6 +204,7 @@
    cNonBlockingFileReader *nonBlockingFileReader;
    cRingBufferFrame *ringBuffer;
@@ -198,9 +204,11 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
  
            // Handle hitting begin/end of recording:
  
---- a/MANUAL
-+++ b/MANUAL
-@@ -883,6 +883,25 @@
+Index: vdr-1.7.32/MANUAL
+===================================================================
+--- vdr-1.7.32.orig/MANUAL	2012-11-18 22:18:31.001147978 +0100
++++ vdr-1.7.32/MANUAL	2012-11-18 22:18:31.085147982 +0100
+@@ -885,6 +885,25 @@
                           0 resulting in a file named 'resume', and any other
                           value resulting in 'resume.n'.
  
@@ -226,8 +234,10 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
    Miscellaneous:
  
    Min. event timeout = 30
---- a/po/de_DE.po
-+++ b/po/de_DE.po
+Index: vdr-1.7.32/po/de_DE.po
+===================================================================
+--- vdr-1.7.32.orig/po/de_DE.po	2012-11-18 22:18:31.005147979 +0100
++++ vdr-1.7.32/po/de_DE.po	2012-11-18 22:18:31.000000000 +0100
 @@ -1092,6 +1092,15 @@
  msgid "Replay"
  msgstr "Wiedergabe"
@@ -244,8 +254,10 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
  msgid "Setup.Replay$Multi speed mode"
  msgstr "Mehrstufiger Vor-/Rücklauf"
  
---- a/po/fr_FR.po
-+++ b/po/fr_FR.po
+Index: vdr-1.7.32/po/fr_FR.po
+===================================================================
+--- vdr-1.7.32.orig/po/fr_FR.po	2012-11-18 14:31:54.000000000 +0100
++++ vdr-1.7.32/po/fr_FR.po	2012-11-18 22:18:31.113147983 +0100
 @@ -1098,6 +1098,15 @@
  msgid "Replay"
  msgstr "Lecture"
@@ -262,8 +274,10 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
  msgid "Setup.Replay$Multi speed mode"
  msgstr "Mode multi-vitesses"
  
---- /dev/null
-+++ b/README.jumpplay
+Index: vdr-1.7.32/README.jumpplay
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-1.7.32/README.jumpplay	2012-11-18 22:18:31.117147983 +0100
 @@ -0,0 +1,92 @@
 +JumpPlay patch for VDR
 +----------------------
@@ -357,8 +371,10 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
 +    Play&Jump:
 +      - set resume position to 0 if replay stops at the first mark
 +    Added French language texts (thanks to Michaël Nival)
---- a/menu.c
-+++ b/menu.c
+Index: vdr-1.7.32/menu.c
+===================================================================
+--- vdr-1.7.32.orig/menu.c	2012-11-18 22:18:31.041147980 +0100
++++ vdr-1.7.32/menu.c	2012-11-18 22:18:31.117147983 +0100
 @@ -3315,6 +3315,9 @@
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Show replay mode"), &data.ShowReplayMode));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Show remaining time"), &data.ShowRemainingTime));
@@ -401,7 +417,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
             }
          }
       }
-@@ -5017,7 +5031,7 @@
+@@ -5015,7 +5029,7 @@
       if (!m)
          m = marks.GetNext(Current);
       if (m) {

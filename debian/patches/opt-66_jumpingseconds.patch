@@ -1,6 +1,8 @@
---- a/config.c
-+++ b/config.c
-@@ -475,6 +475,8 @@
+Index: vdr-1.7.32/config.c
+===================================================================
+--- vdr-1.7.32.orig/config.c	2012-11-18 22:30:22.661177482 +0100
++++ vdr-1.7.32/config.c	2012-11-18 22:30:22.809177489 +0100
+@@ -472,6 +472,8 @@
    ChannelsWrap = 0;
    ShowChannelNamesWithSource = 0;
    EmergencyExit = 1;
@@ -9,7 +11,7 @@
  }
  
  cSetup& cSetup::operator= (const cSetup &s)
-@@ -682,6 +684,8 @@
+@@ -676,6 +678,8 @@
    else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
    else if (!strcasecmp(Name, "ShowChannelNamesWithSource")) ShowChannelNamesWithSource = atoi(Value);
    else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
@@ -18,7 +20,7 @@
    else
       return false;
    return true;
-@@ -792,6 +796,8 @@
+@@ -783,6 +787,8 @@
    Store("ChannelsWrap",       ChannelsWrap);
    Store("ShowChannelNamesWithSource", ShowChannelNamesWithSource);
    Store("EmergencyExit",      EmergencyExit);
@@ -27,9 +29,11 @@
  
    Sort();
  
---- a/config.h
-+++ b/config.h
-@@ -343,6 +343,8 @@
+Index: vdr-1.7.32/config.h
+===================================================================
+--- vdr-1.7.32.orig/config.h	2012-11-18 22:30:22.717177485 +0100
++++ vdr-1.7.32/config.h	2012-11-18 22:30:22.809177489 +0100
+@@ -340,6 +340,8 @@
    int ChannelsWrap;
    int ShowChannelNamesWithSource;
    int EmergencyExit;
@@ -38,9 +42,11 @@
    int __EndData__;
    cString InitialChannel;
    cString DeviceBondings;
---- a/menu.c
-+++ b/menu.c
-@@ -3523,6 +3523,8 @@
+Index: vdr-1.7.32/menu.c
+===================================================================
+--- vdr-1.7.32.orig/menu.c	2012-11-18 22:30:22.785177487 +0100
++++ vdr-1.7.32/menu.c	2012-11-18 22:30:22.813177490 +0100
+@@ -3520,6 +3520,8 @@
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Jump&Play"), &data.JumpPlay));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Play&Jump"), &data.PlayJump));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause at last mark"), &data.PauseLastMark));
@@ -49,7 +55,7 @@
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -5472,9 +5474,9 @@
+@@ -5467,9 +5469,9 @@
      case kRight:   Forward(); break;
      case kRed:     TimeSearch(); break;
      case kGreen|k_Repeat:
@@ -61,7 +67,7 @@
      case kPrev|k_Repeat:
      case kPrev:    if (lastSkipTimeout.TimedOut()) {
                        lastSkipSeconds = REPLAYCONTROLSKIPSECONDS;
-@@ -5521,7 +5523,7 @@
+@@ -5516,7 +5518,7 @@
                                    marks.Save();
                                    }
                                 else
@@ -70,7 +76,7 @@
                                 break;
          case k3|k_Repeat:
          case k3:               if (GetReplayMode(play, forward, speed) && !play && GetIndex(Current, Total) && (m = marks.Get(Current)) != NULL) {
-@@ -5534,7 +5536,7 @@
+@@ -5529,7 +5531,7 @@
                                    marks.Save();
                                    }
                                 else

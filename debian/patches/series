@@ -10,7 +10,7 @@
 
 # rofafor Patch collection
 # http://www.saunalahti.fi/~rahrenbe/vdr/patches/index.php
-opt-10_vdr-1.7.31-vasarajanauloja.patch
+opt-10_vdr-1.7.32-vasarajanauloja.patch
 
 # Easy editing of cutting marks
 # (Requires opt-20_liemikuutio!)
@@ -48,8 +48,8 @@ opt-57_vdr-remote_instant_recordings.patch
 opt-61_dynamite.patch
 
 
-opt-62_hard_link_cutter.patch
-opt-63_naludump.patch
+#opt-62_hard_link_cutter.patch
+#opt-63_naludump.patch
 opt-65_pin.patch
 opt-66_jumpingseconds.patch
 

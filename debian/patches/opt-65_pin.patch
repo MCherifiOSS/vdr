@@ -2,8 +2,10 @@ Description: Pin-Patch for VDR-Pin-Plugin
 Author: Jörg Wendel <horchi@vdr-portal>       
 Origin: http://www.jwendel.de/vdr/
 
---- a/device.c
-+++ b/device.c
+Index: vdr-1.7.32/device.c
+===================================================================
+--- vdr-1.7.32.orig/device.c	2012-11-18 22:25:12.000000000 +0100
++++ vdr-1.7.32/device.c	2012-11-18 22:26:26.609167696 +0100
 @@ -745,6 +745,12 @@
  
  bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
@@ -25,8 +27,10 @@ Origin: http://www.jwendel.de/vdr/
             if (GetDevice(channel, LIVEPRIORITY, true, true))
                break;
             n = channel->Number() + Direction;
---- a/menu.c
-+++ b/menu.c
+Index: vdr-1.7.32/menu.c
+===================================================================
+--- vdr-1.7.32.orig/menu.c	2012-11-18 22:25:12.000000000 +0100
++++ vdr-1.7.32/menu.c	2012-11-18 22:26:26.613167696 +0100
 @@ -905,6 +905,16 @@
       Add(new cMenuEditBitItem( tr("VPS"),          &data.flags, tfVps));
       Add(new cMenuEditIntItem( tr("Priority"),     &data.priority, 0, MAXPRIORITY));
@@ -66,7 +70,7 @@ Origin: http://www.jwendel.de/vdr/
       if (ri->IsDirectory())
          Open();
       else {
-@@ -3785,28 +3801,32 @@
+@@ -3782,28 +3798,32 @@
  
    // Basic menu items:
  
@@ -104,7 +108,7 @@ Origin: http://www.jwendel.de/vdr/
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
    }
-@@ -3891,6 +3911,14 @@
+@@ -3888,6 +3908,14 @@
    HadSubMenu |= HasSubMenu();
  
    cOsdObject *menu = NULL;
@@ -119,7 +123,7 @@ Origin: http://www.jwendel.de/vdr/
    switch (state) {
      case osSchedule:
          if (!cPluginManager::CallFirstService("MainMenuHooksPatch-v1.0::osSchedule", &menu))
-@@ -3942,6 +3970,7 @@
+@@ -3939,6 +3967,7 @@
                           if (item) {
                              cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
                              if (p) {
@@ -127,7 +131,7 @@ Origin: http://www.jwendel.de/vdr/
                                 cOsdObject *menu = p->MainMenuAction();
                                 if (menu) {
                                    if (menu->IsMenu())
-@@ -3953,6 +3982,7 @@
+@@ -3950,6 +3979,7 @@
                                    }
                                 }
                              }
@@ -135,7 +139,7 @@ Origin: http://www.jwendel.de/vdr/
                           state = osEnd;
                         }
                         break;
-@@ -4164,6 +4194,8 @@
+@@ -4161,6 +4191,8 @@
             Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
             if (!Channel && Setup.ChannelsWrap)
                Channel = Direction > 0 ? Channels.First() : Channels.Last();
@@ -144,7 +148,7 @@ Origin: http://www.jwendel.de/vdr/
             if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, LIVEPRIORITY, true, true))
                return Channel;
             }
-@@ -4857,6 +4889,7 @@
+@@ -4854,6 +4886,7 @@
             for (int i = 0; i < MAXRECORDCONTROLS; i++) {
                 if (!RecordControls[i]) {
                    RecordControls[i] = new cRecordControl(device, Timer, Pause);
@@ -152,8 +156,10 @@ Origin: http://www.jwendel.de/vdr/
                    return RecordControls[i]->Process(time(NULL));
                    }
                 }
---- a/osd.c
-+++ b/osd.c
+Index: vdr-1.7.32/osd.c
+===================================================================
+--- vdr-1.7.32.orig/osd.c	2012-11-18 22:25:12.000000000 +0100
++++ vdr-1.7.32/osd.c	2012-11-18 22:26:26.617167696 +0100
 @@ -1623,6 +1623,7 @@
  int cOsd::osdHeight = 0;
  cVector<cOsd *> cOsd::Osds;
@@ -162,8 +168,10 @@ Origin: http://www.jwendel.de/vdr/
  
  cOsd::cOsd(int Left, int Top, uint Level)
  {
---- a/osd.h
-+++ b/osd.h
+Index: vdr-1.7.32/osd.h
+===================================================================
+--- vdr-1.7.32.orig/osd.h	2012-11-18 22:25:12.000000000 +0100
++++ vdr-1.7.32/osd.h	2012-11-18 22:26:26.617167696 +0100
 @@ -932,6 +932,7 @@
         ///<        delete pm;
         ///<        }
@@ -172,8 +180,10 @@ Origin: http://www.jwendel.de/vdr/
    };
  
  #define MAXOSDIMAGES 64
---- a/status.c
-+++ b/status.c
+Index: vdr-1.7.32/status.c
+===================================================================
+--- vdr-1.7.32.orig/status.c	2012-11-18 22:25:12.000000000 +0100
++++ vdr-1.7.32/status.c	2012-11-18 22:26:26.617167696 +0100
 @@ -153,3 +153,55 @@
    for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
       sm->OsdEventItem(Event, Text, Index, Count);
@@ -230,8 +240,10 @@ Origin: http://www.jwendel.de/vdr/
 +         return true;
 +      return false;
 +}
---- a/status.h
-+++ b/status.h
+Index: vdr-1.7.32/status.h
+===================================================================
+--- vdr-1.7.32.orig/status.h	2012-11-18 22:25:12.000000000 +0100
++++ vdr-1.7.32/status.h	2012-11-18 22:26:26.617167696 +0100
 @@ -14,6 +14,7 @@
  #include "device.h"
  #include "player.h"
@@ -278,8 +290,10 @@ Origin: http://www.jwendel.de/vdr/
    };
  
  #endif //__STATUS_H
---- a/timers.c
-+++ b/timers.c
+Index: vdr-1.7.32/timers.c
+===================================================================
+--- vdr-1.7.32.orig/timers.c	2012-10-16 10:22:39.000000000 +0200
++++ vdr-1.7.32/timers.c	2012-11-18 22:26:26.617167696 +0100
 @@ -32,6 +32,7 @@
    deferred = 0;
    recording = pending = inVpsMargin = false;
@@ -320,7 +334,7 @@ Origin: http://www.jwendel.de/vdr/
    free(channelbuffer);
    free(daybuffer);
    free(filebuffer);
-@@ -710,6 +715,33 @@
+@@ -713,6 +718,33 @@
    Matches(); // refresh start and end time
  }
  
@@ -354,8 +368,10 @@ Origin: http://www.jwendel.de/vdr/
  // --- cTimers ---------------------------------------------------------------
  
  cTimers Timers;
---- a/timers.h
-+++ b/timers.h
+Index: vdr-1.7.32/timers.h
+===================================================================
+--- vdr-1.7.32.orig/timers.h	2012-04-15 15:21:31.000000000 +0200
++++ vdr-1.7.32/timers.h	2012-11-18 22:26:26.617167696 +0100
 @@ -38,6 +38,7 @@
    int start;
    int stop;
@@ -380,8 +396,10 @@ Origin: http://www.jwendel.de/vdr/
    void ClrFlags(uint Flags);
    void InvFlags(uint Flags);
    bool HasFlags(uint Flags) const;
---- a/vdr.c
-+++ b/vdr.c
+Index: vdr-1.7.32/vdr.c
+===================================================================
+--- vdr-1.7.32.orig/vdr.c	2012-11-18 22:25:12.000000000 +0100
++++ vdr-1.7.32/vdr.c	2012-11-18 22:29:41.753175786 +0100
 @@ -61,6 +61,7 @@
  #include "skinsttng.h"
  #include "sourceparams.h"
@@ -420,6 +438,6 @@ Origin: http://www.jwendel.de/vdr/
                       cControl::Launch(new cReplayControl);
                       }
 +                     }
+                   else
+                      DirectMainFunction(osRecordings); // no last viewed recording, so enter the Recordings menu
                    break;
-              default:    break;
-              }
