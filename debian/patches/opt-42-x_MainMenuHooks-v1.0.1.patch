@@ -71,13 +71,13 @@ think you need to modify the patch, we'd encourage you to contact the
 authors first or at least use a service id which differs in more than
 just the version number.
 
-Index: vdr-1.7.30/config.h
+Index: vdr-1.7.32/config.h
 ===================================================================
---- vdr-1.7.30.orig/config.h	2012-09-22 09:48:08.199931060 +0200
-+++ vdr-1.7.30/config.h	2012-09-22 09:48:08.291931064 +0200
-@@ -39,6 +39,10 @@
- 
- #define JUMPPLAYVERSNUM 100
+--- vdr-1.7.32.orig/config.h	2012-11-18 22:47:09.173219211 +0100
++++ vdr-1.7.32/config.h	2012-11-18 22:47:13.561219392 +0100
+@@ -36,6 +36,10 @@
+ // plugins to work with newer versions of the core VDR as long as no
+ // VDR header files have changed.
  
 +// The MainMenuHook Patch's version number:
 +#define MAINMENUHOOKSVERSION "1.0.1"
@@ -86,11 +86,11 @@ Index: vdr-1.7.30/config.h
  #define MAXPRIORITY       99
  #define MINPRIORITY       (-MAXPRIORITY)
  #define LIVEPRIORITY      0                  // priority used when selecting a device for live viewing
-Index: vdr-1.7.30/menu.c
+Index: vdr-1.7.32/menu.c
 ===================================================================
---- vdr-1.7.30.orig/menu.c	2012-09-22 09:48:08.263931064 +0200
-+++ vdr-1.7.30/menu.c	2012-09-22 09:48:08.291931064 +0200
-@@ -3656,15 +3656,31 @@
+--- vdr-1.7.32.orig/menu.c	2012-11-18 22:47:13.537219391 +0100
++++ vdr-1.7.32/menu.c	2012-11-18 22:47:13.565219393 +0100
+@@ -3653,15 +3653,31 @@
  
    // Initial submenus:
  
@@ -128,7 +128,7 @@ Index: vdr-1.7.30/menu.c
  }
  
  cOsdObject *cMenuMain::PluginOsdObject(void)
-@@ -3810,13 +3826,34 @@
+@@ -3807,13 +3823,34 @@
    eOSState state = cOsdMenu::ProcessKey(Key);
    HadSubMenu |= HasSubMenu();
  
@@ -169,7 +169,7 @@ Index: vdr-1.7.30/menu.c
      case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
                            cOsdItem *item = Get(Current());
                            if (item) {
-@@ -3909,6 +3946,12 @@
+@@ -3906,6 +3943,12 @@
                 default:      break;
                 }
      }

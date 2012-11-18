@@ -4,8 +4,8 @@ Origin: http://www.jwendel.de/vdr/
 
 Index: vdr-1.7.32/device.c
 ===================================================================
---- vdr-1.7.32.orig/device.c	2012-11-18 22:25:12.000000000 +0100
-+++ vdr-1.7.32/device.c	2012-11-18 22:26:26.609167696 +0100
+--- vdr-1.7.32.orig/device.c	2012-11-18 22:47:13.797219401 +0100
++++ vdr-1.7.32/device.c	2012-11-18 22:47:13.825219403 +0100
 @@ -745,6 +745,12 @@
  
  bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
@@ -29,8 +29,8 @@ Index: vdr-1.7.32/device.c
             n = channel->Number() + Direction;
 Index: vdr-1.7.32/menu.c
 ===================================================================
---- vdr-1.7.32.orig/menu.c	2012-11-18 22:25:12.000000000 +0100
-+++ vdr-1.7.32/menu.c	2012-11-18 22:26:26.613167696 +0100
+--- vdr-1.7.32.orig/menu.c	2012-11-18 22:47:13.765219400 +0100
++++ vdr-1.7.32/menu.c	2012-11-18 22:47:13.829219404 +0100
 @@ -905,6 +905,16 @@
       Add(new cMenuEditBitItem( tr("VPS"),          &data.flags, tfVps));
       Add(new cMenuEditIntItem( tr("Priority"),     &data.priority, 0, MAXPRIORITY));
@@ -70,7 +70,7 @@ Index: vdr-1.7.32/menu.c
       if (ri->IsDirectory())
          Open();
       else {
-@@ -3782,28 +3798,32 @@
+@@ -3779,28 +3795,32 @@
  
    // Basic menu items:
  
@@ -108,7 +108,7 @@ Index: vdr-1.7.32/menu.c
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
    }
-@@ -3888,6 +3908,14 @@
+@@ -3885,6 +3905,14 @@
    HadSubMenu |= HasSubMenu();
  
    cOsdObject *menu = NULL;
@@ -123,7 +123,7 @@ Index: vdr-1.7.32/menu.c
    switch (state) {
      case osSchedule:
          if (!cPluginManager::CallFirstService("MainMenuHooksPatch-v1.0::osSchedule", &menu))
-@@ -3939,6 +3967,7 @@
+@@ -3936,6 +3964,7 @@
                           if (item) {
                              cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
                              if (p) {
@@ -131,7 +131,7 @@ Index: vdr-1.7.32/menu.c
                                 cOsdObject *menu = p->MainMenuAction();
                                 if (menu) {
                                    if (menu->IsMenu())
-@@ -3950,6 +3979,7 @@
+@@ -3947,6 +3976,7 @@
                                    }
                                 }
                              }
@@ -139,7 +139,7 @@ Index: vdr-1.7.32/menu.c
                           state = osEnd;
                         }
                         break;
-@@ -4161,6 +4191,8 @@
+@@ -4158,6 +4188,8 @@
             Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
             if (!Channel && Setup.ChannelsWrap)
                Channel = Direction > 0 ? Channels.First() : Channels.Last();
@@ -148,7 +148,7 @@ Index: vdr-1.7.32/menu.c
             if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, LIVEPRIORITY, true, true))
                return Channel;
             }
-@@ -4854,6 +4886,7 @@
+@@ -4851,6 +4883,7 @@
             for (int i = 0; i < MAXRECORDCONTROLS; i++) {
                 if (!RecordControls[i]) {
                    RecordControls[i] = new cRecordControl(device, Timer, Pause);
@@ -158,8 +158,8 @@ Index: vdr-1.7.32/menu.c
                 }
 Index: vdr-1.7.32/osd.c
 ===================================================================
---- vdr-1.7.32.orig/osd.c	2012-11-18 22:25:12.000000000 +0100
-+++ vdr-1.7.32/osd.c	2012-11-18 22:26:26.617167696 +0100
+--- vdr-1.7.32.orig/osd.c	2012-11-18 22:47:13.617219395 +0100
++++ vdr-1.7.32/osd.c	2012-11-18 22:47:13.829219404 +0100
 @@ -1623,6 +1623,7 @@
  int cOsd::osdHeight = 0;
  cVector<cOsd *> cOsd::Osds;
@@ -170,8 +170,8 @@ Index: vdr-1.7.32/osd.c
  {
 Index: vdr-1.7.32/osd.h
 ===================================================================
---- vdr-1.7.32.orig/osd.h	2012-11-18 22:25:12.000000000 +0100
-+++ vdr-1.7.32/osd.h	2012-11-18 22:26:26.617167696 +0100
+--- vdr-1.7.32.orig/osd.h	2012-11-18 22:47:13.621219395 +0100
++++ vdr-1.7.32/osd.h	2012-11-18 22:47:13.829219404 +0100
 @@ -932,6 +932,7 @@
         ///<        delete pm;
         ///<        }
@@ -182,8 +182,8 @@ Index: vdr-1.7.32/osd.h
  #define MAXOSDIMAGES 64
 Index: vdr-1.7.32/status.c
 ===================================================================
---- vdr-1.7.32.orig/status.c	2012-11-18 22:25:12.000000000 +0100
-+++ vdr-1.7.32/status.c	2012-11-18 22:26:26.617167696 +0100
+--- vdr-1.7.32.orig/status.c	2012-11-18 22:47:13.649219395 +0100
++++ vdr-1.7.32/status.c	2012-11-18 22:47:13.833219404 +0100
 @@ -153,3 +153,55 @@
    for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
       sm->OsdEventItem(Event, Text, Index, Count);
@@ -242,8 +242,8 @@ Index: vdr-1.7.32/status.c
 +}
 Index: vdr-1.7.32/status.h
 ===================================================================
---- vdr-1.7.32.orig/status.h	2012-11-18 22:25:12.000000000 +0100
-+++ vdr-1.7.32/status.h	2012-11-18 22:26:26.617167696 +0100
+--- vdr-1.7.32.orig/status.h	2012-11-18 22:47:13.649219395 +0100
++++ vdr-1.7.32/status.h	2012-11-18 22:47:13.833219404 +0100
 @@ -14,6 +14,7 @@
  #include "device.h"
  #include "player.h"
@@ -292,8 +292,8 @@ Index: vdr-1.7.32/status.h
  #endif //__STATUS_H
 Index: vdr-1.7.32/timers.c
 ===================================================================
---- vdr-1.7.32.orig/timers.c	2012-10-16 10:22:39.000000000 +0200
-+++ vdr-1.7.32/timers.c	2012-11-18 22:26:26.617167696 +0100
+--- vdr-1.7.32.orig/timers.c	2012-11-18 22:47:07.089219123 +0100
++++ vdr-1.7.32/timers.c	2012-11-18 22:47:13.833219404 +0100
 @@ -32,6 +32,7 @@
    deferred = 0;
    recording = pending = inVpsMargin = false;
@@ -370,8 +370,8 @@ Index: vdr-1.7.32/timers.c
  cTimers Timers;
 Index: vdr-1.7.32/timers.h
 ===================================================================
---- vdr-1.7.32.orig/timers.h	2012-04-15 15:21:31.000000000 +0200
-+++ vdr-1.7.32/timers.h	2012-11-18 22:26:26.617167696 +0100
+--- vdr-1.7.32.orig/timers.h	2012-11-18 22:47:07.049219122 +0100
++++ vdr-1.7.32/timers.h	2012-11-18 22:47:13.833219404 +0100
 @@ -38,6 +38,7 @@
    int start;
    int stop;
@@ -398,8 +398,8 @@ Index: vdr-1.7.32/timers.h
    bool HasFlags(uint Flags) const;
 Index: vdr-1.7.32/vdr.c
 ===================================================================
---- vdr-1.7.32.orig/vdr.c	2012-11-18 22:25:12.000000000 +0100
-+++ vdr-1.7.32/vdr.c	2012-11-18 22:29:41.753175786 +0100
+--- vdr-1.7.32.orig/vdr.c	2012-11-18 22:47:07.133219126 +0100
++++ vdr-1.7.32/vdr.c	2012-11-18 22:47:13.833219404 +0100
 @@ -61,6 +61,7 @@
  #include "skinsttng.h"
  #include "sourceparams.h"
