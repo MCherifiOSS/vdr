@@ -1,3 +1,9 @@
+vdr (1.7.32-0yavdr0~precise) precise; urgency=medium
+
+  * New upstream release
+
+ -- Holger Schvestka <hotzenplotz5@gmx.de>  Sun, 18 Nov 2012 19:01:25 +0200
+
 vdr (1.7.31-0yavdr1~precise) precise; urgency=medium
 
   * add rotor patch
