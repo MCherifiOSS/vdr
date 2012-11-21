@@ -7,6 +7,7 @@ debian/patches/opt-37-x_menuorg.patch:d4185fff847e393dd3d2a0e4e333f7f7
 debian/patches/opt-56_eventdetails_v3.patch:e2ff963982af0673b0436d3f7f6c2048
 debian/patches/opt-41-x_timer-info.patch:b619583a4bebe2579e0d585171b20969
 debian/patches/xprmtl-01_externalci.patch:bf04942073f1ecd41351d0b6ee8cda7c
+debian/patches/opt-99_dvbhddevice-make.patch:db4618fc401bf5007c83cdf86e336c78
 debian/patches/opt-10_vdr-1.7.32-vasarajanauloja.patch:8b8eff0c54b7bfd4459baa96ccb200c5
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:72cf29e00eb6ade92cdac5b82fc57003
 debian/patches/99_ncursesw-include.patch:49f42a61ebc948db31683abf35a79d29

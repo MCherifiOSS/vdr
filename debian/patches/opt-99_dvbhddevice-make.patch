@@ -1,0 +1,11 @@
+--- a/PLUGINS/src/dvbhddevice/Makefile
++++ b/PLUGINS/src/dvbhddevice/Makefile
+@@ -99,7 +99,7 @@
+ ### Targets:
+ 
+ libvdr-$(PLUGIN).so: $(OBJS) libhdffcmd
+-	$(MAKE) -C libhdffcmd all
++	$(MAKE) -C libhdffcmd PLUGIN=$(PLUGIN) all
+ 	$(CXX) $(CXXFLAGS) -shared $(OBJS) libhdffcmd/libhdffcmd.a -o $@
+ 	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+ 
