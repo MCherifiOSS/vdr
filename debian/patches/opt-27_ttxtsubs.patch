@@ -1,11 +1,9 @@
 Description: This patch is needed for the ttxtsubs plugin.
 Origin: ttxsubs plugin
 
-Index: vdr/MANUAL
-===================================================================
---- vdr.orig/MANUAL	2012-06-06 23:10:25.000000000 +0200
-+++ vdr/MANUAL	2012-06-06 23:10:30.000000000 +0200
-@@ -735,6 +735,9 @@
+--- a/MANUAL
++++ b/MANUAL
+@@ -753,6 +753,9 @@
                           background transparency. By default the values as broadcast
                           are used.
  
@@ -15,11 +13,9 @@ Index: vdr/MANUAL
    LNB:
  
    Use DiSEqC = no        Generally turns DiSEqC support on or off.
-Index: vdr/Makefile
-===================================================================
---- vdr.orig/Makefile	2012-06-06 23:10:20.000000000 +0200
-+++ vdr/Makefile	2012-06-06 23:10:30.000000000 +0200
-@@ -47,6 +47,8 @@
+--- a/Makefile
++++ b/Makefile
+@@ -48,6 +48,8 @@
         skinclassic.o skinlcars.o skins.o skinsttng.o sourceparams.o sources.o spu.o status.o svdrp.o themes.o thread.o\
         timers.o tools.o transfer.o vdr.o videodir.o
  
@@ -28,11 +24,9 @@ Index: vdr/Makefile
  ifndef NO_KBD
  DEFINES += -DREMOTE_KBD
  endif
-Index: vdr/channels.c
-===================================================================
---- vdr.orig/channels.c	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/channels.c	2012-06-06 23:10:30.000000000 +0200
-@@ -378,6 +378,26 @@
+--- a/channels.c
++++ b/channels.c
+@@ -408,6 +408,26 @@
       }
  }
  
@@ -59,7 +53,7 @@ Index: vdr/channels.c
  void cChannel::SetCaIds(const int *CaIds)
  {
    if (caids[0] && caids[0] <= CA_USER_MAX)
-@@ -506,10 +526,17 @@
+@@ -536,10 +556,17 @@
          q += IntArrayToString(q, Channel->dpids, 10, Channel->dlangs, Channel->dtypes);
          }
       *q = 0;
@@ -78,7 +72,7 @@ Index: vdr/channels.c
       if (Channel->spids[0]) {
          *q++ = ';';
          q += IntArrayToString(q, Channel->spids, 10, Channel->slangs);
-@@ -680,6 +707,32 @@
+@@ -710,6 +737,32 @@
                      }
                spids[NumSpids] = 0;
                }
@@ -111,10 +105,8 @@ Index: vdr/channels.c
             if (sscanf(tpidbuf, "%d", &tpid) != 1)
                return false;
             if (caidbuf) {
-Index: vdr/channels.h
-===================================================================
---- vdr.orig/channels.h	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/channels.h	2012-06-06 23:10:30.000000000 +0200
+--- a/channels.h
++++ b/channels.h
 @@ -35,6 +35,7 @@
  #define MAXDPIDS 16 // dolby (AC3 + DTS)
  #define MAXSPIDS 32 // subtitles
@@ -150,7 +142,7 @@ Index: vdr/channels.h
    int caids[MAXCAIDS + 1]; // list is zero-terminated
    int nid;
    int tid;
-@@ -164,6 +178,8 @@
+@@ -166,6 +180,8 @@
    uint16_t CompositionPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? compositionPageIds[i] : uint16_t(0); }
    uint16_t AncillaryPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? ancillaryPageIds[i] : uint16_t(0); }
    int Tpid(void) const { return tpid; }
@@ -159,7 +151,7 @@ Index: vdr/channels.h
    const int *Caids(void) const { return caids; }
    int Ca(int Index = 0) const { return Index < MAXCAIDS ? caids[Index] : 0; }
    int Nid(void) const { return nid; }
-@@ -190,6 +206,7 @@
+@@ -192,6 +208,7 @@
    void SetName(const char *Name, const char *ShortName, const char *Provider);
    void SetPortalName(const char *PortalName);
    void SetPids(int Vpid, int Ppid, int Vtype, int *Apids, int *Atypes, char ALangs[][MAXLANGCODE2], int *Dpids, int *Dtypes, char DLangs[][MAXLANGCODE2], int *Spids, char SLangs[][MAXLANGCODE2], int Tpid);
@@ -167,10 +159,8 @@ Index: vdr/channels.h
    void SetCaIds(const int *CaIds); // list must be zero-terminated
    void SetCaDescriptors(int Level);
    void SetLinkChannels(cLinkChannels *LinkChannels);
-Index: vdr/ci.c
-===================================================================
---- vdr.orig/ci.c	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/ci.c	2012-06-06 23:10:30.000000000 +0200
+--- a/ci.c
++++ b/ci.c
 @@ -1914,6 +1914,8 @@
           AddPid(Channel->Sid(), *Dpid, STREAM_TYPE_PRIVATE);
       for (const int *Spid = Channel->Spids(); *Spid; Spid++)
@@ -190,10 +180,8 @@ Index: vdr/ci.c
       cas->SendPMT(&CaPmt);
       cTimeMs Timeout(QUERY_REPLY_TIMEOUT);
       do {
-Index: vdr/config.c
-===================================================================
---- vdr.orig/config.c	2012-06-06 23:10:25.000000000 +0200
-+++ vdr/config.c	2012-06-06 23:10:30.000000000 +0200
+--- a/config.c
++++ b/config.c
 @@ -396,6 +396,7 @@
    MarginStop = 10;
    AudioLanguages[0] = -1;
@@ -202,7 +190,7 @@ Index: vdr/config.c
    SubtitleLanguages[0] = -1;
    SubtitleOffset = 0;
    SubtitleFgTransparency = 0;
-@@ -594,6 +595,7 @@
+@@ -596,6 +597,7 @@
    else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
    else if (!strcasecmp(Name, "AudioLanguages"))      return ParseLanguages(Value, AudioLanguages);
    else if (!strcasecmp(Name, "DisplaySubtitles"))    DisplaySubtitles   = atoi(Value);
@@ -210,7 +198,7 @@ Index: vdr/config.c
    else if (!strcasecmp(Name, "SubtitleLanguages"))   return ParseLanguages(Value, SubtitleLanguages);
    else if (!strcasecmp(Name, "SubtitleOffset"))      SubtitleOffset     = atoi(Value);
    else if (!strcasecmp(Name, "SubtitleFgTransparency")) SubtitleFgTransparency = atoi(Value);
-@@ -695,6 +697,7 @@
+@@ -699,6 +701,7 @@
    Store("MarginStop",         MarginStop);
    StoreLanguages("AudioLanguages", AudioLanguages);
    Store("DisplaySubtitles",   DisplaySubtitles);
@@ -218,11 +206,9 @@ Index: vdr/config.c
    StoreLanguages("SubtitleLanguages", SubtitleLanguages);
    Store("SubtitleOffset",     SubtitleOffset);
    Store("SubtitleFgTransparency", SubtitleFgTransparency);
-Index: vdr/config.h
-===================================================================
---- vdr.orig/config.h	2012-06-06 23:10:25.000000000 +0200
-+++ vdr/config.h	2012-06-06 23:10:30.000000000 +0200
-@@ -273,6 +273,7 @@
+--- a/config.h
++++ b/config.h
+@@ -270,6 +270,7 @@
    int MarginStart, MarginStop;
    int AudioLanguages[I18N_MAX_LANGUAGES + 1];
    int DisplaySubtitles;
@@ -230,10 +216,8 @@ Index: vdr/config.h
    int SubtitleLanguages[I18N_MAX_LANGUAGES + 1];
    int SubtitleOffset;
    int SubtitleFgTransparency, SubtitleBgTransparency;
-Index: vdr/device.c
-===================================================================
---- vdr.orig/device.c	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/device.c	2012-06-06 23:10:30.000000000 +0200
+--- a/device.c
++++ b/device.c
 @@ -18,6 +18,7 @@
  #include "receiver.h"
  #include "status.h"
@@ -242,7 +226,7 @@ Index: vdr/device.c
  
  // --- cLiveSubtitle ---------------------------------------------------------
  
-@@ -1297,6 +1298,13 @@
+@@ -1306,6 +1307,13 @@
                    }
                 break;
            case 0xBD: { // private stream 1
@@ -256,7 +240,7 @@ Index: vdr/device.c
                 int PayloadOffset = Data[8] + 9;
  
                 // Compatibility mode for old subtitles plugin:
-@@ -1456,6 +1464,7 @@
+@@ -1465,6 +1473,7 @@
       tsToPesVideo.Reset();
       tsToPesAudio.Reset();
       tsToPesSubtitle.Reset();
@@ -264,7 +248,7 @@ Index: vdr/device.c
       }
    else if (Length < TS_SIZE) {
       esyslog("ERROR: skipped %d bytes of TS fragment", Length);
-@@ -1501,6 +1510,17 @@
+@@ -1510,6 +1519,17 @@
                      if (!VideoOnly || HasIBPTrickSpeed())
                         PlayTsSubtitle(Data, TS_SIZE);
                      }
@@ -282,11 +266,9 @@ Index: vdr/device.c
                   }
                }
             else if (Pid == patPmtParser.Ppid()) {
-Index: vdr/device.h
-===================================================================
---- vdr.orig/device.h	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/device.h	2012-06-06 23:10:30.000000000 +0200
-@@ -569,6 +569,7 @@
+--- a/device.h
++++ b/device.h
+@@ -579,6 +579,7 @@
    cTsToPes tsToPesVideo;
    cTsToPes tsToPesAudio;
    cTsToPes tsToPesSubtitle;
@@ -294,11 +276,9 @@ Index: vdr/device.h
    bool isPlayingVideo;
  protected:
    const cPatPmtParser *PatPmtParser(void) const { return &patPmtParser; }
-Index: vdr/menu.c
-===================================================================
---- vdr.orig/menu.c	2012-06-06 23:10:26.000000000 +0200
-+++ vdr/menu.c	2012-06-06 23:10:30.000000000 +0200
-@@ -2959,6 +2959,7 @@
+--- a/menu.c
++++ b/menu.c
+@@ -2998,6 +2998,7 @@
       Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle foreground transparency"), &data.SubtitleFgTransparency, 0, 9));
       Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle background transparency"), &data.SubtitleBgTransparency, 0, 10));
       }
@@ -306,10 +286,8 @@ Index: vdr/menu.c
  
    SetCurrent(Get(current));
    Display();
-Index: vdr/pat.c
-===================================================================
---- vdr.orig/pat.c	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/pat.c	2012-06-06 23:10:30.000000000 +0200
+--- a/pat.c
++++ b/pat.c
 @@ -13,6 +13,7 @@
  #include "libsi/section.h"
  #include "libsi/descriptor.h"
@@ -363,11 +341,9 @@ Index: vdr/pat.c
             Channel->SetCaIds(CaDescriptors->CaIds());
             Channel->SetSubtitlingDescriptors(SubtitlingTypes, CompositionPageIds, AncillaryPageIds);
             }
-Index: vdr/po/ca_ES.po
-===================================================================
---- vdr.orig/po/ca_ES.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/ca_ES.po	2012-06-06 23:10:30.000000000 +0200
-@@ -959,6 +959,9 @@
+--- a/po/ca_ES.po
++++ b/po/ca_ES.po
+@@ -971,6 +971,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparència fons subtítols"
  
@@ -377,11 +353,9 @@ Index: vdr/po/ca_ES.po
  msgid "LNB"
  msgstr "Configuració de l'LNB"
  
-Index: vdr/po/cs_CZ.po
-===================================================================
---- vdr.orig/po/cs_CZ.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/cs_CZ.po	2012-06-06 23:10:30.000000000 +0200
-@@ -958,6 +958,9 @@
+--- a/po/cs_CZ.po
++++ b/po/cs_CZ.po
+@@ -970,6 +970,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "PrÅ¯hlednost pozadÃ­ titulkÅ¯"
  
@@ -391,11 +365,9 @@ Index: vdr/po/cs_CZ.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/da_DK.po
-===================================================================
---- vdr.orig/po/da_DK.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/da_DK.po	2012-06-06 23:10:30.000000000 +0200
-@@ -956,6 +956,9 @@
+--- a/po/da_DK.po
++++ b/po/da_DK.po
+@@ -968,6 +968,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Undertekst baggrundsgennemsigtighed"
  
@@ -405,11 +377,9 @@ Index: vdr/po/da_DK.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/de_DE.po
-===================================================================
---- vdr.orig/po/de_DE.po	2012-06-06 23:10:26.000000000 +0200
-+++ vdr/po/de_DE.po	2012-06-06 23:10:30.000000000 +0200
-@@ -956,6 +956,9 @@
+--- a/po/de_DE.po
++++ b/po/de_DE.po
+@@ -968,6 +968,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Untertitel-Transparenz Hintergrund"
  
@@ -419,11 +389,9 @@ Index: vdr/po/de_DE.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/el_GR.po
-===================================================================
---- vdr.orig/po/el_GR.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/el_GR.po	2012-06-06 23:10:30.000000000 +0200
-@@ -956,6 +956,9 @@
+--- a/po/el_GR.po
++++ b/po/el_GR.po
+@@ -968,6 +968,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr ""
  
@@ -433,11 +401,9 @@ Index: vdr/po/el_GR.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/es_ES.po
-===================================================================
---- vdr.orig/po/es_ES.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/es_ES.po	2012-06-06 23:10:30.000000000 +0200
-@@ -957,6 +957,9 @@
+--- a/po/es_ES.po
++++ b/po/es_ES.po
+@@ -969,6 +969,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparencia fondo subtítulos"
  
@@ -447,11 +413,9 @@ Index: vdr/po/es_ES.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/et_EE.po
-===================================================================
---- vdr.orig/po/et_EE.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/et_EE.po	2012-06-06 23:10:30.000000000 +0200
-@@ -956,6 +956,9 @@
+--- a/po/et_EE.po
++++ b/po/et_EE.po
+@@ -968,6 +968,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Subtiitri tausta lÃ¤bipaistvus"
  
@@ -461,11 +425,9 @@ Index: vdr/po/et_EE.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/fi_FI.po
-===================================================================
---- vdr.orig/po/fi_FI.po	2012-06-06 23:10:20.000000000 +0200
-+++ vdr/po/fi_FI.po	2012-06-06 23:10:30.000000000 +0200
-@@ -959,6 +959,9 @@
+--- a/po/fi_FI.po
++++ b/po/fi_FI.po
+@@ -971,6 +971,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Tekstityksen taustan lÃ¤pinÃ¤kyvyys"
  
@@ -475,11 +437,9 @@ Index: vdr/po/fi_FI.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/fr_FR.po
-===================================================================
---- vdr.orig/po/fr_FR.po	2012-06-06 23:10:26.000000000 +0200
-+++ vdr/po/fr_FR.po	2012-06-06 23:10:30.000000000 +0200
-@@ -962,6 +962,9 @@
+--- a/po/fr_FR.po
++++ b/po/fr_FR.po
+@@ -974,6 +974,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparence du fond"
  
@@ -489,11 +449,9 @@ Index: vdr/po/fr_FR.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/hr_HR.po
-===================================================================
---- vdr.orig/po/hr_HR.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/hr_HR.po	2012-06-06 23:10:30.000000000 +0200
-@@ -958,6 +958,9 @@
+--- a/po/hr_HR.po
++++ b/po/hr_HR.po
+@@ -970,6 +970,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparentnost pozadine titla"
  
@@ -503,11 +461,9 @@ Index: vdr/po/hr_HR.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/hu_HU.po
-===================================================================
---- vdr.orig/po/hu_HU.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/hu_HU.po	2012-06-06 23:10:30.000000000 +0200
-@@ -959,6 +959,9 @@
+--- a/po/hu_HU.po
++++ b/po/hu_HU.po
+@@ -971,6 +971,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Felirat hátterének transzparenciája"
  
@@ -517,11 +473,9 @@ Index: vdr/po/hu_HU.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/it_IT.po
-===================================================================
---- vdr.orig/po/it_IT.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/it_IT.po	2012-06-06 23:10:30.000000000 +0200
-@@ -963,6 +963,9 @@
+--- a/po/it_IT.po
++++ b/po/it_IT.po
+@@ -975,6 +975,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Trasparenza sfondo sottotitoli"
  
@@ -531,11 +485,9 @@ Index: vdr/po/it_IT.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/lt_LT.po
-===================================================================
---- vdr.orig/po/lt_LT.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/lt_LT.po	2012-06-06 23:10:30.000000000 +0200
-@@ -956,6 +956,9 @@
+--- a/po/lt_LT.po
++++ b/po/lt_LT.po
+@@ -968,6 +968,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "SubtitrÅ³ fono permatomumas"
  
@@ -545,11 +497,9 @@ Index: vdr/po/lt_LT.po
  msgid "LNB"
  msgstr "Konverteris (LNB)"
  
-Index: vdr/po/nl_NL.po
-===================================================================
---- vdr.orig/po/nl_NL.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/nl_NL.po	2012-06-06 23:10:30.000000000 +0200
-@@ -960,6 +960,9 @@
+--- a/po/nl_NL.po
++++ b/po/nl_NL.po
+@@ -972,6 +972,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparantie achtergrond ondertiteling"
  
@@ -559,11 +509,9 @@ Index: vdr/po/nl_NL.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/nn_NO.po
-===================================================================
---- vdr.orig/po/nn_NO.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/nn_NO.po	2012-06-06 23:10:30.000000000 +0200
-@@ -957,6 +957,9 @@
+--- a/po/nn_NO.po
++++ b/po/nn_NO.po
+@@ -969,6 +969,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr ""
  
@@ -573,11 +521,9 @@ Index: vdr/po/nn_NO.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/pl_PL.po
-===================================================================
---- vdr.orig/po/pl_PL.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/pl_PL.po	2012-06-06 23:10:30.000000000 +0200
-@@ -957,6 +957,9 @@
+--- a/po/pl_PL.po
++++ b/po/pl_PL.po
+@@ -969,6 +969,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Prze¼rocze podtytu³ów: T³o"
  
@@ -587,11 +533,9 @@ Index: vdr/po/pl_PL.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/pt_PT.po
-===================================================================
---- vdr.orig/po/pt_PT.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/pt_PT.po	2012-06-06 23:10:30.000000000 +0200
-@@ -957,6 +957,9 @@
+--- a/po/pt_PT.po
++++ b/po/pt_PT.po
+@@ -969,6 +969,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparência de fundo das legendas"
  
@@ -601,13 +545,11 @@ Index: vdr/po/pt_PT.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/ro_RO.po
-===================================================================
---- vdr.orig/po/ro_RO.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/ro_RO.po	2012-06-06 23:10:30.000000000 +0200
-@@ -959,6 +959,9 @@
+--- a/po/ro_RO.po
++++ b/po/ro_RO.po
+@@ -971,6 +971,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
- msgstr "Transparenþa fundalului subtitrãrii"
+ msgstr "TransparenÅ£a fundalului subtitrÄƒrii"
  
 +msgid "Setup.DVB$Enable teletext support"
 +msgstr ""
@@ -615,11 +557,9 @@ Index: vdr/po/ro_RO.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/ru_RU.po
-===================================================================
---- vdr.orig/po/ru_RU.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/ru_RU.po	2012-06-06 23:10:30.000000000 +0200
-@@ -957,6 +957,9 @@
+--- a/po/ru_RU.po
++++ b/po/ru_RU.po
+@@ -969,6 +969,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "¿àÞ×àÐçÝÞáâì äÞÝÐ áãÑâØâàÞÒ"
  
@@ -629,11 +569,9 @@ Index: vdr/po/ru_RU.po
  msgid "LNB"
  msgstr "ºÞÝÒÕàâÕà"
  
-Index: vdr/po/sk_SK.po
-===================================================================
---- vdr.orig/po/sk_SK.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/sk_SK.po	2012-06-06 23:10:30.000000000 +0200
-@@ -956,6 +956,9 @@
+--- a/po/sk_SK.po
++++ b/po/sk_SK.po
+@@ -968,6 +968,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Priehµadnos» pozadia titulkov"
  
@@ -643,11 +581,9 @@ Index: vdr/po/sk_SK.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/sl_SI.po
-===================================================================
---- vdr.orig/po/sl_SI.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/sl_SI.po	2012-06-06 23:10:30.000000000 +0200
-@@ -957,6 +957,9 @@
+--- a/po/sl_SI.po
++++ b/po/sl_SI.po
+@@ -969,6 +969,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparentnost ozadja podnapisov"
  
@@ -657,11 +593,9 @@ Index: vdr/po/sl_SI.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/sv_SE.po
-===================================================================
---- vdr.orig/po/sv_SE.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/sv_SE.po	2012-06-06 23:10:30.000000000 +0200
-@@ -959,6 +959,9 @@
+--- a/po/sv_SE.po
++++ b/po/sv_SE.po
+@@ -971,6 +971,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparent bakgrund textremsa"
  
@@ -671,11 +605,9 @@ Index: vdr/po/sv_SE.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/tr_TR.po
-===================================================================
---- vdr.orig/po/tr_TR.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/tr_TR.po	2012-06-06 23:10:30.000000000 +0200
-@@ -956,6 +956,9 @@
+--- a/po/tr_TR.po
++++ b/po/tr_TR.po
+@@ -968,6 +968,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Altyazý arka þeffaflýk"
  
@@ -685,11 +617,9 @@ Index: vdr/po/tr_TR.po
  msgid "LNB"
  msgstr "LNB"
  
-Index: vdr/po/uk_UA.po
-===================================================================
---- vdr.orig/po/uk_UA.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/uk_UA.po	2012-06-06 23:10:30.000000000 +0200
-@@ -956,6 +956,9 @@
+--- a/po/uk_UA.po
++++ b/po/uk_UA.po
+@@ -968,6 +968,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "ÐŸÑ€Ð¾Ð·Ð¾Ñ€Ñ–ÑÑ‚ÑŒ Ð·Ð°Ð´Ð½ÑŒÐ¾Ð³Ð¾ Ð¿Ð»Ð°Ð½Ñƒ ÑÑƒÐ±Ñ‚Ð¸Ñ‚Ñ€Ñ–Ð²"
  
@@ -699,11 +629,9 @@ Index: vdr/po/uk_UA.po
  msgid "LNB"
  msgstr "ÐšÐ¾Ð½Ð²ÐµÑ€Ñ‚ÐµÑ€"
  
-Index: vdr/po/zh_CN.po
-===================================================================
---- vdr.orig/po/zh_CN.po	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/po/zh_CN.po	2012-06-06 23:10:30.000000000 +0200
-@@ -959,6 +959,9 @@
+--- a/po/zh_CN.po
++++ b/po/zh_CN.po
+@@ -971,6 +971,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "å­—å¹•èƒŒæ™¯é€æ˜Žåº¦"
  
@@ -713,10 +641,8 @@ Index: vdr/po/zh_CN.po
  msgid "LNB"
  msgstr "åˆ‡æ¢å™¨è®¾ç½®"
  
-Index: vdr/receiver.c
-===================================================================
---- vdr.orig/receiver.c	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/receiver.c	2012-06-06 23:10:30.000000000 +0200
+--- a/receiver.c
++++ b/receiver.c
 @@ -67,7 +67,8 @@
              (Channel->Ppid() == Channel->Vpid() || AddPid(Channel->Ppid())) &&
              AddPids(Channel->Apids()) &&
@@ -727,11 +653,9 @@ Index: vdr/receiver.c
       }
    return true;
  }
-Index: vdr/remux.c
-===================================================================
---- vdr.orig/remux.c	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/remux.c	2012-06-06 23:10:30.000000000 +0200
-@@ -219,6 +219,29 @@
+--- a/remux.c
++++ b/remux.c
+@@ -385,6 +385,29 @@
    return i;
  }
  
@@ -761,7 +685,7 @@ Index: vdr/remux.c
  int cPatPmtGenerator::MakeLanguageDescriptor(uchar *Target, const char *Language)
  {
    int i = 0;
-@@ -306,6 +329,7 @@
+@@ -472,6 +495,7 @@
    if (Channel) {
       int Vpid = Channel->Vpid();
       int Ppid = Channel->Ppid();
@@ -769,7 +693,7 @@ Index: vdr/remux.c
       uchar *p = buf;
       int i = 0;
       p[i++] = 0x02; // table id
-@@ -338,6 +362,10 @@
+@@ -504,6 +528,10 @@
           i += MakeStream(buf + i, 0x06, Channel->Spid(n));
           i += MakeSubtitlingDescriptor(buf + i, Channel->Slang(n), Channel->SubtitlingType(n), Channel->CompositionPageId(n), Channel->AncillaryPageId(n));
           }
@@ -780,7 +704,7 @@ Index: vdr/remux.c
  
       int sl = i - SectionLength - 2 + 4; // -2 = SectionLength storage, +4 = length of CRC
       buf[SectionLength] |= (sl >> 8) & 0x0F;
-@@ -411,6 +439,7 @@
+@@ -577,6 +605,7 @@
    pmtPid = -1;
    vpid = vtype = 0;
    ppid = 0;
@@ -788,7 +712,7 @@ Index: vdr/remux.c
  }
  
  void cPatPmtParser::ParsePat(const uchar *Data, int Length)
-@@ -496,11 +525,13 @@
+@@ -662,11 +691,13 @@
       int NumSpids = 0;
       vpid = vtype = 0;
       ppid = 0;
@@ -802,7 +726,7 @@ Index: vdr/remux.c
       SI::PMT::Stream stream;
       for (SI::Loop::Iterator it; Pmt.streamLoop.getNext(stream, it); ) {
           dbgpatpmt("     stream type = %02X, pid = %d", stream.getStreamType(), stream.getPid());
-@@ -599,6 +630,28 @@
+@@ -765,6 +796,28 @@
                                      spids[NumSpids]= 0;
                                      }
                                   break;
@@ -831,11 +755,9 @@ Index: vdr/remux.c
                              case SI::ISO639LanguageDescriptorTag: {
                                   SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
                                   dbgpatpmt(" '%s'", ld->languageCode);
-Index: vdr/remux.h
-===================================================================
---- vdr.orig/remux.h	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/remux.h	2012-06-06 23:10:30.000000000 +0200
-@@ -174,6 +174,7 @@
+--- a/remux.h
++++ b/remux.h
+@@ -292,6 +292,7 @@
    int MakeStream(uchar *Target, uchar Type, int Pid);
    int MakeAC3Descriptor(uchar *Target, uchar Type);
    int MakeSubtitlingDescriptor(uchar *Target, const char *Language, uchar SubtitlingType, uint16_t CompositionPageId, uint16_t AncillaryPageId);
@@ -843,7 +765,7 @@ Index: vdr/remux.h
    int MakeLanguageDescriptor(uchar *Target, const char *Language);
    int MakeCRC(uchar *Target, const uchar *Data, int Length);
    void GeneratePmtPid(const cChannel *Channel);
-@@ -219,6 +220,7 @@
+@@ -337,6 +338,7 @@
    int vpid;
    int ppid;
    int vtype;
@@ -851,7 +773,7 @@ Index: vdr/remux.h
    int apids[MAXAPIDS + 1]; // list is zero-terminated
    int atypes[MAXAPIDS + 1]; // list is zero-terminated
    char alangs[MAXAPIDS][MAXLANGCODE2];
-@@ -231,6 +233,8 @@
+@@ -349,6 +351,8 @@
    uint16_t compositionPageIds[MAXSPIDS];
    uint16_t ancillaryPageIds[MAXSPIDS];
    bool updatePrimaryDevice;
@@ -860,7 +782,7 @@ Index: vdr/remux.h
  protected:
    int SectionLength(const uchar *Data, int Length) { return (Length >= 3) ? ((int(Data[1]) & 0x0F) << 8)| Data[2] : 0; }
  public:
-@@ -263,6 +267,9 @@
+@@ -385,6 +389,9 @@
    int Vtype(void) const { return vtype; }
         ///< Returns the video stream type as defined by the current PMT, or 0 if no video
         ///< stream type has been detected, yet.
@@ -870,7 +792,7 @@ Index: vdr/remux.h
    const int *Apids(void) const { return apids; }
    const int *Dpids(void) const { return dpids; }
    const int *Spids(void) const { return spids; }
-@@ -277,6 +284,8 @@
+@@ -399,6 +406,8 @@
    uchar SubtitlingType(int i) const { return (0 <= i && i < MAXSPIDS) ? subtitlingTypes[i] : uchar(0); }
    uint16_t CompositionPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? compositionPageIds[i] : uint16_t(0); }
    uint16_t AncillaryPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? ancillaryPageIds[i] : uint16_t(0); }
@@ -879,10 +801,8 @@ Index: vdr/remux.h
    };
  
  // TS to PES converter:
-Index: vdr/vdr.5
-===================================================================
---- vdr.orig/vdr.5	2012-06-06 23:09:01.000000000 +0200
-+++ vdr/vdr.5	2012-06-06 23:10:30.000000000 +0200
+--- a/vdr.5
++++ b/vdr.5
 @@ -233,6 +233,12 @@
  
  .B ...:201;2001=deu,2002=eng:...
@@ -896,10 +816,8 @@ Index: vdr/vdr.5
  .TP
  .B Conditional access
  A hexadecimal integer defining how this channel can be accessed:
-Index: vdr/vdrttxtsubshooks.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr/vdrttxtsubshooks.c	2012-06-06 23:10:30.000000000 +0200
+--- /dev/null
++++ b/vdrttxtsubshooks.c
 @@ -0,0 +1,63 @@
 +/*
 + * vdr-ttxtsubs - A plugin for the Linux Video Disk Recorder
@@ -964,10 +882,8 @@ Index: vdr/vdrttxtsubshooks.c
 +  return &gProxy;
 +}
 +
-Index: vdr/vdrttxtsubshooks.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr/vdrttxtsubshooks.h	2012-06-06 23:10:30.000000000 +0200
+--- /dev/null
++++ b/vdrttxtsubshooks.h
 @@ -0,0 +1,46 @@
 +/*
 + * vdr-ttxtsubs - A plugin for the Linux Video Disk Recorder

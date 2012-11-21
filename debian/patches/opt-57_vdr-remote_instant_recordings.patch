@@ -2,10 +2,8 @@ Description: Patch for vdr-plugin-remotetimers
 Author: Frank Schmirler <vdrdev@schmirler.de> 
 Origin: http://vdr.schmirler.de/
 
-Index: vdr-1.7.32/config.h
-===================================================================
---- vdr-1.7.32.orig/config.h	2012-11-18 22:47:13.705219398 +0100
-+++ vdr-1.7.32/config.h	2012-11-18 22:47:13.765219400 +0100
+--- a/config.h
++++ b/config.h
 @@ -40,6 +40,8 @@
  #define MAINMENUHOOKSVERSION "1.0.1"
  #define MAINMENUHOOKSVERSNUM 10001  // Version * 10000 + Major * 100 + Minor
@@ -15,10 +13,8 @@ Index: vdr-1.7.32/config.h
  #define MAXPRIORITY       99
  #define MINPRIORITY       (-MAXPRIORITY)
  #define LIVEPRIORITY      0                  // priority used when selecting a device for live viewing
-Index: vdr-1.7.32/menu.c
-===================================================================
---- vdr-1.7.32.orig/menu.c	2012-11-18 22:47:13.709219399 +0100
-+++ vdr-1.7.32/menu.c	2012-11-18 22:47:13.765219400 +0100
+--- a/menu.c
++++ b/menu.c
 @@ -35,6 +35,8 @@
  #include "videodir.h"
  #include "menuorgpatch.h"
@@ -28,7 +24,7 @@ Index: vdr-1.7.32/menu.c
  #define MAXWAIT4EPGINFO   3 // seconds
  #define MODETIMEOUT       3 // seconds
  #define NEWTIMERLIMIT   120 // seconds until the start time of a new timer created from the Schedule menu,
-@@ -4771,6 +4773,50 @@
+@@ -4772,6 +4774,50 @@
  
  bool cRecordControls::Start(cTimer *Timer, bool Pause)
  {
@@ -79,10 +75,8 @@ Index: vdr-1.7.32/menu.c
    static time_t LastNoDiskSpaceMessage = 0;
    int FreeMB = 0;
    if (Timer) {
-Index: vdr-1.7.32/remotetimers.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ vdr-1.7.32/remotetimers.h	2012-11-18 22:47:13.765219400 +0100
+--- /dev/null
++++ b/remotetimers.h
 @@ -0,0 +1,25 @@
 +/*
 + * remotetimers.h: Public interface of the plugin's services

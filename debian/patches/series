@@ -20,7 +20,7 @@ opt-22-x_edit_marks.patch
 #opt-24_jumpplay.patch
 
 # Patch needed for the ttxtsubs plugin.
-#opt-27_ttxtsubs.patch
+opt-27_ttxtsubs.patch
 
 # Patch needed for the menuorg plugin.
 opt-37-x_menuorg.patch

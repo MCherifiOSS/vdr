@@ -1,3 +1,9 @@
+vdr (1.7.32-0yavdr1~precise) precise; urgency=medium
+
+  * Updated ttxtsubs patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 21 Nov 2012 18:44:26 +0100
+
 vdr (1.7.32-0yavdr0~precise) precise; urgency=medium
 
   * New upstream release

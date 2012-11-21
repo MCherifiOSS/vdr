@@ -71,10 +71,8 @@ think you need to modify the patch, we'd encourage you to contact the
 authors first or at least use a service id which differs in more than
 just the version number.
 
-Index: vdr-1.7.32/config.h
-===================================================================
---- vdr-1.7.32.orig/config.h	2012-11-18 22:47:09.173219211 +0100
-+++ vdr-1.7.32/config.h	2012-11-18 22:47:13.561219392 +0100
+--- a/config.h
++++ b/config.h
 @@ -36,6 +36,10 @@
  // plugins to work with newer versions of the core VDR as long as no
  // VDR header files have changed.
@@ -86,11 +84,9 @@ Index: vdr-1.7.32/config.h
  #define MAXPRIORITY       99
  #define MINPRIORITY       (-MAXPRIORITY)
  #define LIVEPRIORITY      0                  // priority used when selecting a device for live viewing
-Index: vdr-1.7.32/menu.c
-===================================================================
---- vdr-1.7.32.orig/menu.c	2012-11-18 22:47:13.537219391 +0100
-+++ vdr-1.7.32/menu.c	2012-11-18 22:47:13.565219393 +0100
-@@ -3653,15 +3653,31 @@
+--- a/menu.c
++++ b/menu.c
+@@ -3654,15 +3654,31 @@
  
    // Initial submenus:
  
@@ -128,7 +124,7 @@ Index: vdr-1.7.32/menu.c
  }
  
  cOsdObject *cMenuMain::PluginOsdObject(void)
-@@ -3807,13 +3823,34 @@
+@@ -3808,13 +3824,34 @@
    eOSState state = cOsdMenu::ProcessKey(Key);
    HadSubMenu |= HasSubMenu();
  
@@ -169,7 +165,7 @@ Index: vdr-1.7.32/menu.c
      case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
                            cOsdItem *item = Get(Current());
                            if (item) {
-@@ -3906,6 +3943,12 @@
+@@ -3907,6 +3944,12 @@
                 default:      break;
                 }
      }
