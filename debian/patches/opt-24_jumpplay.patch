@@ -180,10 +180,10 @@ Index: vdr-1.7.32/dvbplayer.c
  
               if (readFrame) {
 +                if (cutIn) {
-+                   if (isPesRecording)
-+                      cRemux::SetBrokenLink(readFrame->Data(), readFrame->Count());
-+                   else
-+                      TsSetTeiOnBrokenPackets(readFrame->Data(), readFrame->Count());
++                //   if (isPesRecording)
++                //      cRemux::SetBrokenLink(readFrame->Data(), readFrame->Count());
++                //   else
++                //      TsSetTeiOnBrokenPackets(readFrame->Data(), readFrame->Count());
 +                   cutIn = false;
 +                   }
                  if (ringBuffer->Put(readFrame))
