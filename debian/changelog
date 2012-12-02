@@ -1,3 +1,9 @@
+vdr (1.7.32-4yavdr0~precise) precise; urgency=medium
+
+  * add epgsearch-exttimeredit patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sun, 02 Dec 2012 15:01:50 +0100
+
 vdr (1.7.32-3yavdr0~precise) precise; urgency=medium
 
   * add jumpplay patch

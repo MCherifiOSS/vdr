@@ -15,6 +15,7 @@ debian/patches/99_ncursesw-include.patch:49f42a61ebc948db31683abf35a79d29
 debian/patches/82_valgrind.patch:6c0d3c6eeb12904bc61c41bc5c5a3c3a
 debian/patches/opt-61_dynamite.patch:e04b4468689ecb8027763f8ce802f9a8
 debian/patches/opt-22-x_edit_marks.patch:7674f339f3a54d2b0fb076f7d992d7cc
+debian/patches/opt-67_epgsearch-exttimeredit-0.0.2.diff:5ddf15b9bedec67dd16496a3e3914be5
 debian/patches/opt-44_rotor.patch:f8768c950ea5f6c57c63f3a72ed42de4
 debian/patches/opt-42-x_MainMenuHooks-v1.0.1.patch:d746e00fa3606b5fbd4ebccd74d4b5fb
 debian/patches/opt-65_pin.patch:ffb8a2dbb2f3c9c6361852520f2655f0
