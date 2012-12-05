@@ -96,9 +96,6 @@ clean:
 	rm -f debian/patchinfo
 	rm -f $(MANPAGES) $(TXT2MANPAGES)
 
-	# Restore dvbhddevice
-	-mv PLUGINS/src/_dvbhddevice PLUGINS/src/dvbhddevice
-
 	# Restore po files
 	find PLUGINS po -name "*.po" -exec test -f {}.backup \; -exec mv {}.backup {} \;
 
