@@ -1,5 +1,6 @@
 debian/patches/16_channels.conf.terr-fix.patch:92ea3d82643ae71d4fe2b3bfed7bc3f4
 debian/patches/opt-55_wareagleicon.patch:66b8f15549b8480daf782f8dc7daed72
+debian/patches/opt-99_dvbhddevice-make.patch:db4618fc401bf5007c83cdf86e336c78
 debian/patches/04_newplugin.patch:5877f4f62dab4f3d437d4eef7cae3ac0
 debian/patches/opt-27_ttxtsubs.patch:7bb2d0a7736eeb00eb4ea41d02c65bdf
 debian/patches/opt-50_graphtft.patch:e2c8c9d9cb63151dba9a9178a7be6f7a
@@ -8,7 +9,7 @@ debian/patches/opt-56_eventdetails_v3.patch:e2ff963982af0673b0436d3f7f6c2048
 debian/patches/opt-41-x_timer-info.patch:b619583a4bebe2579e0d585171b20969
 debian/patches/xprmtl-01_externalci.patch:bf04942073f1ecd41351d0b6ee8cda7c
 debian/patches/opt-24_jumpplay.patch:e4f87d7fc999b1d2f3d151c159559a68
-debian/patches/opt-99_dvbhddevice-make.patch:db4618fc401bf5007c83cdf86e336c78
+debian/patches/opt-66_jumpingseconds.patch:766f3754a9fb922611b1f448a5cfa967
 debian/patches/opt-10_vdr-1.7.32-vasarajanauloja.patch:8b8eff0c54b7bfd4459baa96ccb200c5
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:fddd842a3f34d5f77594f1f4f68fcc06
 debian/patches/99_ncursesw-include.patch:49f42a61ebc948db31683abf35a79d29
