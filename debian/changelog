@@ -1,3 +1,9 @@
+vdr (1.7.33-0yavdr0~precise) precise; urgency=medium
+
+  * new upstream release v1.7.33
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sat, 08 Dec 2012 13:47:05 +0100
+
 vdr (1.7.32-5yavdr0~precise) precise; urgency=medium
 
   * add jumpingseconds patch
