@@ -352,7 +352,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    virtual bool CanReplay(void) const;
         ///< Returns true if this device can currently start a replay session.
    virtual bool SetPlayMode(ePlayMode PlayMode);
-@@ -772,6 +762,38 @@
+@@ -799,6 +789,38 @@
         ///< Detaches all receivers from this device for this pid.
    virtual void DetachAllReceivers(void);
         ///< Detaches all receivers from this device.
@@ -391,7 +391,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    };
  
  /// Derived cDevice classes that can receive channels will have to provide
-@@ -795,4 +817,47 @@
+@@ -822,4 +844,47 @@
    uchar *Get(void);
    };
  
