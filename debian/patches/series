@@ -17,7 +17,7 @@ opt-10_vdr-1.7.33-vasarajanauloja.patch
 opt-22-x_edit_marks.patch
 
 # The Jump patch allows automatic jumping over cutting marks.
-#opt-24_jumpplay.patch
+opt-24_jumpplay.patch
 
 # Patch needed for the ttxtsubs plugin.
 #opt-27_ttxtsubs.patch

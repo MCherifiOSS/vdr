@@ -3,6 +3,7 @@ debian/patches/16_channels.conf.terr-fix.patch:92ea3d82643ae71d4fe2b3bfed7bc3f4
 debian/patches/82_valgrind.patch:c98fa503104c8d5567788c2ec0620ae1
 debian/patches/opt-99_dvbhddevice-make.patch:b53be4e7e70679590102cfe1d7b4352e
 debian/patches/04_newplugin.patch:6019fe11827cc5bef40f155c99cc4c64
+debian/patches/opt-24_jumpplay.patch:2ad1ec6fd20d43cf379daef055358292
 debian/patches/opt-10_vdr-1.7.33-vasarajanauloja.patch:0e93878d10efeb16c1ef812fe4415cce
 debian/patches/06_default_svdrp_port_0.patch:ef3e192ee2e2bc3c8fbab9669e8bdefc
 debian/patches/opt-22-x_edit_marks.patch:0c9247a4e375e073df075abc58e89373
