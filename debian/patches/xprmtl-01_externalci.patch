@@ -26,7 +26,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    };
 --- a/device.h
 +++ b/device.h
-@@ -804,7 +804,14 @@
+@@ -831,7 +831,14 @@
  /// sure the returned data points to a TS packet and automatically
  /// re-synchronizes after broken packets.
  
@@ -42,7 +42,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  private:
    int f;
    int cardIndex;
-@@ -813,8 +820,8 @@
+@@ -840,8 +847,8 @@
    virtual void Action(void);
  public:
    cTSBuffer(int File, int Size, int CardIndex);
