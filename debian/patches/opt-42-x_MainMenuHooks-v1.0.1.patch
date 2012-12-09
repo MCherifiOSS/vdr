@@ -75,7 +75,7 @@ just the version number.
 +++ b/config.h
 @@ -38,6 +38,10 @@
  
- #define JUMPPLAYVERSNUM 100
+ #define JUMPPLAYVERSNUM 110
  
 +// The MainMenuHook Patch's version number:
 +#define MAINMENUHOOKSVERSION "1.0.1"

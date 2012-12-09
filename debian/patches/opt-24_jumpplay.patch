@@ -168,7 +168,7 @@
  // plugins to work with newer versions of the core VDR as long as no
  // VDR header files have changed.
  
-+#define JUMPPLAYVERSNUM 100
++#define JUMPPLAYVERSNUM 110
 +
  #define MAXPRIORITY       99
  #define MINPRIORITY       (-MAXPRIORITY)

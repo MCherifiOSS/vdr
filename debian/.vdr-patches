@@ -7,7 +7,7 @@ debian/patches/opt-37-x_menuorg.patch:57078ac4ef7bec2342cca4e0fbdd08dd
 debian/patches/opt-56_eventdetails_v3.patch:e2ff963982af0673b0436d3f7f6c2048
 debian/patches/99_ncursesw-include.patch:49f42a61ebc948db31683abf35a79d29
 debian/patches/opt-41-x_timer-info.patch:deefdf8e55c93ebeef6f46932651e21c
-debian/patches/opt-24_jumpplay.patch:2ad1ec6fd20d43cf379daef055358292
+debian/patches/opt-24_jumpplay.patch:8c82447c30c98eb1dd8b661021098415
 debian/patches/opt-99_dvbhddevice-make.patch:b53be4e7e70679590102cfe1d7b4352e
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:91c5bfdc345ecec5ad8d30143ed7ad56
 debian/patches/opt-10_vdr-1.7.33-vasarajanauloja.patch:0e93878d10efeb16c1ef812fe4415cce
@@ -15,7 +15,7 @@ debian/patches/82_valgrind.patch:c98fa503104c8d5567788c2ec0620ae1
 debian/patches/opt-61_dynamite.patch:baf7d42ed2517417bc6f319452d7b7de
 debian/patches/opt-22-x_edit_marks.patch:0c9247a4e375e073df075abc58e89373
 debian/patches/opt-44_rotor.patch:f8768c950ea5f6c57c63f3a72ed42de4
-debian/patches/opt-42-x_MainMenuHooks-v1.0.1.patch:6080e8726035423c910e913cb590883d
+debian/patches/opt-42-x_MainMenuHooks-v1.0.1.patch:792c7574dd81475eee7952cfabdefd21
 debian/patches/12_osdbase-maxitems.patch:e378fe23cb8d1582abd1ee4c349febba
 debian/patches/opt-50_graphtft-liemikuutio.patch:518dd69cc7d01f132a8f59b62dabb342
 debian/patches/opt-45_yaepg.patch:e76b3011314dc9b10316277c1afccebd
