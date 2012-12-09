@@ -16,6 +16,7 @@ debian/patches/opt-61_dynamite.patch:baf7d42ed2517417bc6f319452d7b7de
 debian/patches/opt-22-x_edit_marks.patch:0c9247a4e375e073df075abc58e89373
 debian/patches/opt-44_rotor.patch:f8768c950ea5f6c57c63f3a72ed42de4
 debian/patches/opt-42-x_MainMenuHooks-v1.0.1.patch:792c7574dd81475eee7952cfabdefd21
+debian/patches/opt-65_pin.patch:8be2a164d90cea7325c9690584a90de8
 debian/patches/12_osdbase-maxitems.patch:e378fe23cb8d1582abd1ee4c349febba
 debian/patches/opt-50_graphtft-liemikuutio.patch:518dd69cc7d01f132a8f59b62dabb342
 debian/patches/opt-45_yaepg.patch:e76b3011314dc9b10316277c1afccebd

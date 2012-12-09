@@ -48,7 +48,7 @@ opt-57_vdr-remote_instant_recordings.patch
 opt-61_dynamite.patch
 
 ##opt-63_naludump.patch
-#opt-65_pin.patch
+opt-65_pin.patch
 #opt-66_jumpingseconds.patch
 #opt-67_epgsearch-exttimeredit-0.0.2.diff
 

@@ -1,23 +1,6 @@
-Description: Pin-Patch for VDR-Pin-Plugin
-Author: Jörg Wendel <horchi@vdr-portal>       
-Origin: http://www.jwendel.de/vdr/
-
 --- a/device.c
 +++ b/device.c
-@@ -746,6 +746,12 @@
- 
- bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
- {
-+  // I hope 'LiveView = false' indicates a channel switch for recording, // PIN PATCH
-+  // I really don't know, but it works ...                               // PIN PATCH
-+
-+  if (LiveView && cStatus::MsgChannelProtected(this, Channel))           // PIN PATCH
-+     return scrNotAvailable;                                             // PIN PATCH
-+
-   if (LiveView) {
-      isyslog("switching to channel %d", Channel->Number());
-      cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
-@@ -776,6 +782,7 @@
+@@ -776,6 +776,7 @@
       cChannel *channel;
       while ((channel = Channels.GetByNumber(n, Direction)) != NULL) {
             // try only channels which are currently available
@@ -25,9 +8,22 @@ Origin: http://www.jwendel.de/vdr/
             if (GetDevice(channel, LIVEPRIORITY, true, true))
                break;
             n = channel->Number() + Direction;
+@@ -797,6 +798,12 @@
+ 
+ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
+ {
++  // I hope 'LiveView = false' indicates a channel switch for recording, // PIN PATCH
++  // I really don't know, but it works ...                               // PIN PATCH
++
++  if (LiveView && cStatus::MsgChannelProtected(this, Channel))           // PIN PATCH
++     return scrNotAvailable;                                             // PIN PATCH
++
+   cStatus::MsgChannelSwitch(this, 0, LiveView);
+ 
+   if (LiveView) {
 --- a/menu.c
 +++ b/menu.c
-@@ -905,6 +905,16 @@
+@@ -911,6 +911,16 @@
       Add(new cMenuEditBitItem( tr("VPS"),          &data.flags, tfVps));
       Add(new cMenuEditIntItem( tr("Priority"),     &data.priority, 0, MAXPRIORITY));
       Add(new cMenuEditIntItem( tr("Lifetime"),     &data.lifetime, 0, MAXLIFETIME));
@@ -44,29 +40,29 @@ Origin: http://www.jwendel.de/vdr/
       Add(file = new cMenuEditStrItem( tr("File"),   data.file, sizeof(data.file)));
       SetFirstDayItem();
       }
-@@ -2603,7 +2613,10 @@
+@@ -2626,7 +2636,10 @@
    for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
        if (!base || (strstr(recording->Name(), base) == recording->Name() && recording->Name()[strlen(base)] == FOLDERDELIMCHAR)) {
           cMenuRecordingItem *Item = new cMenuRecordingItem(recording, level);
 -         if (*Item->Text() && (!Item->IsDirectory() || (!LastItem || !LastItem->IsDirectory() || strcmp(Item->Text(), LastItemText) != 0))) {
 +
 +         if (*Item->Text() && (!Item->IsDirectory() || (!LastItem || !LastItem->IsDirectory() || strcmp(Item->Text(), LastItemText) != 0))
-+            && (!cStatus::MsgReplayProtected(GetRecording(Item), Item->Name(), base,
++            && (!cStatus::MsgReplayProtected(Item->Recording(), Item->Name(), base,
 +                                             Item->IsDirectory(), true))) {              // PIN PATCH
              Add(Item);
              LastItem = Item;
              free(LastItemText);
-@@ -2663,6 +2676,9 @@
+@@ -2678,6 +2691,9 @@
  {
    cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
    if (ri) {
-+     if (cStatus::MsgReplayProtected(GetRecording(ri), ri->Name(), base,
++     if (cStatus::MsgReplayProtected(ri->Recording(), ri->Name(), base,
 +                                     ri->IsDirectory()) == true)    // PIN PATCH
 +        return osContinue;                                          // PIN PATCH
       if (ri->IsDirectory())
          Open();
       else {
-@@ -3783,28 +3799,32 @@
+@@ -3785,28 +3801,32 @@
  
    // Basic menu items:
  
@@ -104,10 +100,10 @@ Origin: http://www.jwendel.de/vdr/
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
    }
-@@ -3889,6 +3909,14 @@
+@@ -3890,6 +3910,14 @@
+   eOSState state = cOsdMenu::ProcessKey(Key);
    HadSubMenu |= HasSubMenu();
  
-   cOsdObject *menu = NULL;
 +  // > PIN PATCH
 +  cOsdItem* item = Get(Current());
 +
@@ -116,10 +112,10 @@ Origin: http://www.jwendel.de/vdr/
 +        return osContinue;
 +  // PIN PATCH <
 +
+   cOsdObject *menu = NULL;
    switch (state) {
      case osSchedule:
-         if (!cPluginManager::CallFirstService("MainMenuHooksPatch-v1.0::osSchedule", &menu))
-@@ -3940,6 +3968,7 @@
+@@ -3942,6 +3970,7 @@
                           if (item) {
                              cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
                              if (p) {
@@ -127,7 +123,7 @@ Origin: http://www.jwendel.de/vdr/
                                 cOsdObject *menu = p->MainMenuAction();
                                 if (menu) {
                                    if (menu->IsMenu())
-@@ -3951,6 +3980,7 @@
+@@ -3953,6 +3982,7 @@
                                    }
                                 }
                              }
@@ -135,16 +131,15 @@ Origin: http://www.jwendel.de/vdr/
                           state = osEnd;
                         }
                         break;
-@@ -4162,6 +4192,8 @@
+@@ -4164,6 +4194,7 @@
             Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
             if (!Channel && Setup.ChannelsWrap)
                Channel = Direction > 0 ? Channels.First() : Channels.Last();
-+
 +           if (!cStatus::MsgChannelProtected(0, Channel))                   // PIN PATCH
             if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, LIVEPRIORITY, true, true))
                return Channel;
             }
-@@ -4855,6 +4887,7 @@
+@@ -4857,6 +4888,7 @@
             for (int i = 0; i < MAXRECORDCONTROLS; i++) {
                 if (!RecordControls[i]) {
                    RecordControls[i] = new cRecordControl(device, Timer, Pause);
@@ -240,10 +235,10 @@ Origin: http://www.jwendel.de/vdr/
  
  enum eTimerChange { tcMod, tcAdd, tcDel };
  
-@@ -91,6 +92,22 @@
-                // report menu destruvtion
+@@ -92,6 +93,23 @@
    virtual void OsdEventItem(const cEvent* Event, const char *Text, int Index, int Count) {}
                 // The OSD displays the given single line Event as menu item at Index.
+ 
 +  virtual bool ChannelProtected(const cDevice *Device, const cChannel* Channel)  { return false; }         // PIN PATCH
 +               // Checks if a channel is protected.
 +  virtual bool ReplayProtected(const cRecording* Recording, const char* Name,
@@ -260,13 +255,15 @@ Origin: http://www.jwendel.de/vdr/
 +               // report user action
 +  virtual bool MenuItemProtected(const char* Name, int menuView = false)  { return false; }                // PIN PATCH
 +               // Checks if a menu entry is protected.
- 
++
  public:
    cStatus(void);
-@@ -118,6 +135,14 @@
+   virtual ~cStatus();
+@@ -118,6 +136,15 @@
    static void MsgOsdMenuDisplay(const char* kind);
    static void MsgOsdMenuDestroy();
    static void MsgOsdEventItem(const cEvent* Event, const char *Text, int Index, int Count);
++
 +  static bool MsgChannelProtected(const cDevice* Device, const cChannel* Channel);                 // PIN PATCH
 +  static bool MsgReplayProtected(const cRecording* Recording, const char* Name,
 +                                 const char* Base, bool isDirectory, int menuView = false);        // PIN PATCH
@@ -280,14 +277,14 @@ Origin: http://www.jwendel.de/vdr/
  #endif //__STATUS_H
 --- a/timers.c
 +++ b/timers.c
-@@ -32,6 +32,7 @@
-   deferred = 0;
-   recording = pending = inVpsMargin = false;
-   flags = tfNone;
+@@ -78,6 +78,7 @@
+      stop -= 2400;
+   priority = Pause ? Setup.PausePriority : Setup.DefaultPriority;
+   lifetime = Pause ? Setup.PauseLifetime : Setup.DefaultLifetime;
 +  fskProtection = 0;                                        // PIN PATCH
-   *file = 0;
-   aux = NULL;
-   event = NULL;
+   if (Instant && channel)
+      snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", *Setup.NameInstantRecord ? Setup.NameInstantRecord : channel->Name());
+   if (VfatFileSystem && (Utf8StrLen(file) > VFAT_MAX_FILENAME)) {
 @@ -117,6 +118,7 @@
       stop -= 2400;
    priority = Setup.DefaultPriority;
@@ -300,7 +297,7 @@ Origin: http://www.jwendel.de/vdr/
       dsyslog("timer file name truncated to '%s'", file);
       }
    SetEvent(Event);
-+  cStatus::MsgTimerCreation(this, Event);
++  cStatus::MsgTimerCreation(this, Event);                    // PIN PATCH
  }
  
  cTimer::cTimer(const cTimer &Timer)
@@ -320,14 +317,15 @@ Origin: http://www.jwendel.de/vdr/
    free(channelbuffer);
    free(daybuffer);
    free(filebuffer);
-@@ -713,6 +718,33 @@
+@@ -713,6 +718,36 @@
    Matches(); // refresh start and end time
  }
  
-+void cTimer::SetFskProtection(int aFlag)
++void cTimer::SetFskProtection(int aFlag)      // PIN PATCH
 +{
 +   char* p;
 +   char* tmp = 0;
++   int res = 0;
 +
 +   fskProtection = aFlag;
 +
@@ -336,16 +334,18 @@ Origin: http://www.jwendel.de/vdr/
 +      // add protection info to aux
 +
 +      if (aux) { tmp = strdup(aux); free(aux); }
-+      asprintf(&aux,"%s<pin-plugin><protected>yes</protected></pin-plugin>", tmp ? tmp : "");
++      res = asprintf(&aux, "%s<pin-plugin><protected>yes</protected></pin-plugin>", tmp ? tmp : "");
 +   }
 +   else if (!fskProtection && aux && (p = strstr(aux, "<pin-plugin><protected>yes</protected></pin-plugin>")))
 +   {
-+      // remove protection info to aux
++      // remove protection info from aux
 +
-+      asprintf(&tmp, "%.*s%s", p-aux, aux, p+strlen("<pin-plugin><protected>yes</protected></pin-plugin>"));
++      res = asprintf(&tmp, "%.*s%s", (int)(p-aux), aux, p+strlen("<pin-plugin><protected>yes</protected></pin-plugin>"));
 +      free(aux);
 +      aux = strdup(tmp);
 +   }
++
++   if (res < 0) ; // memory problems :o
 +
 +   if (tmp)
 +      free(tmp);
@@ -382,15 +382,15 @@ Origin: http://www.jwendel.de/vdr/
    bool HasFlags(uint Flags) const;
 --- a/vdr.c
 +++ b/vdr.c
-@@ -61,6 +61,7 @@
- #include "skinsttng.h"
- #include "sourceparams.h"
- #include "sources.h"
-+#include "status.h"
- #include "themes.h"
- #include "timers.h"
+@@ -66,6 +66,7 @@
  #include "tools.h"
-@@ -959,6 +960,7 @@
+ #include "transfer.h"
+ #include "videodir.h"
++#include "status.h"     // PIN PATCH
+ 
+ #define MINCHANNELWAIT        10 // seconds to wait between failed channel switchings
+ #define ACTIVITYTIMEOUT       60 // seconds before starting housekeeping
+@@ -958,6 +959,7 @@
          cOsdObject *Interact = Menu ? Menu : cControl::Control();
          eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());
          if (ISREALKEY(key)) {
@@ -398,16 +398,16 @@ Origin: http://www.jwendel.de/vdr/
             EITScanner.Activity();
             // Cancel shutdown countdown:
             if (ShutdownHandler.countdown)
-@@ -1031,10 +1033,12 @@
+@@ -1030,10 +1032,12 @@
                       cControl::Control()->Hide();
                    cPlugin *plugin = cPluginManager::GetPlugin(PluginName);
                    if (plugin) {
-+                   if (!cStatus::MsgPluginProtected(plugin)) {
++                     if (!cStatus::MsgPluginProtected(plugin)) {  // PIN PATCH
                       Menu = plugin->MainMenuAction();
                       if (Menu)
                          Menu->Show();
                       }
-+                  }
++                     }
                    else
                       esyslog("ERROR: unknown plugin '%s'", PluginName);
                    }
