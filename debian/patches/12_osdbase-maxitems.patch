@@ -2,11 +2,9 @@ Description: Fixes problems with text2skin skin enigma.
 Author: Andreas Brugger <brougs78@gmx.net>
 Origin: http://vdrportal.de/board/thread.php?postid=343665#post343665
 
-Index: vdr-1.7.28/osdbase.c
-===================================================================
---- vdr-1.7.28.orig/osdbase.c	2012-04-23 11:41:22.000000000 +0200
-+++ vdr-1.7.28/osdbase.c	2012-06-03 17:10:38.419576566 +0200
-@@ -320,6 +320,7 @@
+--- a/osdbase.c
++++ b/osdbase.c
+@@ -325,6 +325,7 @@
  
  void cOsdMenu::CursorUp(void)
  {
@@ -14,7 +12,7 @@ Index: vdr-1.7.28/osdbase.c
    int tmpCurrent = current;
    int lastOnScreen = first + displayMenuItems - 1;
    int last = Count() - 1;
-@@ -358,6 +359,7 @@
+@@ -363,6 +364,7 @@
  
  void cOsdMenu::CursorDown(void)
  {
@@ -22,7 +20,7 @@ Index: vdr-1.7.28/osdbase.c
    int tmpCurrent = current;
    int lastOnScreen = first + displayMenuItems - 1;
    int last = Count() - 1;
-@@ -398,6 +400,7 @@
+@@ -403,6 +405,7 @@
  
  void cOsdMenu::PageUp(void)
  {
@@ -30,7 +28,7 @@ Index: vdr-1.7.28/osdbase.c
    int oldCurrent = current;
    int oldFirst = first;
    current -= displayMenuItems;
-@@ -432,6 +435,7 @@
+@@ -437,6 +440,7 @@
  
  void cOsdMenu::PageDown(void)
  {

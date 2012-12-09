@@ -3,11 +3,9 @@ Description: This sets the default svdrp-port to 0, which means that
  another port with the --port option when starting vdr
 Author: Thomas Schmidt <tschmidt@debian.org>
 
-Index: vdr-1.7.30/vdr.c
-===================================================================
---- vdr-1.7.30.orig/vdr.c	2012-09-01 15:30:19.000000000 +0200
-+++ vdr-1.7.30/vdr.c	2012-09-22 09:46:52.259927913 +0200
-@@ -179,7 +179,7 @@
+--- a/vdr.c
++++ b/vdr.c
+@@ -178,7 +178,7 @@
    // Command line options:
  
  #define dd(a, b) (*a ? a : b)
