@@ -1,11 +1,11 @@
 --- a/PLUGINS/src/dvbhddevice/Makefile
 +++ b/PLUGINS/src/dvbhddevice/Makefile
-@@ -99,7 +99,7 @@
- ### Targets:
+@@ -9,7 +9,7 @@
+ # IMPORTANT: the presence of this macro is important for the Make.config
+ # file. So it must be defined, even if it is not used here!
+ #
+-PLUGIN = dvbhddevice
++export PLUGIN = dvbhddevice
  
- libvdr-$(PLUGIN).so: $(OBJS) libhdffcmd
--	$(MAKE) -C libhdffcmd all
-+	$(MAKE) -C libhdffcmd PLUGIN=$(PLUGIN) all
- 	$(CXX) $(CXXFLAGS) -shared $(OBJS) libhdffcmd/libhdffcmd.a -o $@
- 	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+ ### The version number of this plugin (taken from the main source file):
  
