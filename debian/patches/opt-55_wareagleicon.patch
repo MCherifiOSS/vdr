@@ -13,7 +13,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    PrimaryDVB = 1;
    ShowInfoOnChSwitch = 1;
    TimeoutRequChInfo = 1;
-@@ -579,6 +580,7 @@
+@@ -581,6 +582,7 @@
    if      (!strcasecmp(Name, "OSDLanguage"))       { strn0cpy(OSDLanguage, Value, sizeof(OSDLanguage)); I18nSetLocale(OSDLanguage); }
    else if (!strcasecmp(Name, "OSDSkin"))             Utf8Strn0Cpy(OSDSkin, Value, MaxSkinName);
    else if (!strcasecmp(Name, "OSDTheme"))            Utf8Strn0Cpy(OSDTheme, Value, MaxThemeName);
@@ -21,7 +21,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    else if (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
    else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
    else if (!strcasecmp(Name, "TimeoutRequChInfo"))   TimeoutRequChInfo  = atoi(Value);
-@@ -686,6 +688,7 @@
+@@ -690,6 +692,7 @@
    Store("OSDLanguage",        OSDLanguage);
    Store("OSDSkin",            OSDSkin);
    Store("OSDTheme",           OSDTheme);
@@ -31,7 +31,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    Store("TimeoutRequChInfo",  TimeoutRequChInfo);
 --- a/config.h
 +++ b/config.h
-@@ -257,6 +257,7 @@
+@@ -256,6 +256,7 @@
    char OSDLanguage[I18N_MAX_LOCALE_LEN];
    char OSDSkin[MaxSkinName];
    char OSDTheme[MaxThemeName];
@@ -166,7 +166,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
  #include <ctype.h>
  #include <limits.h>
  #include <math.h>
-@@ -318,6 +319,15 @@
+@@ -319,6 +320,14 @@
    if (!channel->GroupSep()) {
       if (sortMode == csmProvider)
          buffer = cString::sprintf("%d\t%s - %s", channel->Number(), channel->Provider(), channel->Name());
@@ -178,24 +178,22 @@ Author: Thomas Günther <tom@toms-cafe.de>
 +        else
 +           buffer = cString::sprintf("%d\t%s %-30s", channel->Number(), IsLangUtf8() ? ICON_TV_CRYPTED_UTF8 : ICON_TV_CRYPTED, channel->Name());
 +        }
-+
       else
          buffer = cString::sprintf("%d\t%s", channel->Number(), channel->Name());
       }
-@@ -1045,9 +1055,9 @@
+@@ -1053,9 +1062,9 @@
       File = timer->File();
    cCharSetConv csc("ISO-8859-1", cCharSetConv::SystemCharacterTable());
    char diskStatusString[2] = { diskStatus, 0 };
 -  SetText(cString::sprintf("%s%c\t%d\t%s%s%s\t%02d:%02d\t%02d:%02d\t%s",
--                    csc.Convert(diskStatusString),
++  SetText(cString::sprintf("%s%s\t%d\t%s%s%s\t%02d:%02d\t%02d:%02d\t%s",
+                     csc.Convert(diskStatusString),
 -                    !(timer->HasFlags(tfActive)) ? ' ' : timer->FirstDay() ? '!' : timer->Recording() ? '#' : '>',
-+
-+  SetText(cString::sprintf("%s\t%d\t%s%s%s\t%02d:%02d\t%02d:%02d\t%s",
 +                    !(timer->HasFlags(tfActive)) ? " " : timer->FirstDay() ? Setup.WarEagleIcons ? IsLangUtf8() ? ICON_ARROW_UTF8 : ICON_ARROW : "!" : timer->Recording() ? Setup.WarEagleIcons ? IsLangUtf8() ? ICON_REC_UTF8 : ICON_REC : "#" : Setup.WarEagleIcons ? IsLangUtf8() ? ICON_CLOCK_UTF8 : ICON_CLOCK : ">",
                      timer->Channel()->Number(),
                      *name,
                      *name && **name ? " " : "",
-@@ -1436,7 +1446,12 @@
+@@ -1451,7 +1460,12 @@
    return r;
  }
  
@@ -209,7 +207,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
  
  bool cMenuScheduleItem::Update(bool Force)
  {
-@@ -1445,17 +1460,17 @@
+@@ -1460,17 +1474,17 @@
    Timers.GetMatch(event, &timerMatch);
    if (Force || timerMatch != OldTimerMatch) {
       cString buffer;
@@ -233,7 +231,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
       SetText(buffer);
       result = true;
       }
-@@ -2910,6 +2925,7 @@
+@@ -2911,6 +2925,7 @@
    Add(new cMenuEditStraItem(tr("Setup.OSD$Skin"),                   &skinIndex, numSkins, skinDescriptions));
    if (themes.NumThemes())
    Add(new cMenuEditStraItem(tr("Setup.OSD$Theme"),                  &themeIndex, themes.NumThemes(), themes.Descriptions()));
@@ -251,7 +249,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
  #include <ctype.h>
  #include <dirent.h>
  #include <errno.h>
-@@ -880,7 +881,7 @@
+@@ -881,7 +882,7 @@
  
  const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) const
  {
@@ -260,7 +258,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    free(titleBuffer);
    titleBuffer = NULL;
    if (Level < 0 || Level == HierarchyLevels()) {
-@@ -900,7 +901,7 @@
+@@ -901,7 +902,7 @@
                     Minutes % 60
                     );
          }

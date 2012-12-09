@@ -2,10 +2,11 @@ debian/patches/opt-41-x_timer-info.patch:deefdf8e55c93ebeef6f46932651e21c
 debian/patches/opt-42-x_MainMenuHooks-v1.0.1.patch:6080e8726035423c910e913cb590883d
 debian/patches/12_osdbase-maxitems.patch:e378fe23cb8d1582abd1ee4c349febba
 debian/patches/16_channels.conf.terr-fix.patch:92ea3d82643ae71d4fe2b3bfed7bc3f4
+debian/patches/opt-99_dvbhddevice-make.patch:b53be4e7e70679590102cfe1d7b4352e
 debian/patches/82_valgrind.patch:c98fa503104c8d5567788c2ec0620ae1
 debian/patches/opt-44_rotor.patch:f8768c950ea5f6c57c63f3a72ed42de4
 debian/patches/opt-45_yaepg.patch:e76b3011314dc9b10316277c1afccebd
-debian/patches/opt-99_dvbhddevice-make.patch:b53be4e7e70679590102cfe1d7b4352e
+debian/patches/opt-55_wareagleicon.patch:23731442d9124b11a0d3a2766415601c
 debian/patches/04_newplugin.patch:6019fe11827cc5bef40f155c99cc4c64
 debian/patches/opt-27_ttxtsubs.patch:c5476bf1828c9eff74eaa2c9d7ed7fd2
 debian/patches/opt-24_jumpplay.patch:2ad1ec6fd20d43cf379daef055358292
