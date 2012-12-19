@@ -1,3 +1,16 @@
+vdr (1.7.33-3yavdr0~precise) precise; urgency=medium
+
+  * revoke last change, should have been at config-loader
+    in yavdr-base package
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Thu, 20 Dec 2012 00:13:40 +0100
+
+vdr (1.7.33-2yavdr0~precise) precise; urgency=medium
+
+  * add cachedir parameter at vdr.default
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 19 Dec 2012 23:44:45 +0100
+
 vdr (1.7.33-1yavdr0~precise) precise; urgency=medium
 
   * add externalci patch
