@@ -1,0 +1,18 @@
+bindir=/usr/bin
+mandir=/usr/share/man
+configdir=/var/lib/vdr
+videodir=/srv/vdr/video.00
+cachedir=/var/cache/vdr
+resdir=/usr/share/vdr
+libdir=/usr/lib/vdr/plugins
+locdir=/usr/share/locale
+plgcfg=
+apiversion=1.7.33
+cflags=-g -O3 -Wall -fPIC -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
+cxxflags=-g -O3 -Wall -Werror=overloaded-virtual -Wno-parentheses -fPIC -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
+
+Name: VDR
+Description: Video Disk Recorder
+URL: http://www.tvdr.de/
+Version: 1.7.33
+Cflags: ${cflags}
